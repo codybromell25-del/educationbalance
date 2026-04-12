@@ -24,12 +24,20 @@ export default function HomePage() {
             />
             <span className="text-xl tracking-wide font-light">balance</span>
           </Link>
-          <Link
-            href="/login"
-            className="px-6 py-2 bg-brand-sage text-white text-sm tracking-wider uppercase rounded-full hover:bg-brand-sage-dark transition-colors"
-          >
-            Log In
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/login"
+              className="px-5 py-2 text-sm text-brand-primary hover:text-brand-sage transition-colors"
+            >
+              Log In
+            </Link>
+            <Link
+              href="/signup"
+              className="px-6 py-2 bg-brand-sage text-white text-sm tracking-wider uppercase rounded-full hover:bg-brand-sage-dark transition-colors"
+            >
+              Sign Up
+            </Link>
+          </div>
         </div>
       </nav>
 
@@ -68,17 +76,17 @@ export default function HomePage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/login"
-              className="px-10 py-4 bg-white text-brand-primary text-sm tracking-wider uppercase rounded-full hover:bg-white/90 transition-colors font-medium"
+              href="/signup"
+              className="px-10 py-4 bg-brand-sage text-white text-sm tracking-wider uppercase rounded-full hover:bg-brand-sage-dark transition-colors font-medium"
             >
-              Start Your Journey
+              Sign Up Now
             </Link>
-            <a
-              href="#about"
+            <Link
+              href="/login"
               className="px-10 py-4 border border-white/40 text-white text-sm tracking-wider uppercase rounded-full hover:bg-white/10 transition-colors"
             >
-              Learn More
-            </a>
+              Log In
+            </Link>
           </div>
         </div>
       </section>
@@ -250,10 +258,10 @@ export default function HomePage() {
             journey. Expert guidance, structured learning, real results.
           </p>
           <Link
-            href="/login"
+            href="/signup"
             className="inline-block px-10 py-4 bg-brand-sage text-white text-sm tracking-wider uppercase rounded-full hover:bg-brand-sage-dark transition-colors font-medium"
           >
-            Get Started
+            Sign Up Now
           </Link>
         </div>
       </section>
