@@ -302,15 +302,15 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
       </section>
 
-      {/* Meet Your Instructor */}
+      {/* Why balance */}
       <section className="py-24 md:py-32 bg-background">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <p className="text-brand-sage text-sm tracking-[0.3em] uppercase mb-4">
-              Your Instructor
+              Why balance
             </p>
             <h2 className="text-3xl md:text-5xl font-light tracking-tight text-brand-primary">
-              Learn from the best
+              Built on real experience
             </h2>
           </div>
 
@@ -318,28 +318,22 @@ export default function HomePage() {
             <div className="relative h-[450px] rounded-2xl overflow-hidden">
               <Image
                 src="/images/studio-welcome.jpg"
-                alt="Lead instructor"
+                alt="balance studio"
                 fill
                 className="object-cover"
               />
             </div>
             <div>
-              <h3 className="text-2xl font-light text-brand-primary mb-2">
-                [Instructor Name]
-              </h3>
-              <p className="text-brand-sage text-sm tracking-wider uppercase mb-6">
-                Lead Instructor & Founder
-              </p>
               <p className="text-brand-muted leading-relaxed mb-6">
-                With years of experience in reformer Pilates and a passion
-                for developing the next generation of instructors, our lead
-                trainer brings a unique blend of expertise, warmth, and
-                attention to detail to every session.
+                This course was created by a team with years of experience
+                in reformer Pilates and a genuine passion for developing
+                the next generation of instructors. Every section has been
+                shaped by real-world teaching, not just textbooks.
               </p>
               <p className="text-brand-muted leading-relaxed mb-8">
-                Having trained hundreds of clients and built balance studios
-                across Kildare and Wicklow, they understand what it takes to
-                go from student to confident, capable instructor.
+                With multiple studios across Kildare and Wicklow and
+                thousands of clients trained, we understand what it takes
+                to go from student to confident, capable instructor.
               </p>
               <div className="flex gap-8">
                 <div>
