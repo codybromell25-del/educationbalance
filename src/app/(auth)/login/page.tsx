@@ -34,113 +34,115 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center">
-      {/* Full-screen background image */}
-      <div className="absolute inset-0">
+    <div className="min-h-screen flex">
+      {/* Left — Image panel */}
+      <div className="hidden lg:block lg:w-1/2 relative">
         <Image
-          src="/images/studio-wide.jpg"
-          alt="balance studio"
+          src="/images/studio-lunge.jpg"
+          alt="Pilates reformer workout"
           fill
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
-      </div>
-
-      {/* Glass login card */}
-      <div className="relative z-10 w-full max-w-md mx-6">
-        {/* Logo and branding */}
-        <div className="text-center mb-8">
+        <div className="absolute inset-0 bg-brand-primary/30" />
+        <div className="absolute bottom-12 left-12 right-12">
           <Image
             src="/images/balance-logo.jpg"
             alt="balance"
-            width={72}
-            height={72}
-            className="rounded-full mx-auto mb-5 shadow-2xl ring-2 ring-white/20"
+            width={48}
+            height={48}
+            className="rounded-full mb-4 shadow-lg"
           />
-          <h1 className="text-3xl tracking-wide font-light text-white">
-            balance
-          </h1>
-          <p className="text-white/50 mt-2 text-sm tracking-[0.2em] uppercase">
-            Training Course
+          <p className="text-white/90 text-lg font-light leading-relaxed">
+            Your journey to mastering Pilates starts here.
           </p>
         </div>
+      </div>
 
-        {/* Card */}
-        <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 p-8 shadow-2xl">
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {error && (
-              <div className="p-3 rounded-xl bg-red-500/20 border border-red-400/30 text-red-200 text-sm text-center backdrop-blur-sm">
-                {error}
-              </div>
-            )}
-
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-xs font-medium text-white/70 mb-2 tracking-wider uppercase"
-              >
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-4 py-3.5 rounded-xl border border-white/15 bg-white/5 text-white placeholder:text-white/30 focus:border-brand-sage focus:bg-white/10 focus:ring-1 focus:ring-brand-sage/50 transition-all outline-none"
-                placeholder="your@email.com"
+      {/* Right — Login form */}
+      <div className="flex-1 flex items-center justify-center bg-brand-surface px-6">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-10">
+            <Link href="/" className="inline-block">
+              <Image
+                src="/images/balance-logo.jpg"
+                alt="balance"
+                width={56}
+                height={56}
+                className="rounded-full mx-auto mb-4 lg:hidden"
               />
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-xs font-medium text-white/70 mb-2 tracking-wider uppercase"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full px-4 py-3.5 rounded-xl border border-white/15 bg-white/5 text-white placeholder:text-white/30 focus:border-brand-sage focus:bg-white/10 focus:ring-1 focus:ring-brand-sage/50 transition-all outline-none"
-                placeholder="Enter your password"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3.5 bg-brand-sage text-white text-sm tracking-wider uppercase rounded-xl hover:bg-brand-sage-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-brand-sage/20"
-            >
-              {loading ? "Signing in..." : "Sign In"}
-            </button>
-          </form>
-
-          <div className="mt-6 pt-5 border-t border-white/10">
-            <p className="text-center text-sm text-white/40">
-              Don&apos;t have an account?{" "}
-              <Link
-                href="/signup"
-                className="text-brand-sage-light hover:text-white transition-colors"
-              >
-                Sign up
-              </Link>
+              <span className="text-3xl tracking-wide font-light text-brand-primary">
+                balance
+              </span>
+            </Link>
+            <p className="text-brand-muted mt-3 text-sm tracking-wide">
+              Sign in to access your course
             </p>
           </div>
-        </div>
 
-        {/* Footer link */}
-        <div className="text-center mt-6">
-          <Link
-            href="/"
-            className="text-xs text-white/30 hover:text-white/60 transition-colors tracking-wider uppercase"
-          >
-            &larr; Back to home
-          </Link>
+          <div className="bg-white rounded-2xl shadow-sm border border-brand-border p-8">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {error && (
+                <div className="p-3 rounded-lg bg-brand-error/10 text-brand-error text-sm text-center">
+                  {error}
+                </div>
+              )}
+
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-brand-primary mb-2"
+                >
+                  Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 rounded-lg border border-brand-border bg-background text-brand-primary placeholder:text-brand-muted/50 focus:border-brand-sage transition-colors"
+                  placeholder="your@email.com"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-brand-primary mb-2"
+                >
+                  Password
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 rounded-lg border border-brand-border bg-background text-brand-primary placeholder:text-brand-muted/50 focus:border-brand-sage transition-colors"
+                  placeholder="Enter your password"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3 bg-brand-primary text-white text-sm tracking-wider uppercase rounded-full hover:bg-brand-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? "Signing in..." : "Sign In"}
+              </button>
+            </form>
+          </div>
+
+          <p className="text-center text-sm text-brand-muted mt-8">
+            Don&apos;t have an account?{" "}
+            <Link
+              href="/signup"
+              className="text-brand-sage hover:text-brand-sage-dark transition-colors"
+            >
+              Sign up
+            </Link>
+          </p>
         </div>
       </div>
     </div>
