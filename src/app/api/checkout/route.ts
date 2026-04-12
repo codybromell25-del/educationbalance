@@ -1,4 +1,4 @@
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
 
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
   const priceAmount = parseInt(process.env.COURSE_PRICE_AMOUNT || "49900");
 
   try {
-    const session = await stripe.checkout.sessions.create({
+    const session = await getStripe().checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
       customer_email: email,
