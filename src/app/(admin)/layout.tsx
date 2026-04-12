@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import SessionProvider from "@/components/SessionProvider";
 import LogoutButton from "@/components/LogoutButton";
 
@@ -19,15 +20,23 @@ export default async function AdminLayout({
         {/* Sidebar */}
         <aside className="w-64 bg-white border-r border-brand-border flex flex-col shrink-0">
           <div className="p-6 border-b border-brand-border">
-            <Link
-              href="/admin"
-              className="text-xl tracking-wide font-light text-brand-primary"
-            >
-              balance
+            <Link href="/admin" className="flex items-center gap-2">
+              <Image
+                src="/images/balance-logo.jpg"
+                alt="balance"
+                width={28}
+                height={28}
+                className="rounded-full"
+              />
+              <div>
+                <span className="text-xl tracking-wide font-light text-brand-primary">
+                  balance
+                </span>
+                <p className="text-xs text-brand-accent tracking-wider uppercase">
+                  Admin
+                </p>
+              </div>
             </Link>
-            <p className="text-xs text-brand-accent tracking-wider uppercase mt-1">
-              Admin
-            </p>
           </div>
 
           <nav className="flex-1 p-4 space-y-1">

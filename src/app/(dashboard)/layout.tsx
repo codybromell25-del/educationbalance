@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import SessionProvider from "@/components/SessionProvider";
 import LogoutButton from "@/components/LogoutButton";
 
@@ -20,9 +21,18 @@ export default async function DashboardLayout({
           <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
             <Link
               href="/dashboard"
-              className="text-xl tracking-wide font-light text-brand-primary"
+              className="flex items-center gap-2"
             >
-              balance
+              <Image
+                src="/images/balance-logo.jpg"
+                alt="balance"
+                width={28}
+                height={28}
+                className="rounded-full"
+              />
+              <span className="text-xl tracking-wide font-light text-brand-primary">
+                balance
+              </span>
             </Link>
             <div className="flex items-center gap-6">
               <span className="text-sm text-brand-muted hidden sm:block">

@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -26,17 +27,31 @@ export default async function DashboardPage() {
   const firstName = session.user.name.split(" ")[0];
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-12">
-      {/* Welcome */}
-      <div className="mb-12">
-        <p className="text-brand-accent text-sm tracking-[0.3em] uppercase mb-3">
-          Welcome back
-        </p>
-        <h1 className="text-4xl md:text-5xl font-light tracking-tight text-brand-primary">
-          Welcome to balance,{" "}
-          <span className="italic">{firstName}</span>
-        </h1>
+    <div>
+      {/* Welcome hero banner */}
+      <div className="relative h-48 md:h-64 overflow-hidden">
+        <Image
+          src="/images/studio-reformers-row.jpg"
+          alt="balance studio"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-brand-primary/60" />
+        <div className="absolute inset-0 flex items-center">
+          <div className="max-w-4xl mx-auto px-6 w-full">
+            <p className="text-brand-accent-light text-sm tracking-[0.3em] uppercase mb-3">
+              Welcome back
+            </p>
+            <h1 className="text-3xl md:text-5xl font-light tracking-tight text-white">
+              Welcome to balance,{" "}
+              <span className="italic">{firstName}</span>
+            </h1>
+          </div>
+        </div>
       </div>
+
+      <div className="max-w-4xl mx-auto px-6 py-12">
 
       {/* Progress overview */}
       <div className="bg-white rounded-2xl border border-brand-border p-8 mb-12">
@@ -165,6 +180,7 @@ export default async function DashboardPage() {
             </div>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

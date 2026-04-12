@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,10 +12,17 @@ export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-brand-border">
+      <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-brand-border">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="text-xl tracking-wide font-light">
-            balance
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="/images/balance-logo.jpg"
+              alt="balance"
+              width={32}
+              height={32}
+              className="rounded-full"
+            />
+            <span className="text-xl tracking-wide font-light">balance</span>
           </Link>
           <Link
             href="/login"
@@ -25,19 +33,35 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="relative flex items-center justify-center min-h-screen pt-16 bg-brand-surface">
-        <div className="absolute inset-0 bg-gradient-to-b from-brand-surface via-brand-surface to-background" />
-        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-          <p className="text-brand-accent text-sm tracking-[0.3em] uppercase mb-6">
+      {/* Hero — full-width image background */}
+      <section className="relative min-h-screen flex items-center justify-center">
+        <div className="absolute inset-0">
+          <Image
+            src="/images/studio-wide.jpg"
+            alt="balance reformer studio"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-black/40" />
+        </div>
+        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center text-white">
+          <Image
+            src="/images/balance-logo.jpg"
+            alt="balance"
+            width={80}
+            height={80}
+            className="rounded-full mx-auto mb-8 shadow-lg"
+          />
+          <p className="text-white/80 text-sm tracking-[0.3em] uppercase mb-6">
             Premium Pilates Training
           </p>
-          <h1 className="text-5xl md:text-7xl font-light tracking-tight text-brand-primary mb-8 leading-[1.1]">
+          <h1 className="text-5xl md:text-7xl font-light tracking-tight mb-8 leading-[1.1]">
             Master the art
             <br />
             <span className="italic">of movement</span>
           </h1>
-          <p className="text-lg md:text-xl text-brand-muted max-w-2xl mx-auto mb-12 leading-relaxed">
+          <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto mb-12 leading-relaxed">
             A structured training course combining expert in-person sessions
             with comprehensive online guidance. Designed for those who are
             serious about their Pilates practice.
@@ -45,13 +69,13 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/login"
-              className="px-10 py-4 bg-brand-primary text-white text-sm tracking-wider uppercase rounded-full hover:bg-brand-primary/90 transition-colors"
+              className="px-10 py-4 bg-white text-brand-primary text-sm tracking-wider uppercase rounded-full hover:bg-white/90 transition-colors font-medium"
             >
               Start Your Journey
             </Link>
             <a
               href="#about"
-              className="px-10 py-4 border border-brand-border text-brand-primary text-sm tracking-wider uppercase rounded-full hover:bg-brand-surface-hover transition-colors"
+              className="px-10 py-4 border border-white/40 text-white text-sm tracking-wider uppercase rounded-full hover:bg-white/10 transition-colors"
             >
               Learn More
             </a>
@@ -59,7 +83,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* About the Course */}
+      {/* About the Course — with image grid */}
       <section id="about" className="py-24 md:py-32 bg-background">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-20">
@@ -71,22 +95,16 @@ export default function HomePage() {
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-12">
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-brand-surface flex items-center justify-center mx-auto mb-6">
-                <svg
-                  className="w-7 h-7 text-brand-accent"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
-                  />
-                </svg>
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Card 1 */}
+            <div className="group">
+              <div className="relative h-64 rounded-2xl overflow-hidden mb-6">
+                <Image
+                  src="/images/reformer-stretch.jpg"
+                  alt="Structured learning on reformers"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
               </div>
               <h3 className="text-lg font-medium text-brand-primary mb-3">
                 Structured Learning
@@ -97,21 +115,15 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-brand-surface flex items-center justify-center mx-auto mb-6">
-                <svg
-                  className="w-7 h-7 text-brand-accent"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"
-                  />
-                </svg>
+            {/* Card 2 */}
+            <div className="group">
+              <div className="relative h-64 rounded-2xl overflow-hidden mb-6">
+                <Image
+                  src="/images/studio-instructor.jpg"
+                  alt="Instructor helping student"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
               </div>
               <h3 className="text-lg font-medium text-brand-primary mb-3">
                 In-Person & Online
@@ -122,21 +134,15 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-brand-surface flex items-center justify-center mx-auto mb-6">
-                <svg
-                  className="w-7 h-7 text-brand-accent"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"
-                  />
-                </svg>
+            {/* Card 3 */}
+            <div className="group">
+              <div className="relative h-64 rounded-2xl overflow-hidden mb-6">
+                <Image
+                  src="/images/instructor-chat.jpg"
+                  alt="Instructors discussing technique"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
               </div>
               <h3 className="text-lg font-medium text-brand-primary mb-3">
                 Direct Feedback
@@ -150,9 +156,20 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Full-width image break */}
+      <section className="relative h-[50vh] md:h-[60vh]">
+        <Image
+          src="/images/studio-ball-workout.jpg"
+          alt="Group Pilates class with medicine balls"
+          fill
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-surface to-transparent" />
+      </section>
+
       {/* How It Works */}
       <section className="py-24 md:py-32 bg-brand-surface">
-        <div className="max-w-4xl mx-auto px-6">
+        <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-20">
             <p className="text-brand-accent text-sm tracking-[0.3em] uppercase mb-4">
               How It Works
@@ -162,50 +179,69 @@ export default function HomePage() {
             </h2>
           </div>
 
-          <div className="space-y-12">
-            {[
-              {
-                step: "01",
-                title: "Enrol & Get Access",
-                desc: "Sign up for the course and receive your personal login. Your learning space is ready.",
-              },
-              {
-                step: "02",
-                title: "Follow the Flow",
-                desc: "New sections unlock weekly, perfectly synced with your in-person training sessions.",
-              },
-              {
-                step: "03",
-                title: "Learn & Practice",
-                desc: "Work through each section at your own pace. Mark sections complete as you progress.",
-              },
-              {
-                step: "04",
-                title: "Ask Questions",
-                desc: "Have a question about any section? Ask directly on the page and get expert feedback.",
-              },
-            ].map((item) => (
-              <div key={item.step} className="flex gap-8 items-start">
-                <span className="text-4xl font-light text-brand-accent/40 shrink-0 w-16">
-                  {item.step}
-                </span>
-                <div>
-                  <h3 className="text-xl font-medium text-brand-primary mb-2">
-                    {item.title}
-                  </h3>
-                  <p className="text-brand-muted leading-relaxed">
-                    {item.desc}
-                  </p>
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div className="space-y-12">
+              {[
+                {
+                  step: "01",
+                  title: "Enrol & Get Access",
+                  desc: "Sign up for the course and receive your personal login. Your learning space is ready.",
+                },
+                {
+                  step: "02",
+                  title: "Follow the Flow",
+                  desc: "New sections unlock weekly, perfectly synced with your in-person training sessions.",
+                },
+                {
+                  step: "03",
+                  title: "Learn & Practice",
+                  desc: "Work through each section at your own pace. Mark sections complete as you progress.",
+                },
+                {
+                  step: "04",
+                  title: "Ask Questions",
+                  desc: "Have a question about any section? Ask directly on the page and get expert feedback.",
+                },
+              ].map((item) => (
+                <div key={item.step} className="flex gap-8 items-start">
+                  <span className="text-4xl font-light text-brand-accent/40 shrink-0 w-16">
+                    {item.step}
+                  </span>
+                  <div>
+                    <h3 className="text-xl font-medium text-brand-primary mb-2">
+                      {item.title}
+                    </h3>
+                    <p className="text-brand-muted leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+            <div className="relative h-[500px] rounded-2xl overflow-hidden hidden md:block">
+              <Image
+                src="/images/studio-welcome.jpg"
+                alt="Welcome to balance studio"
+                fill
+                className="object-cover"
+              />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-24 md:py-32 bg-brand-primary text-white text-center">
-        <div className="max-w-3xl mx-auto px-6">
+      {/* CTA with background image */}
+      <section className="relative py-32 md:py-40 text-center">
+        <div className="absolute inset-0">
+          <Image
+            src="/images/reformer-class.jpg"
+            alt="Pilates reformer class"
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-brand-primary/80" />
+        </div>
+        <div className="relative z-10 max-w-3xl mx-auto px-6 text-white">
           <h2 className="text-3xl md:text-5xl font-light tracking-tight mb-6">
             Ready to begin?
           </h2>
@@ -225,9 +261,18 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="py-12 bg-background border-t border-brand-border">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-brand-muted">
-            &copy; {new Date().getFullYear()} balance. All rights reserved.
-          </p>
+          <div className="flex items-center gap-2">
+            <Image
+              src="/images/balance-logo.jpg"
+              alt="balance"
+              width={24}
+              height={24}
+              className="rounded-full"
+            />
+            <p className="text-sm text-brand-muted">
+              &copy; {new Date().getFullYear()} balance. All rights reserved.
+            </p>
+          </div>
           <a
             href="https://balancestudios.ie"
             target="_blank"
