@@ -96,7 +96,7 @@ export default async function SectionPage({
 
       {/* Section header */}
       <div className="mb-12">
-        <p className="text-brand-accent text-sm tracking-[0.3em] uppercase mb-3">
+        <p className="text-brand-sage text-sm tracking-[0.3em] uppercase mb-3">
           Section {section.order}
         </p>
         <h1 className="text-3xl md:text-4xl font-light tracking-tight text-brand-primary mb-4">
@@ -209,7 +209,7 @@ export default async function SectionPage({
                 </div>
                 {q.response ? (
                   <div className="mt-4 pt-4 border-t border-brand-border">
-                    <p className="text-sm text-brand-accent font-medium mb-1">
+                    <p className="text-sm text-brand-sage font-medium mb-1">
                       balance team
                     </p>
                     <p className="text-brand-primary/80">{q.response}</p>

@@ -67,7 +67,7 @@ export default async function AdminUsersPage() {
                   <span className="inline-flex items-center gap-2">
                     <span className="w-16 h-1.5 bg-brand-surface rounded-full overflow-hidden">
                       <span
-                        className="block h-full bg-brand-accent rounded-full"
+                        className="block h-full bg-brand-sage rounded-full"
                         style={{
                           width: `${
                             totalSections > 0

@@ -45,7 +45,7 @@ export default function QuestionForm({ sectionId }: { sectionId: string }) {
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         rows={4}
-        className="w-full px-4 py-3 rounded-lg border border-brand-border bg-background text-brand-primary placeholder:text-brand-muted/50 resize-none focus:border-brand-accent transition-colors"
+        className="w-full px-4 py-3 rounded-lg border border-brand-border bg-background text-brand-primary placeholder:text-brand-muted/50 resize-none focus:border-brand-sage transition-colors"
         placeholder="Type your question here..."
         required
       />

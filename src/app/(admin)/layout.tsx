@@ -32,7 +32,7 @@ export default async function AdminLayout({
                 <span className="text-xl tracking-wide font-light text-brand-primary">
                   balance
                 </span>
-                <p className="text-xs text-brand-accent tracking-wider uppercase">
+                <p className="text-xs text-brand-sage tracking-wider uppercase">
                   Admin
                 </p>
               </div>

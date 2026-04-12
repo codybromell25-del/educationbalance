@@ -26,10 +26,10 @@ export default async function AdminQuestionsPage() {
 
       {/* Unanswered */}
       <div className="mb-12">
-        <h2 className="text-sm tracking-wider uppercase text-brand-accent mb-4 flex items-center gap-2">
+        <h2 className="text-sm tracking-wider uppercase text-brand-sage mb-4 flex items-center gap-2">
           Needs Response
           {unanswered.length > 0 && (
-            <span className="bg-brand-accent text-white text-xs px-2 py-0.5 rounded-full">
+            <span className="bg-brand-sage text-white text-xs px-2 py-0.5 rounded-full">
               {unanswered.length}
             </span>
           )}
@@ -38,7 +38,7 @@ export default async function AdminQuestionsPage() {
           {unanswered.map((q) => (
             <div
               key={q.id}
-              className="bg-white rounded-xl border border-brand-accent/30 p-6"
+              className="bg-white rounded-xl border border-brand-sage/30 p-6"
             >
               <div className="flex items-start justify-between mb-3">
                 <div>
@@ -94,7 +94,7 @@ export default async function AdminQuestionsPage() {
                 </div>
                 <p className="text-brand-primary mb-3">{q.message}</p>
                 <div className="pt-3 border-t border-brand-border">
-                  <p className="text-sm text-brand-accent font-medium mb-1">
+                  <p className="text-sm text-brand-sage font-medium mb-1">
                     Your response
                   </p>
                   <p className="text-sm text-brand-primary/80">{q.response}</p>

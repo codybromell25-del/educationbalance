@@ -40,7 +40,7 @@ export default async function DashboardPage() {
         <div className="absolute inset-0 bg-brand-primary/60" />
         <div className="absolute inset-0 flex items-center">
           <div className="max-w-4xl mx-auto px-6 w-full">
-            <p className="text-brand-accent-light text-sm tracking-[0.3em] uppercase mb-3">
+            <p className="text-brand-sage-light text-sm tracking-[0.3em] uppercase mb-3">
               Welcome back
             </p>
             <h1 className="text-3xl md:text-5xl font-light tracking-tight text-white">
@@ -65,7 +65,7 @@ export default async function DashboardPage() {
         </div>
         <div className="w-full h-2 bg-brand-surface rounded-full overflow-hidden">
           <div
-            className="h-full bg-brand-accent rounded-full transition-all duration-500"
+            className="h-full bg-brand-sage rounded-full transition-all duration-500"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
@@ -89,7 +89,7 @@ export default async function DashboardPage() {
                 key={section.id}
                 className={`rounded-xl border p-6 transition-all ${
                   isUnlocked
-                    ? "bg-white border-brand-border hover:border-brand-accent/50 hover:shadow-sm"
+                    ? "bg-white border-brand-border hover:border-brand-sage/50 hover:shadow-sm"
                     : "bg-brand-surface/50 border-brand-border/50 opacity-60"
                 }`}
               >
@@ -101,7 +101,7 @@ export default async function DashboardPage() {
                         isCompleted
                           ? "bg-brand-success/10 text-brand-success"
                           : isUnlocked
-                          ? "bg-brand-accent/10 text-brand-accent"
+                          ? "bg-brand-sage/10 text-brand-sage"
                           : "bg-brand-surface text-brand-muted"
                       }`}
                     >
@@ -161,7 +161,7 @@ export default async function DashboardPage() {
                   {isUnlocked && (
                     <Link
                       href={`/course/${section.slug}`}
-                      className="px-5 py-2 text-sm tracking-wider uppercase rounded-full border border-brand-border hover:border-brand-accent hover:text-brand-accent transition-colors shrink-0"
+                      className="px-5 py-2 text-sm tracking-wider uppercase rounded-full border border-brand-border hover:border-brand-sage hover:text-brand-sage transition-colors shrink-0"
                     >
                       {isCompleted ? "Review" : "Start"}
                     </Link>

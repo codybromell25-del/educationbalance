@@ -26,7 +26,7 @@ export default function HomePage() {
           </Link>
           <Link
             href="/login"
-            className="px-6 py-2 bg-brand-primary text-white text-sm tracking-wider uppercase rounded-full hover:bg-brand-primary/90 transition-colors"
+            className="px-6 py-2 bg-brand-sage text-white text-sm tracking-wider uppercase rounded-full hover:bg-brand-sage-dark transition-colors"
           >
             Log In
           </Link>
@@ -53,7 +53,7 @@ export default function HomePage() {
             height={80}
             className="rounded-full mx-auto mb-8 shadow-lg"
           />
-          <p className="text-white/80 text-sm tracking-[0.3em] uppercase mb-6">
+          <p className="text-brand-sage-light text-sm tracking-[0.3em] uppercase mb-6">
             Premium Pilates Training
           </p>
           <h1 className="text-5xl md:text-7xl font-light tracking-tight mb-8 leading-[1.1]">
@@ -87,7 +87,7 @@ export default function HomePage() {
       <section id="about" className="py-24 md:py-32 bg-background">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-20">
-            <p className="text-brand-accent text-sm tracking-[0.3em] uppercase mb-4">
+            <p className="text-brand-sage text-sm tracking-[0.3em] uppercase mb-4">
               The Course
             </p>
             <h2 className="text-3xl md:text-5xl font-light tracking-tight text-brand-primary">
@@ -171,7 +171,7 @@ export default function HomePage() {
       <section className="py-24 md:py-32 bg-brand-surface">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-20">
-            <p className="text-brand-accent text-sm tracking-[0.3em] uppercase mb-4">
+            <p className="text-brand-sage text-sm tracking-[0.3em] uppercase mb-4">
               How It Works
             </p>
             <h2 className="text-3xl md:text-5xl font-light tracking-tight text-brand-primary">
@@ -204,7 +204,7 @@ export default function HomePage() {
                 },
               ].map((item) => (
                 <div key={item.step} className="flex gap-8 items-start">
-                  <span className="text-4xl font-light text-brand-accent/40 shrink-0 w-16">
+                  <span className="text-4xl font-light text-brand-sage/40 shrink-0 w-16">
                     {item.step}
                   </span>
                   <div>
@@ -251,7 +251,7 @@ export default function HomePage() {
           </p>
           <Link
             href="/login"
-            className="inline-block px-10 py-4 bg-brand-accent text-brand-primary text-sm tracking-wider uppercase rounded-full hover:bg-brand-accent-light transition-colors font-medium"
+            className="inline-block px-10 py-4 bg-brand-sage text-white text-sm tracking-wider uppercase rounded-full hover:bg-brand-sage-dark transition-colors font-medium"
           >
             Get Started
           </Link>

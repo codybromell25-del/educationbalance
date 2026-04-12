@@ -28,7 +28,7 @@ export default function RespondForm({ questionId }: { questionId: string }) {
         value={response}
         onChange={(e) => setResponse(e.target.value)}
         rows={2}
-        className="flex-1 px-4 py-2.5 rounded-lg border border-brand-border bg-background text-sm resize-none focus:border-brand-accent transition-colors"
+        className="flex-1 px-4 py-2.5 rounded-lg border border-brand-border bg-background text-sm resize-none focus:border-brand-sage transition-colors"
         placeholder="Type your response..."
         required
       />

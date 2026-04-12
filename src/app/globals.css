@@ -1,16 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --background: #faf9f7;
-  --foreground: #1a1a1a;
-  --brand-primary: #2c2c2c;
-  --brand-accent: #c4a882;
-  --brand-accent-light: #e8d5be;
-  --brand-muted: #8a8580;
-  --brand-surface: #f5f0eb;
+  --background: #f2ede8;
+  --foreground: #1e1a1a;
+  --brand-primary: #1e1a1a;
+  --brand-accent: #c9a96e;
+  --brand-accent-light: #d4bb8a;
+  --brand-accent-dark: #b89a5f;
+  --brand-sage: #A3C1AD;
+  --brand-sage-light: #b8d4c3;
+  --brand-sage-dark: #8fb39c;
+  --brand-muted: #6b6563;
+  --brand-surface: #f7f3ef;
   --brand-surface-hover: #ede5dd;
-  --brand-border: #e2ddd7;
-  --brand-success: #4a7c59;
+  --brand-border: #ddd5cc;
+  --brand-success: #A3C1AD;
   --brand-error: #c44b4b;
 }
 
@@ -20,30 +24,38 @@
   --color-brand-primary: var(--brand-primary);
   --color-brand-accent: var(--brand-accent);
   --color-brand-accent-light: var(--brand-accent-light);
+  --color-brand-accent-dark: var(--brand-accent-dark);
+  --color-brand-sage: var(--brand-sage);
+  --color-brand-sage-light: var(--brand-sage-light);
+  --color-brand-sage-dark: var(--brand-sage-dark);
   --color-brand-muted: var(--brand-muted);
   --color-brand-surface: var(--brand-surface);
   --color-brand-surface-hover: var(--brand-surface-hover);
   --color-brand-border: var(--brand-border);
   --color-brand-success: var(--brand-success);
   --color-brand-error: var(--brand-error);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-playfair), "Playfair Display", Georgia, serif;
+  --font-body: "Aileron", system-ui, -apple-system, sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
 }
 
 ::selection {
-  background-color: var(--brand-accent-light);
+  background-color: var(--brand-sage-light);
   color: var(--brand-primary);
 }
 
 input:focus,
 textarea:focus,
 select:focus {
-  outline: 2px solid var(--brand-accent);
+  outline: 2px solid var(--brand-sage);
   outline-offset: 1px;
 }
