@@ -13,16 +13,26 @@ enum Role {
   ADMIN
 }
 
+enum PartType {
+  TEXT
+  VIDEO
+  DOWNLOAD
+  QUIZ
+  SUBMIT
+}
+
 model User {
-  id           String     @id @default(cuid())
-  name         String
-  email        String     @unique
-  passwordHash String
-  role         Role       @default(USER)
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  progress     Progress[]
-  questions    Question[]
+  id            String         @id @default(cuid())
+  name          String
+  email         String         @unique
+  passwordHash  String
+  role          Role           @default(USER)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  progress      Progress[]
+  questions     Question[]
+  quizAttempts  QuizAttempt[]
+  submissions   Submission[]
 }
 
 model Section {
@@ -37,6 +47,80 @@ model Section {
   updatedAt   DateTime   @updatedAt
   progress    Progress[]
   questions   Question[]
+  parts       Part[]
+}
+
+model Part {
+  id          String       @id @default(cuid())
+  sectionId   String
+  order       Int
+  title       String
+  type        PartType
+  body        String?      @db.Text
+  videoUrl    String?
+  fileUrl     String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  section     Section      @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  quiz        Quiz?
+  submissions Submission[]
+
+  @@unique([sectionId, order])
+}
+
+model Quiz {
+  id           String         @id @default(cuid())
+  partId       String         @unique
+  passingScore Int            @default(70)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  part         Part           @relation(fields: [partId], references: [id], onDelete: Cascade)
+  questions    QuizQuestion[]
+  attempts     QuizAttempt[]
+}
+
+model QuizQuestion {
+  id      String       @id @default(cuid())
+  quizId  String
+  prompt  String       @db.Text
+  order   Int
+  quiz    Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  choices QuizChoice[]
+
+  @@unique([quizId, order])
+}
+
+model QuizChoice {
+  id         String       @id @default(cuid())
+  questionId String
+  text       String       @db.Text
+  isCorrect  Boolean      @default(false)
+  order      Int
+  question   QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([questionId, order])
+}
+
+model QuizAttempt {
+  id          String   @id @default(cuid())
+  userId      String
+  quizId      String
+  score       Int
+  passed      Boolean
+  completedAt DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+}
+
+model Submission {
+  id          String   @id @default(cuid())
+  userId      String
+  partId      String
+  content     String   @db.Text
+  submittedAt DateTime @default(now())
+  reviewed    Boolean  @default(false)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  part        Part     @relation(fields: [partId], references: [id], onDelete: Cascade)
 }
 
 model Progress {
