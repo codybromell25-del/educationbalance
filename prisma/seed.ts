@@ -100,7 +100,7 @@ async function main() {
 
     const data = { ...sections[i], unlockDate };
     await prisma.section.upsert({
-      where: { slug: sections[i].slug },
+      where: { order: sections[i].order },
       update: data,
       create: data,
     });
