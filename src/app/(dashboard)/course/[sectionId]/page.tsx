@@ -137,7 +137,13 @@ export default async function SectionPage({
         <p className="text-brand-muted text-lg">{section.description}</p>
       </div>
 
-      <div className="grid lg:grid-cols-[16rem_1fr] gap-12 items-start">
+      <div
+        className={
+          totalParts > 0
+            ? "grid lg:grid-cols-[16rem_1fr] gap-12 items-start"
+            : ""
+        }
+      >
         {/* In-page nav */}
         {totalParts > 0 && (
           <aside className="hidden lg:block sticky top-8">
