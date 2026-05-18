@@ -53,71 +53,44 @@ async function main() {
       order: 1,
     },
     {
-      title: "Anatomy & Alignment",
-      slug: "anatomy-and-alignment",
+      title: "Functional Anatomy",
+      slug: "functional-anatomy",
       description:
-        "Key anatomical concepts and how proper alignment enhances your practice.",
-      content: `<h2>Understanding Your Body</h2>
-<p>A strong Pilates practice is built on understanding how your body moves. This section covers the essential anatomy you need to know.</p>
-<h3>Key Areas of Focus</h3>
-<p>We'll explore the spine, pelvis, shoulder girdle, and how they work together in movement. Understanding these relationships will transform how you cue and teach.</p>`,
+        "Anatomy through the lens of a Pilates instructor — the systems, structures, and muscles you'll cue, mobilise, and strengthen.",
+      content: `<p><em>Section overview coming soon.</em></p>`,
       order: 2,
     },
     {
-      title: "Core Activation & Breathing",
-      slug: "core-activation-and-breathing",
+      title: "Mat Certification",
+      slug: "mat-certification",
       description:
-        "Master the powerhouse — deep core engagement and lateral breathing techniques.",
-      content: `<h2>The Powerhouse</h2>
-<p>The core is the engine of every Pilates movement. In this section, we dive deep into how to properly activate and engage your deep stabilising muscles.</p>
-<h3>Lateral Breathing</h3>
-<p>Learn how to maintain core engagement while breathing fully. This is one of the most important skills you'll develop.</p>`,
+        "The balance approach to mat teaching — class structure, cueing, exercise library, and your practical assessment.",
+      content: `<p><em>Section overview coming soon.</em></p>`,
       order: 3,
     },
     {
-      title: "Mat Work Essentials",
-      slug: "mat-work-essentials",
+      title: "Reformer Certification",
+      slug: "reformer-certification",
       description:
-        "Essential mat exercises, modifications, and progressions for all levels.",
-      content: `<h2>Building Your Mat Repertoire</h2>
-<p>The mat is where it all begins. Master these fundamental exercises and their variations to build a strong teaching foundation.</p>`,
+        "Understanding the reformer — springs, setup, safety, exercise library, programming, and your practical assessment.",
+      content: `<p><em>Section overview coming soon.</em></p>`,
       order: 4,
     },
     {
-      title: "Reformer Fundamentals",
-      slug: "reformer-fundamentals",
+      title: "Special Populations and Modifications",
+      slug: "special-populations",
       description:
-        "Introduction to the reformer — setup, safety, and foundational exercises.",
-      content: `<h2>Welcome to the Reformer</h2>
-<p>The reformer is a versatile piece of equipment that adds resistance and support to your Pilates practice. Learn how to use it safely and effectively.</p>`,
+        "Principles of adaptation, working with special populations, and building an inclusive class.",
+      content: `<p><em>Section overview coming soon.</em></p>`,
       order: 5,
     },
     {
-      title: "Programming & Sequencing",
-      slug: "programming-and-sequencing",
+      title: "Teaching Practice and Assessment",
+      slug: "teaching-practice",
       description:
-        "How to design effective Pilates sessions that flow logically and safely.",
-      content: `<h2>Designing Great Sessions</h2>
-<p>Learn the art of programming — how to structure a class that warms up properly, builds progressively, and leaves clients feeling balanced and energised.</p>`,
+        "Observation, teaching practice, and self-practice hours — plus how to track and submit your certification log portfolios.",
+      content: `<p><em>Section overview coming soon.</em></p>`,
       order: 6,
-    },
-    {
-      title: "Cueing & Communication",
-      slug: "cueing-and-communication",
-      description:
-        "The art of effective cueing — verbal, visual, and tactile communication.",
-      content: `<h2>Finding Your Teaching Voice</h2>
-<p>Great cueing is what separates good instructors from exceptional ones. This section covers how to communicate clearly and effectively with your clients.</p>`,
-      order: 7,
-    },
-    {
-      title: "Special Populations & Next Steps",
-      slug: "special-populations-and-next-steps",
-      description:
-        "Working with different populations, contraindications, and continuing your journey.",
-      content: `<h2>Expanding Your Practice</h2>
-<p>Every client is different. Learn how to adapt your teaching for pre/postnatal clients, older adults, those with injuries, and more. Plus, explore what comes next in your Pilates career.</p>`,
-      order: 8,
     },
   ];
 
@@ -125,13 +98,11 @@ async function main() {
     const unlockDate = new Date(startDate);
     unlockDate.setDate(unlockDate.getDate() + i * 7);
 
+    const data = { ...sections[i], unlockDate };
     await prisma.section.upsert({
       where: { slug: sections[i].slug },
-      update: {},
-      create: {
-        ...sections[i],
-        unlockDate,
-      },
+      update: data,
+      create: data,
     });
   }
 
