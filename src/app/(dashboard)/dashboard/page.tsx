@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { getSectionAccess } from "@/lib/access";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -26,9 +27,18 @@ export default async function DashboardPage() {
   const now = new Date();
   const firstName = session.user.name.split(" ")[0];
 
-  // Find next unlocked incomplete section
+  // Pre-compute access for every section (date AND prerequisite)
+  const accessBySectionId = new Map(
+    sections.map((s, i) => [
+      s.id,
+      getSectionAccess(s, i > 0 ? sections[i - 1] : null, now),
+    ]),
+  );
+
+  // Find next accessible incomplete section
   const nextSection = sections.find(
-    (s) => new Date(s.unlockDate) <= now && !s.progress[0]?.completed
+    (s) =>
+      accessBySectionId.get(s.id)?.accessible && !s.progress[0]?.completed,
   );
 
   return (
@@ -146,8 +156,21 @@ export default async function DashboardPage() {
           </h2>
           <div className="space-y-3">
             {sections.map((section, index) => {
-              const isUnlocked = new Date(section.unlockDate) <= now;
+              const access = accessBySectionId.get(section.id)!;
+              const isUnlocked = access.accessible;
               const isCompleted = section.progress[0]?.completed;
+
+              const lockMessage = !isUnlocked
+                ? access.reason === "locked-by-prerequisite"
+                  ? `Complete "${access.blockingPreviousTitle}" first`
+                  : `Unlocks ${new Date(
+                      section.unlockDate,
+                    ).toLocaleDateString("en-IE", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}`
+                : null;
 
               return (
                 <div
@@ -210,15 +233,7 @@ export default async function DashboardPage() {
                           {section.title}
                         </h3>
                         <p className="text-sm text-brand-muted mt-0.5">
-                          {isUnlocked
-                            ? section.description
-                            : `Unlocks ${new Date(
-                                section.unlockDate
-                              ).toLocaleDateString("en-IE", {
-                                day: "numeric",
-                                month: "long",
-                                year: "numeric",
-                              })}`}
+                          {isUnlocked ? section.description : lockMessage}
                         </p>
                       </div>
                     </div>

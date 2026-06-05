@@ -9,6 +9,7 @@ import PartVideo from "@/components/parts/PartVideo";
 import PartDownload from "@/components/parts/PartDownload";
 import PartQuiz from "@/components/parts/PartQuiz";
 import PartSubmit from "@/components/parts/PartSubmit";
+import { getSectionAccess } from "@/lib/access";
 
 function partAnchor(order: number) {
   return `part-${order}`;
@@ -60,7 +61,32 @@ export default async function SectionPage({
   if (!section) notFound();
 
   const now = new Date();
-  if (new Date(section.unlockDate) > now) {
+
+  // Fetch the previous section (if any) so we can apply the prereq gate
+  const previousSection =
+    section.order > 1
+      ? await prisma.section.findUnique({
+          where: { order: section.order - 1 },
+          include: {
+            progress: { where: { userId: session.user.id } },
+          },
+        })
+      : null;
+
+  const access = getSectionAccess(section, previousSection, now);
+
+  if (!access.accessible) {
+    const lockMessage =
+      access.reason === "locked-by-prerequisite"
+        ? `Complete "${access.blockingPreviousTitle}" before starting this section.`
+        : `This section unlocks on ${new Date(
+            section.unlockDate,
+          ).toLocaleDateString("en-IE", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })}.`;
+
     return (
       <div className="max-w-3xl mx-auto px-6 py-24 text-center">
         <div className="w-20 h-20 rounded-full bg-brand-surface flex items-center justify-center mx-auto mb-8">
@@ -81,15 +107,7 @@ export default async function SectionPage({
         <h1 className="text-3xl font-light text-brand-primary mb-4">
           Section Locked
         </h1>
-        <p className="text-brand-muted mb-8">
-          This section unlocks on{" "}
-          {new Date(section.unlockDate).toLocaleDateString("en-IE", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })}
-          .
-        </p>
+        <p className="text-brand-muted mb-8">{lockMessage}</p>
         <Link
           href="/dashboard"
           className="px-8 py-3 bg-brand-primary text-white text-sm tracking-wider uppercase rounded-full hover:bg-brand-primary/90 transition-colors"
@@ -102,7 +120,13 @@ export default async function SectionPage({
 
   const allSections = await prisma.section.findMany({
     orderBy: { order: "asc" },
-    select: { slug: true, title: true, order: true, unlockDate: true },
+    select: {
+      slug: true,
+      title: true,
+      order: true,
+      unlockDate: true,
+      requiresPriorCompletion: true,
+    },
   });
   const currentIndex = allSections.findIndex((s) => s.slug === section.slug);
   const prevSection = currentIndex > 0 ? allSections[currentIndex - 1] : null;
@@ -112,6 +136,13 @@ export default async function SectionPage({
       : null;
 
   const isCompleted = section.progress[0]?.completed ?? false;
+
+  // Next section is reachable only if its date has passed AND either it
+  // doesn't require prior completion or the current section is completed.
+  const nextSectionAccessible =
+    !!nextSection &&
+    new Date(nextSection.unlockDate) <= now &&
+    (!nextSection.requiresPriorCompletion || isCompleted);
   const parts = section.parts;
   const totalParts = parts.length;
 
@@ -296,7 +327,7 @@ export default async function SectionPage({
             ) : (
               <div />
             )}
-            {nextSection && new Date(nextSection.unlockDate) <= now ? (
+            {nextSection && nextSectionAccessible ? (
               <Link
                 href={`/course/${nextSection.slug}`}
                 className="flex items-center gap-2 text-sm text-brand-muted hover:text-brand-primary transition-colors"
@@ -316,6 +347,15 @@ export default async function SectionPage({
                   />
                 </svg>
               </Link>
+            ) : nextSection ? (
+              <span className="flex items-center gap-2 text-sm text-brand-muted/60">
+                {nextSection.title}
+                <span className="text-xs">
+                  {nextSection.requiresPriorCompletion && !isCompleted
+                    ? "(complete this section first)"
+                    : "(locked)"}
+                </span>
+              </span>
             ) : (
               <div />
             )}
