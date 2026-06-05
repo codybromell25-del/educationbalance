@@ -12,22 +12,22 @@
  * Files are stored privately. Use `getSignedUrl` to produce a
  * time-limited read URL when rendering a download link.
  */
-import { createClient } from "@supabase/supabase-js";
+import { StorageClient } from "@supabase/storage-js";
 import { randomUUID } from "node:crypto";
-
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 export const STORAGE_BUCKET = "course-files";
 
-function getAdminClient() {
+function getStorageClient(): StorageClient {
+  const SUPABASE_URL = process.env.SUPABASE_URL;
+  const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
     throw new Error(
       "Supabase storage not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env.",
     );
   }
-  return createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
-    auth: { persistSession: false, autoRefreshToken: false },
+  return new StorageClient(`${SUPABASE_URL}/storage/v1`, {
+    apikey: SERVICE_ROLE_KEY,
+    Authorization: `Bearer ${SERVICE_ROLE_KEY}`,
   });
 }
 
@@ -39,11 +39,11 @@ export async function uploadFile(
   folder: StorageFolder,
   originalName?: string,
 ): Promise<string> {
-  const supabase = getAdminClient();
+  const storage = getStorageClient();
   const ext = inferExtension(file, originalName);
   const path = `${folder}/${randomUUID()}${ext ? `.${ext}` : ""}`;
 
-  const { error } = await supabase.storage
+  const { error } = await storage
     .from(STORAGE_BUCKET)
     .upload(path, file, {
       contentType:
@@ -60,8 +60,8 @@ export async function getSignedUrl(
   path: string,
   expiresInSeconds = 3600,
 ): Promise<string> {
-  const supabase = getAdminClient();
-  const { data, error } = await supabase.storage
+  const storage = getStorageClient();
+  const { data, error } = await storage
     .from(STORAGE_BUCKET)
     .createSignedUrl(path, expiresInSeconds);
   if (error || !data) throw new Error(`Signed URL failed: ${error?.message}`);
@@ -70,8 +70,8 @@ export async function getSignedUrl(
 
 /** Best-effort delete. Swallows "not found" errors. */
 export async function deleteFile(path: string): Promise<void> {
-  const supabase = getAdminClient();
-  const { error } = await supabase.storage.from(STORAGE_BUCKET).remove([path]);
+  const storage = getStorageClient();
+  const { error } = await storage.from(STORAGE_BUCKET).remove([path]);
   if (error && !/not found/i.test(error.message)) {
     throw new Error(`Delete failed: ${error.message}`);
   }
@@ -82,17 +82,15 @@ export async function deleteFile(path: string): Promise<void> {
  * setup script. Safe to call repeatedly.
  */
 export async function ensureBucket(): Promise<void> {
-  const supabase = getAdminClient();
-  const { data: buckets, error: listErr } =
-    await supabase.storage.listBuckets();
+  const storage = getStorageClient();
+  const { data: buckets, error: listErr } = await storage.listBuckets();
   if (listErr) throw new Error(`List buckets failed: ${listErr.message}`);
 
   if (buckets.some((b) => b.name === STORAGE_BUCKET)) return;
 
-  const { error: createErr } = await supabase.storage.createBucket(
-    STORAGE_BUCKET,
-    { public: false },
-  );
+  const { error: createErr } = await storage.createBucket(STORAGE_BUCKET, {
+    public: false,
+  });
   if (createErr) throw new Error(`Create bucket failed: ${createErr.message}`);
 }
 
