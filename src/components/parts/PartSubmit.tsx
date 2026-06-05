@@ -9,6 +9,7 @@ type ExistingSubmission = {
   fileUrl: string | null;
   /** Pre-resolved signed URL for the existing file (server-rendered). */
   fileSignedUrl: string | null;
+  feedback: string | null;
   submittedAt: string;
   reviewed: boolean;
 };
@@ -85,6 +86,7 @@ export default function PartSubmit({
         content: data.content,
         fileUrl: data.fileUrl,
         fileSignedUrl: null,
+        feedback: null,
         submittedAt: data.submittedAt,
         reviewed: data.reviewed,
       });
@@ -153,6 +155,17 @@ export default function PartSubmit({
             </svg>
             View attached file
           </a>
+        )}
+
+        {submitted.feedback && (
+          <div className="mt-4 pt-4 border-t border-brand-success/30">
+            <p className="text-xs tracking-wider uppercase text-brand-sage mb-1">
+              Feedback from the balance team
+            </p>
+            <p className="text-sm text-brand-primary/90 whitespace-pre-wrap">
+              {submitted.feedback}
+            </p>
+          </div>
         )}
 
         <p className="text-xs text-brand-muted mt-4">

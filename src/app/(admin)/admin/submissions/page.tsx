@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import ReviewSubmissionButton from "@/components/admin/ReviewSubmissionButton";
+import { resolveFileUrl } from "@/lib/storage";
 
 export default async function AdminSubmissionsPage() {
   const submissions = await prisma.submission.findMany({
@@ -15,6 +16,16 @@ export default async function AdminSubmissionsPage() {
     },
   });
 
+  // Pre-resolve any storage paths to signed URLs so admins can open
+  // attachments without an extra round-trip.
+  const fileSignedUrls = new Map(
+    await Promise.all(
+      submissions
+        .filter((s) => s.fileUrl)
+        .map(async (s) => [s.id, await resolveFileUrl(s.fileUrl)] as const),
+    ),
+  );
+
   const pending = submissions.filter((s) => !s.reviewed);
   const reviewed = submissions.filter((s) => s.reviewed);
 
@@ -25,7 +36,7 @@ export default async function AdminSubmissionsPage() {
           Submissions
         </h1>
         <p className="text-brand-muted mt-2">
-          Reflective responses submitted by users.
+          Reflective responses and uploads submitted by users.
         </p>
       </div>
 
@@ -60,9 +71,21 @@ export default async function AdminSubmissionsPage() {
                 </div>
                 <ReviewSubmissionButton submissionId={s.id} />
               </div>
-              <p className="text-brand-primary whitespace-pre-wrap">
-                {s.content}
-              </p>
+              {s.content && (
+                <p className="text-brand-primary whitespace-pre-wrap">
+                  {s.content}
+                </p>
+              )}
+              {s.fileUrl && fileSignedUrls.get(s.id) && (
+                <a
+                  href={fileSignedUrls.get(s.id) ?? "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 mt-3 text-sm text-brand-sage hover:text-brand-sage-dark"
+                >
+                  📎 Open attached file
+                </a>
+              )}
             </div>
           ))}
           {pending.length === 0 && (
@@ -82,7 +105,7 @@ export default async function AdminSubmissionsPage() {
             {reviewed.map((s) => (
               <div
                 key={s.id}
-                className="bg-white rounded-xl border border-brand-border p-6 opacity-80"
+                className="bg-white rounded-xl border border-brand-border p-6"
               >
                 <div className="mb-3">
                   <p className="text-sm font-medium text-brand-primary">
@@ -90,16 +113,38 @@ export default async function AdminSubmissionsPage() {
                   </p>
                   <p className="text-xs text-brand-muted">
                     Section {s.part.section.order}: {s.part.section.title} ·{" "}
-                    {s.part.title} ·{" "}
+                    {s.part.title} · submitted{" "}
                     {new Date(s.submittedAt).toLocaleDateString("en-IE", {
                       day: "numeric",
                       month: "short",
                     })}
                   </p>
                 </div>
-                <p className="text-brand-primary/80 whitespace-pre-wrap text-sm">
-                  {s.content}
-                </p>
+                {s.content && (
+                  <p className="text-brand-primary/80 whitespace-pre-wrap text-sm">
+                    {s.content}
+                  </p>
+                )}
+                {s.fileUrl && fileSignedUrls.get(s.id) && (
+                  <a
+                    href={fileSignedUrls.get(s.id) ?? "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 mt-3 text-sm text-brand-sage hover:text-brand-sage-dark"
+                  >
+                    📎 Open attached file
+                  </a>
+                )}
+                {s.feedback && (
+                  <div className="mt-4 pt-4 border-t border-brand-border">
+                    <p className="text-xs tracking-wider uppercase text-brand-sage mb-1">
+                      Your feedback
+                    </p>
+                    <p className="text-sm text-brand-primary/80 whitespace-pre-wrap">
+                      {s.feedback}
+                    </p>
+                  </div>
+                )}
               </div>
             ))}
           </div>

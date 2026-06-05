@@ -299,6 +299,7 @@ export default async function SectionPage({
                                   submissionFileUrls.get(
                                     part.submissions[0].id,
                                   ) ?? null,
+                                feedback: part.submissions[0].feedback,
                                 submittedAt:
                                   part.submissions[0].submittedAt.toISOString(),
                                 reviewed: part.submissions[0].reviewed,
