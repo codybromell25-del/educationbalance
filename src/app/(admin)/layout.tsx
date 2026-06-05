@@ -85,6 +85,25 @@ export default async function AdminLayout({
               Users
             </Link>
             <Link
+              href="/admin/sections"
+              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-brand-primary hover:bg-brand-surface transition-colors"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                />
+              </svg>
+              Sections
+            </Link>
+            <Link
               href="/admin/questions"
               className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-brand-primary hover:bg-brand-surface transition-colors"
             >

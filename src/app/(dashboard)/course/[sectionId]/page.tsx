@@ -10,6 +10,7 @@ import PartDownload from "@/components/parts/PartDownload";
 import PartQuiz from "@/components/parts/PartQuiz";
 import PartSubmit from "@/components/parts/PartSubmit";
 import { getSectionAccess } from "@/lib/access";
+import { resolveFileUrl } from "@/lib/storage";
 
 function partAnchor(order: number) {
   return `part-${order}`;
@@ -146,6 +147,15 @@ export default async function SectionPage({
   const parts = section.parts;
   const totalParts = parts.length;
 
+  // Resolve DOWNLOAD parts' fileUrl (storage path) to a signed URL.
+  const partFileUrls = new Map(
+    await Promise.all(
+      parts
+        .filter((p) => p.type === "DOWNLOAD" && p.fileUrl)
+        .map(async (p) => [p.id, await resolveFileUrl(p.fileUrl)] as const),
+    ),
+  );
+
   return (
     <div className="max-w-7xl mx-auto px-6 py-12 scroll-smooth">
       {/* Breadcrumb */}
@@ -227,7 +237,7 @@ export default async function SectionPage({
                   )}
                   {part.type === "DOWNLOAD" && (
                     <PartDownload
-                      fileUrl={part.fileUrl}
+                      fileUrl={partFileUrls.get(part.id) ?? null}
                       title={part.title}
                     />
                   )}

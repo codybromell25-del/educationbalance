@@ -55,6 +55,21 @@ export async function uploadFile(
   return path;
 }
 
+/**
+ * Convenience: if the input looks like an http(s) URL, return it as-is;
+ * otherwise treat it as a storage path and return a signed URL. Useful
+ * for fields like Part.fileUrl that might hold either form during the
+ * transition from "paste a public URL" to "upload to bucket".
+ */
+export async function resolveFileUrl(
+  pathOrUrl: string | null,
+  expiresInSeconds = 3600,
+): Promise<string | null> {
+  if (!pathOrUrl) return null;
+  if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
+  return getSignedUrl(pathOrUrl, expiresInSeconds);
+}
+
 /** Returns a time-limited signed URL for a stored object. */
 export async function getSignedUrl(
   path: string,
