@@ -32,6 +32,24 @@ export async function POST(
     return NextResponse.json({ error: "Quiz has no questions" }, { status: 400 });
   }
 
+  // Enforce maxAttempts (null = unlimited). Don't burn a "remaining
+  // attempt" once the student has passed — passing is final.
+  if (quiz.maxAttempts !== null) {
+    const attemptsSoFar = await prisma.quizAttempt.findMany({
+      where: { userId: session.user.id, quizId: quiz.id },
+      select: { passed: true },
+    });
+    const alreadyPassed = attemptsSoFar.some((a) => a.passed);
+    if (!alreadyPassed && attemptsSoFar.length >= quiz.maxAttempts) {
+      return NextResponse.json(
+        {
+          error: `No attempts remaining (limit ${quiz.maxAttempts}). Contact your instructor.`,
+        },
+        { status: 403 },
+      );
+    }
+  }
+
   let correct = 0;
   for (const q of quiz.questions) {
     const chosenId = answers[q.id];

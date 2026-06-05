@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { PartType } from "@prisma/client";
@@ -12,6 +13,7 @@ type PartRow = {
   body: string | null;
   videoUrl: string | null;
   fileUrl: string | null;
+  quizId: string | null;
   quizQuestionCount: number | null;
 };
 
@@ -58,9 +60,15 @@ export default function PartsManager({
       });
       if (!res.ok) throw new Error((await res.json()).error ?? "Failed");
       const { part } = await res.json();
+      // The POST response doesn't include the newly-created Quiz's id;
+      // a router.refresh() below pulls it in for QUIZ parts.
       setParts((curr) => [
         ...curr,
-        { ...part, quizQuestionCount: part.type === "QUIZ" ? 0 : null },
+        {
+          ...part,
+          quizId: null,
+          quizQuestionCount: part.type === "QUIZ" ? 0 : null,
+        },
       ]);
       setShowAdd(false);
       refresh();
@@ -213,6 +221,14 @@ export default function PartsManager({
                     </div>
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
+                    {part.type === "QUIZ" && part.quizId && (
+                      <Link
+                        href={`/admin/quizzes/${part.quizId}`}
+                        className="px-3 py-1.5 text-xs text-brand-sage border border-brand-sage/30 rounded-full hover:bg-brand-sage/5"
+                      >
+                        Manage quiz
+                      </Link>
+                    )}
                     <button
                       type="button"
                       onClick={() => handleMove(part.id, "up")}

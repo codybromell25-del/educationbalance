@@ -55,6 +55,7 @@ export default async function AdminSectionPage({
           body: p.body,
           videoUrl: p.videoUrl,
           fileUrl: p.fileUrl,
+          quizId: p.quiz?.id ?? null,
           quizQuestionCount: p.quiz?._count.questions ?? null,
         }))}
       />
