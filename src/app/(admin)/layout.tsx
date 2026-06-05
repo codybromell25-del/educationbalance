@@ -15,10 +15,12 @@ export default async function AdminLayout({
   if (!session?.user) redirect("/login");
   if (session.user.role !== "ADMIN") redirect("/dashboard");
 
-  const [unansweredQuestions, pendingSubmissions] = await Promise.all([
-    prisma.question.count({ where: { response: null } }),
-    prisma.submission.count({ where: { reviewed: false } }),
-  ]);
+  const [unansweredQuestions, pendingSubmissions, pendingHours] =
+    await Promise.all([
+      prisma.question.count({ where: { response: null } }),
+      prisma.submission.count({ where: { reviewed: false } }),
+      prisma.hourLog.count({ where: { signedOffAt: null } }),
+    ]);
 
   return (
     <SessionProvider>
@@ -148,6 +150,30 @@ export default async function AdminLayout({
               {pendingSubmissions > 0 && (
                 <span className="bg-brand-sage text-white text-xs font-semibold rounded-full min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center">
                   {pendingSubmissions}
+                </span>
+              )}
+            </Link>
+            <Link
+              href="/admin/hours"
+              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-brand-primary hover:bg-brand-surface transition-colors"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span className="flex-1">Hours</span>
+              {pendingHours > 0 && (
+                <span className="bg-brand-sage text-white text-xs font-semibold rounded-full min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center">
+                  {pendingHours}
                 </span>
               )}
             </Link>

@@ -36,6 +36,18 @@ export default async function DashboardLayout({
               </span>
             </Link>
             <div className="flex items-center gap-6">
+              <Link
+                href="/dashboard"
+                className="text-sm text-brand-primary hover:text-brand-sage transition-colors hidden sm:block"
+              >
+                Course
+              </Link>
+              <Link
+                href="/hours"
+                className="text-sm text-brand-primary hover:text-brand-sage transition-colors"
+              >
+                Hours
+              </Link>
               <span className="text-sm text-brand-muted hidden sm:block">
                 {session.user.name}
               </span>
