@@ -108,18 +108,18 @@ export default async function DashboardPage() {
 
       <div className="max-w-4xl mx-auto px-6 -mt-8 relative z-10">
         {/* Stats cards */}
-        <div className="grid grid-cols-3 gap-4 mb-10">
-          <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-sm text-center">
-            <p className="text-3xl font-light text-brand-primary">{progressPercent}%</p>
+        <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-10">
+          <div className="bg-white rounded-2xl border border-brand-border p-4 sm:p-6 shadow-sm text-center">
+            <p className="text-2xl sm:text-3xl font-light text-brand-primary">{progressPercent}%</p>
             <p className="text-xs text-brand-muted tracking-wider uppercase mt-1">Complete</p>
           </div>
-          <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-sm text-center">
-            <p className="text-3xl font-light text-brand-primary">{completedCount}</p>
-            <p className="text-xs text-brand-muted tracking-wider uppercase mt-1">Sections Done</p>
+          <div className="bg-white rounded-2xl border border-brand-border p-4 sm:p-6 shadow-sm text-center">
+            <p className="text-2xl sm:text-3xl font-light text-brand-primary">{completedCount}</p>
+            <p className="text-xs text-brand-muted tracking-wider uppercase mt-1">Done</p>
           </div>
-          <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-sm text-center">
-            <p className="text-3xl font-light text-brand-primary">{totalSections - completedCount}</p>
-            <p className="text-xs text-brand-muted tracking-wider uppercase mt-1">Remaining</p>
+          <div className="bg-white rounded-2xl border border-brand-border p-4 sm:p-6 shadow-sm text-center">
+            <p className="text-2xl sm:text-3xl font-light text-brand-primary">{totalSections - completedCount}</p>
+            <p className="text-xs text-brand-muted tracking-wider uppercase mt-1">Left</p>
           </div>
         </div>
 

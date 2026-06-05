@@ -173,7 +173,7 @@ export default async function SectionPage({
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12 scroll-smooth">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 scroll-smooth">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-brand-muted mb-8">
         <Link href="/dashboard" className="hover:text-brand-primary transition-colors">

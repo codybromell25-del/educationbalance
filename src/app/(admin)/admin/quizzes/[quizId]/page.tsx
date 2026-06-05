@@ -30,7 +30,7 @@ export default async function AdminQuizPage({
   if (!quiz) notFound();
 
   return (
-    <div className="p-8">
+    <div className="p-5 md:p-8">
       <div className="mb-6">
         <Link
           href={`/admin/sections/${quiz.part.section.id}`}

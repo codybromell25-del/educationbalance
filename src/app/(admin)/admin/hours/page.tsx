@@ -35,7 +35,7 @@ export default async function AdminHoursPage() {
   const signedOff = logs.filter((l) => l.signedOffAt);
 
   return (
-    <div className="p-8">
+    <div className="p-5 md:p-8">
       <div className="mb-8">
         <h1 className="text-3xl font-light tracking-tight text-brand-primary">
           Practice Hours

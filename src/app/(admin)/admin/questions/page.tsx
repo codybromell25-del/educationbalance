@@ -14,7 +14,7 @@ export default async function AdminQuestionsPage() {
   const answered = questions.filter((q) => q.response);
 
   return (
-    <div className="p-8">
+    <div className="p-5 md:p-8">
       <div className="mb-8">
         <h1 className="text-3xl font-light tracking-tight text-brand-primary">
           Questions

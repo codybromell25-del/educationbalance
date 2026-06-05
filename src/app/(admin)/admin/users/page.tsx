@@ -14,7 +14,7 @@ export default async function AdminUsersPage() {
   const totalSections = await prisma.section.count();
 
   return (
-    <div className="p-8">
+    <div className="p-5 md:p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-light tracking-tight text-brand-primary">

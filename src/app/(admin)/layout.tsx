@@ -24,9 +24,68 @@ export default async function AdminLayout({
 
   return (
     <SessionProvider>
-      <div className="min-h-screen flex bg-background">
-        {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-brand-border flex flex-col shrink-0">
+      <div className="min-h-screen flex flex-col md:flex-row bg-background">
+        {/* Mobile top bar */}
+        <div className="md:hidden bg-white border-b border-brand-border px-4 py-3 flex items-center justify-between sticky top-0 z-40">
+          <Link href="/admin" className="flex items-center gap-2">
+            <Image
+              src="/images/balance-logo.jpg"
+              alt="balance"
+              width={28}
+              height={28}
+              className="rounded-full"
+            />
+            <span className="text-lg tracking-wide font-light text-brand-primary">
+              balance
+            </span>
+            <span className="text-xs text-brand-sage tracking-wider uppercase ml-1">
+              Admin
+            </span>
+          </Link>
+          <details className="relative">
+            <summary className="list-none cursor-pointer p-2 -m-2 text-brand-primary">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>
+            </summary>
+            <nav className="absolute right-0 top-full mt-2 w-56 bg-white border border-brand-border rounded-xl shadow-lg py-2 z-50">
+              <Link href="/admin" className="block px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">Dashboard</Link>
+              <Link href="/admin/users" className="block px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">Users</Link>
+              <Link href="/admin/sections" className="block px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">Sections</Link>
+              <Link href="/admin/questions" className="flex items-center justify-between px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">
+                <span>Questions</span>
+                {unansweredQuestions > 0 && (
+                  <span className="bg-brand-sage text-white text-xs font-semibold rounded-full min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center">
+                    {unansweredQuestions}
+                  </span>
+                )}
+              </Link>
+              <Link href="/admin/submissions" className="flex items-center justify-between px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">
+                <span>Submissions</span>
+                {pendingSubmissions > 0 && (
+                  <span className="bg-brand-sage text-white text-xs font-semibold rounded-full min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center">
+                    {pendingSubmissions}
+                  </span>
+                )}
+              </Link>
+              <Link href="/admin/hours" className="flex items-center justify-between px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">
+                <span>Hours</span>
+                {pendingHours > 0 && (
+                  <span className="bg-brand-sage text-white text-xs font-semibold rounded-full min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center">
+                    {pendingHours}
+                  </span>
+                )}
+              </Link>
+              <div className="border-t border-brand-border mt-2 pt-2 px-4 py-2">
+                <p className="text-xs text-brand-muted truncate mb-2">{session.user.name}</p>
+                <LogoutButton />
+              </div>
+            </nav>
+          </details>
+        </div>
+
+        {/* Desktop sidebar */}
+        <aside className="hidden md:flex w-64 bg-white border-r border-brand-border flex-col shrink-0">
           <div className="p-6 border-b border-brand-border">
             <Link href="/admin" className="flex items-center gap-2">
               <Image
