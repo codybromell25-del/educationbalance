@@ -15,8 +15,45 @@ export default async function DashboardPage() {
       progress: {
         where: { userId: session.user.id },
       },
+      parts: {
+        select: {
+          id: true,
+          type: true,
+          quiz: {
+            select: {
+              attempts: {
+                where: { userId: session.user.id, passed: true },
+                select: { id: true },
+                take: 1,
+              },
+            },
+          },
+          submissions: {
+            where: { userId: session.user.id },
+            select: { id: true },
+            take: 1,
+          },
+        },
+      },
     },
   });
+
+  // Per-part completion: a part is "done" when the student passed its
+  // quiz / made a submission. For TEXT/VIDEO/DOWNLOAD parts there's no
+  // event to count, so we credit them once the section itself is marked
+  // complete (the existing 'Mark complete' button on the section page).
+  const partProgressBySection = new Map(
+    sections.map((s) => {
+      const sectionDone = s.progress[0]?.completed ?? false;
+      const totalParts = s.parts.length;
+      const completedParts = s.parts.filter((p) => {
+        if (p.type === "QUIZ") return (p.quiz?.attempts.length ?? 0) > 0;
+        if (p.type === "SUBMIT") return p.submissions.length > 0;
+        return sectionDone;
+      }).length;
+      return [s.id, { totalParts, completedParts }];
+    }),
+  );
 
   const completedCount = sections.filter(
     (s) => s.progress[0]?.completed
@@ -228,13 +265,34 @@ export default async function DashboardPage() {
                         )}
                       </div>
 
-                      <div>
+                      <div className="min-w-0 flex-1">
                         <h3 className={`font-medium ${isUnlocked ? "text-brand-primary" : "text-brand-muted"}`}>
                           {section.title}
                         </h3>
                         <p className="text-sm text-brand-muted mt-0.5">
                           {isUnlocked ? section.description : lockMessage}
                         </p>
+                        {isUnlocked &&
+                          (() => {
+                            const pp = partProgressBySection.get(section.id);
+                            if (!pp || pp.totalParts === 0) return null;
+                            const pct = Math.round(
+                              (pp.completedParts / pp.totalParts) * 100,
+                            );
+                            return (
+                              <div className="mt-2 flex items-center gap-2">
+                                <div className="flex-1 h-1.5 bg-brand-surface rounded-full overflow-hidden max-w-xs">
+                                  <div
+                                    className="h-full bg-brand-sage rounded-full transition-all"
+                                    style={{ width: `${pct}%` }}
+                                  />
+                                </div>
+                                <span className="text-xs text-brand-muted whitespace-nowrap">
+                                  {pp.completedParts}/{pp.totalParts} parts
+                                </span>
+                              </div>
+                            );
+                          })()}
                       </div>
                     </div>
 
