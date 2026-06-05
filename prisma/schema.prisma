@@ -21,33 +21,43 @@ enum PartType {
   SUBMIT
 }
 
+enum HourCategory {
+  OBSERVATION
+  TEACHING
+  SELF_PRACTICE
+}
+
 model User {
-  id            String         @id @default(cuid())
+  id            String        @id @default(cuid())
   name          String
-  email         String         @unique
+  email         String        @unique
   passwordHash  String
-  role          Role           @default(USER)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  role          Role          @default(USER)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
   progress      Progress[]
   questions     Question[]
   quizAttempts  QuizAttempt[]
   submissions   Submission[]
+  hourLogs      HourLog[]     @relation("HourLogStudent")
+  signedOffLogs HourLog[]     @relation("HourLogSigner")
 }
 
 model Section {
-  id          String     @id @default(cuid())
-  title       String
-  slug        String     @unique
-  description String
-  content     String     @db.Text
-  order       Int        @unique
-  unlockDate  DateTime
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  progress    Progress[]
-  questions   Question[]
-  parts       Part[]
+  id                      String     @id @default(cuid())
+  title                   String
+  slug                    String     @unique
+  description             String
+  content                 String     @db.Text
+  order                   Int        @unique
+  unlockDate              DateTime
+  requiresPriorCompletion Boolean    @default(true)
+  createdAt               DateTime   @default(now())
+  updatedAt               DateTime   @updatedAt
+  progress                Progress[]
+  questions               Question[]
+  parts                   Part[]
+  hourLogs                HourLog[]
 }
 
 model Part {
@@ -72,6 +82,7 @@ model Quiz {
   id           String         @id @default(cuid())
   partId       String         @unique
   passingScore Int            @default(70)
+  maxAttempts  Int? // null = unlimited
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   part         Part           @relation(fields: [partId], references: [id], onDelete: Cascade)
@@ -113,14 +124,17 @@ model QuizAttempt {
 }
 
 model Submission {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   userId      String
   partId      String
-  content     String   @db.Text
-  submittedAt DateTime @default(now())
-  reviewed    Boolean  @default(false)
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  part        Part     @relation(fields: [partId], references: [id], onDelete: Cascade)
+  content     String    @db.Text
+  fileUrl     String?
+  feedback    String?   @db.Text
+  submittedAt DateTime  @default(now())
+  reviewed    Boolean   @default(false)
+  reviewedAt  DateTime?
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  part        Part      @relation(fields: [partId], references: [id], onDelete: Cascade)
 }
 
 model Progress {
@@ -145,4 +159,26 @@ model Question {
   createdAt   DateTime  @default(now())
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   section     Section   @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+}
+
+model HourLog {
+  id              String       @id @default(cuid())
+  userId          String
+  sectionId       String?
+  category        HourCategory
+  date            DateTime
+  durationMinutes Int
+  description     String       @db.Text
+  fileUrl         String?
+  signedOffById   String?
+  signedOffAt     DateTime?
+  feedback        String?      @db.Text
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  user            User         @relation("HourLogStudent", fields: [userId], references: [id], onDelete: Cascade)
+  signedOffBy     User?        @relation("HourLogSigner", fields: [signedOffById], references: [id], onDelete: SetNull)
+  section         Section?     @relation(fields: [sectionId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([signedOffById])
 }
