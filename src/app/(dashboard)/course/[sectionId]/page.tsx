@@ -156,6 +156,22 @@ export default async function SectionPage({
     ),
   );
 
+  // Resolve any submission file attachments to signed URLs so the student
+  // can re-download them on the page.
+  const submissionFileUrls = new Map(
+    await Promise.all(
+      parts
+        .filter((p) => p.type === "SUBMIT" && p.submissions[0]?.fileUrl)
+        .map(
+          async (p) =>
+            [
+              p.submissions[0].id,
+              await resolveFileUrl(p.submissions[0].fileUrl),
+            ] as const,
+        ),
+    ),
+  );
+
   return (
     <div className="max-w-7xl mx-auto px-6 py-12 scroll-smooth">
       {/* Breadcrumb */}
@@ -278,6 +294,11 @@ export default async function SectionPage({
                             ? {
                                 id: part.submissions[0].id,
                                 content: part.submissions[0].content,
+                                fileUrl: part.submissions[0].fileUrl,
+                                fileSignedUrl:
+                                  submissionFileUrls.get(
+                                    part.submissions[0].id,
+                                  ) ?? null,
                                 submittedAt:
                                   part.submissions[0].submittedAt.toISOString(),
                                 reviewed: part.submissions[0].reviewed,

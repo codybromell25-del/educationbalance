@@ -8,13 +8,22 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { partId, content } = (await req.json()) as {
+  const { partId, content, fileUrl } = (await req.json()) as {
     partId: string;
-    content: string;
+    content?: string;
+    fileUrl?: string | null;
   };
 
-  if (!partId || !content?.trim()) {
-    return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+  if (!partId) {
+    return NextResponse.json({ error: "partId required" }, { status: 400 });
+  }
+
+  // Must submit at least text OR a file.
+  if (!content?.trim() && !fileUrl) {
+    return NextResponse.json(
+      { error: "Please write a response or attach a file." },
+      { status: 400 },
+    );
   }
 
   const part = await prisma.part.findUnique({ where: { id: partId } });
@@ -26,7 +35,8 @@ export async function POST(req: Request) {
     data: {
       userId: session.user.id,
       partId,
-      content: content.trim(),
+      content: content?.trim() ?? "",
+      fileUrl: fileUrl ?? null,
     },
   });
 
