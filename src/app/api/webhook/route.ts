@@ -1,5 +1,7 @@
 import { getStripe } from "@/lib/stripe";
 import { prisma } from "@/lib/db";
+import { sendEmailAsync } from "@/lib/email";
+import { welcomeEmail } from "@/lib/emails/welcome";
 import bcryptjs from "bcryptjs";
 import { NextResponse } from "next/server";
 
@@ -51,6 +53,18 @@ export async function POST(req: Request) {
       });
 
       console.log(`User created: ${userEmail}`);
+
+      // Welcome email — fire and forget so a Resend hiccup never
+      // returns an error code to Stripe (which would retry the webhook).
+      const appUrl =
+        process.env.NEXTAUTH_URL?.replace(/\/$/, "") ?? "http://localhost:3000";
+      const { subject, html, text } = welcomeEmail({
+        recipientName: userName,
+        recipientEmail: userEmail,
+        temporaryPassword: userPassword,
+        appUrl,
+      });
+      sendEmailAsync({ to: userEmail, subject, html, text });
     }
   }
 
