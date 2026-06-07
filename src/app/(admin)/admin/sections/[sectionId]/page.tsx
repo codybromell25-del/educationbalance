@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import PartsManager from "@/components/admin/PartsManager";
+import SectionEditForm from "@/components/admin/SectionEditForm";
 
 export default async function AdminSectionPage({
   params,
@@ -35,14 +36,41 @@ export default async function AdminSectionPage({
         </Link>
       </div>
 
+      <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <p className="text-xs text-brand-sage tracking-[0.3em] uppercase mb-2">
+            Section {section.order}
+          </p>
+          <h1 className="text-3xl font-light tracking-tight text-brand-primary">
+            {section.title}
+          </h1>
+          <p className="text-brand-muted mt-2">{section.description}</p>
+          <p className="text-xs text-brand-muted mt-1">
+            /course/{section.slug} · unlocks{" "}
+            {new Date(section.unlockDate).toLocaleDateString("en-IE", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+            {section.requiresPriorCompletion
+              ? " · requires prior completion"
+              : ""}
+          </p>
+        </div>
+      </div>
+
       <div className="mb-8">
-        <p className="text-xs text-brand-sage tracking-[0.3em] uppercase mb-2">
-          Section {section.order}
-        </p>
-        <h1 className="text-3xl font-light tracking-tight text-brand-primary">
-          {section.title}
-        </h1>
-        <p className="text-brand-muted mt-2">{section.description}</p>
+        <SectionEditForm
+          initial={{
+            id: section.id,
+            title: section.title,
+            slug: section.slug,
+            description: section.description,
+            content: section.content,
+            unlockDate: section.unlockDate.toISOString(),
+            requiresPriorCompletion: section.requiresPriorCompletion,
+          }}
+        />
       </div>
 
       <PartsManager
