@@ -1,5 +1,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { sendEmailAsync } from "@/lib/email";
+import { welcomeEmail } from "@/lib/emails/welcome";
 import bcryptjs from "bcryptjs";
 import { NextResponse } from "next/server";
 
@@ -31,6 +33,23 @@ export async function POST(req: Request) {
   const user = await prisma.user.create({
     data: { name, email, passwordHash, role: "USER" },
   });
+
+  // Send welcome email with login credentials — fire and forget
+  void (async () => {
+    try {
+      const appUrl =
+        process.env.NEXTAUTH_URL?.replace(/\/$/, "") ?? "http://localhost:3000";
+      const { subject, html, text } = welcomeEmail({
+        recipientName: name,
+        recipientEmail: email,
+        temporaryPassword: password,
+        appUrl,
+      });
+      sendEmailAsync({ to: email, subject, html, text });
+    } catch (e) {
+      console.error("[welcome email] failed:", e);
+    }
+  })();
 
   return NextResponse.json({
     id: user.id,
