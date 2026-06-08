@@ -51,12 +51,26 @@ export async function POST(
   }
 
   let correct = 0;
-  for (const q of quiz.questions) {
-    const chosenId = answers[q.id];
-    if (!chosenId) continue;
-    const chosen = q.choices.find((c) => c.id === chosenId);
-    if (chosen?.isCorrect) correct++;
-  }
+  const review = quiz.questions
+    .sort((a, b) => a.order - b.order)
+    .map((q) => {
+      const chosenId = answers[q.id] ?? null;
+      const chosen = chosenId
+        ? q.choices.find((c) => c.id === chosenId) ?? null
+        : null;
+      const correctChoice = q.choices.find((c) => c.isCorrect);
+      const wasCorrect = !!chosen?.isCorrect;
+      if (wasCorrect) correct++;
+      return {
+        questionId: q.id,
+        prompt: q.prompt,
+        chosenChoiceId: chosen?.id ?? null,
+        chosenText: chosen?.text ?? null,
+        correctChoiceId: correctChoice?.id ?? null,
+        correctText: correctChoice?.text ?? null,
+        wasCorrect,
+      };
+    });
 
   const score = Math.round((correct / total) * 100);
   const passed = score >= quiz.passingScore;
@@ -70,5 +84,5 @@ export async function POST(
     },
   });
 
-  return NextResponse.json({ score, passed });
+  return NextResponse.json({ score, passed, review });
 }
