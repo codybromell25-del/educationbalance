@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
+import SectionRowActions from "@/components/admin/SectionRowActions";
 
 export default async function AdminSectionsPage() {
   const sections = await prisma.section.findMany({
@@ -17,12 +18,12 @@ export default async function AdminSectionsPage() {
         </h1>
         <p className="text-brand-muted mt-2">
           Click into a section to manage its parts (videos, downloads, quizzes
-          and submissions).
+          and submissions). Use ↑ / ↓ to reorder.
         </p>
       </div>
 
       <div className="space-y-3">
-        {sections.map((section) => {
+        {sections.map((section, i) => {
           const unlock = new Date(section.unlockDate);
           const unlockLabel = unlock.toLocaleDateString("en-IE", {
             day: "numeric",
@@ -30,13 +31,15 @@ export default async function AdminSectionsPage() {
             year: "numeric",
           });
           return (
-            <Link
+            <div
               key={section.id}
-              href={`/admin/sections/${section.id}`}
-              className="block bg-white rounded-xl border border-brand-border p-5 hover:border-brand-sage transition-colors"
+              className="bg-white rounded-xl border border-brand-border p-5 hover:border-brand-sage transition-colors"
             >
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-4 min-w-0">
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <Link
+                  href={`/admin/sections/${section.id}`}
+                  className="flex items-center gap-4 min-w-0 flex-1"
+                >
                   <div className="w-10 h-10 rounded-full bg-brand-sage/10 text-brand-sage border-2 border-brand-sage/30 flex items-center justify-center shrink-0 text-sm font-medium">
                     {section.order}
                   </div>
@@ -51,28 +54,21 @@ export default async function AdminSectionsPage() {
                         : ""}
                     </p>
                   </div>
-                </div>
+                </Link>
                 <div className="flex items-center gap-3 shrink-0">
                   <span className="text-sm text-brand-muted">
                     {section._count.parts}{" "}
                     {section._count.parts === 1 ? "part" : "parts"}
                   </span>
-                  <svg
-                    className="w-4 h-4 text-brand-muted"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={1.5}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M8.25 4.5l7.5 7.5-7.5 7.5"
-                    />
-                  </svg>
+                  <SectionRowActions
+                    sectionId={section.id}
+                    sectionTitle={section.title}
+                    isFirst={i === 0}
+                    isLast={i === sections.length - 1}
+                  />
                 </div>
               </div>
-            </Link>
+            </div>
           );
         })}
 

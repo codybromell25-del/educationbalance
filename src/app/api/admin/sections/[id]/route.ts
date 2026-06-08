@@ -71,3 +71,54 @@ export async function PATCH(
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
+
+/**
+ * Delete a section. Cascades to all its parts (and their quizzes,
+ * submissions, etc.), plus all Progress / Question / HourLog rows that
+ * reference it. After delete, compact the remaining sections' order
+ * values so there are no holes.
+ */
+export async function DELETE(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const session = await auth();
+  if (!session?.user || session.user.role !== "ADMIN") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const { id } = await params;
+
+  const section = await prisma.section.findUnique({
+    where: { id },
+    select: { id: true },
+  });
+  if (!section) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  await prisma.section.delete({ where: { id } });
+
+  // Compact remaining sections so there are no holes in `order`.
+  // Two-pass to avoid (order @unique) collisions: first push everything
+  // negative, then re-set to 1..n.
+  const remaining = await prisma.section.findMany({
+    orderBy: { order: "asc" },
+    select: { id: true },
+  });
+  await prisma.$transaction([
+    ...remaining.map((s, i) =>
+      prisma.section.update({
+        where: { id: s.id },
+        data: { order: -(i + 1) },
+      }),
+    ),
+    ...remaining.map((s, i) =>
+      prisma.section.update({
+        where: { id: s.id },
+        data: { order: i + 1 },
+      }),
+    ),
+  ]);
+
+  return NextResponse.json({ success: true });
+}
