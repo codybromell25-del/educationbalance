@@ -141,6 +141,29 @@ export default async function DashboardPage() {
           </div>
         </div>
 
+        {/* Completion certificate */}
+        {totalSections > 0 && completedCount === totalSections && (
+          <div className="bg-brand-success/5 border border-brand-success/30 rounded-2xl p-6 mb-10 flex items-center justify-between gap-4 flex-wrap">
+            <div>
+              <p className="text-xs tracking-[0.3em] uppercase text-brand-success mb-1">
+                Course complete
+              </p>
+              <h2 className="text-xl font-light text-brand-primary">
+                Your certificate is ready
+              </h2>
+              <p className="text-sm text-brand-muted mt-1">
+                Download a PDF of your balance studios completion certificate.
+              </p>
+            </div>
+            <a
+              href="/api/certificate"
+              className="px-6 py-3 bg-brand-success text-white text-sm tracking-wider uppercase rounded-full hover:brightness-95 transition-all"
+            >
+              Download certificate
+            </a>
+          </div>
+        )}
+
         {/* Continue where you left off */}
         {nextSection && (
           <div className="mb-10">
