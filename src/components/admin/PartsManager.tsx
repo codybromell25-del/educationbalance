@@ -340,12 +340,15 @@ function PartForm({
   const [body, setBody] = useState(initialValues?.body ?? "");
   const [videoUrl, setVideoUrl] = useState(initialValues?.videoUrl ?? "");
   const [fileUrl, setFileUrl] = useState(initialValues?.fileUrl ?? "");
+  const [uploadedName, setUploadedName] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
+    setUploadError(null);
     try {
       const form = new FormData();
       form.append("file", file);
@@ -354,11 +357,14 @@ function PartForm({
         method: "POST",
         body: form,
       });
-      if (!res.ok) throw new Error((await res.json()).error ?? "Upload failed");
-      const { path } = await res.json();
-      setFileUrl(path);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.error ?? `Upload failed (HTTP ${res.status})`);
+      }
+      setFileUrl(data.path);
+      setUploadedName(file.name);
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Upload failed");
+      setUploadError(err instanceof Error ? err.message : "Upload failed");
     } finally {
       setUploading(false);
     }
@@ -468,9 +474,14 @@ function PartForm({
             File
           </label>
           {fileUrl && (
-            <p className="text-sm text-brand-muted mb-2 font-mono break-all">
-              Current: {fileUrl}
-            </p>
+            <div className="mb-2 px-3 py-2 bg-brand-success/10 border border-brand-success/30 rounded-lg">
+              <p className="text-xs text-brand-success font-medium">
+                ✓ Uploaded{uploadedName ? `: ${uploadedName}` : ""}
+              </p>
+              <p className="text-xs text-brand-muted font-mono break-all mt-0.5">
+                {fileUrl}
+              </p>
+            </div>
           )}
           <input
             type="file"
@@ -480,8 +491,19 @@ function PartForm({
             disabled={busy || uploading}
           />
           {uploading && (
-            <p className="text-sm text-brand-muted mt-1">Uploading…</p>
+            <p className="text-sm text-brand-muted mt-2">Uploading…</p>
           )}
+          {uploadError && (
+            <div className="mt-2 px-3 py-2 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-700 font-medium">Upload failed</p>
+              <p className="text-xs text-red-600 mt-0.5 break-words">
+                {uploadError}
+              </p>
+            </div>
+          )}
+          <p className="text-xs text-brand-muted mt-2">
+            Max ~25MB. After clicking Save, the file is attached to this part.
+          </p>
         </div>
       )}
 
