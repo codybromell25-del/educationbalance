@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { prisma } from "@/lib/db";
 import CreateUserForm from "@/components/admin/CreateUserForm";
 import UserRowActions from "@/components/admin/UserRowActions";
@@ -61,8 +62,13 @@ export default async function AdminUsersPage() {
                 key={user.id}
                 className="border-b border-brand-border last:border-0 hover:bg-brand-surface/30 transition-colors align-top"
               >
-                <td className="px-6 py-4 text-sm text-brand-primary font-medium">
-                  {user.name}
+                <td className="px-6 py-4 text-sm">
+                  <Link
+                    href={`/admin/users/${user.id}`}
+                    className="text-brand-primary font-medium hover:text-brand-sage"
+                  >
+                    {user.name}
+                  </Link>
                 </td>
                 <td className="px-6 py-4 text-sm text-brand-muted">
                   {user.email}
@@ -128,7 +134,12 @@ export default async function AdminUsersPage() {
           >
             <div className="flex items-start justify-between gap-3 mb-2">
               <div className="min-w-0">
-                <p className="text-brand-primary font-medium">{user.name}</p>
+                <Link
+                  href={`/admin/users/${user.id}`}
+                  className="text-brand-primary font-medium hover:text-brand-sage"
+                >
+                  {user.name}
+                </Link>
                 <p className="text-sm text-brand-muted truncate">{user.email}</p>
               </div>
             </div>
