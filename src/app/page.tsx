@@ -1,600 +1,668 @@
-// Public landing page for the balance studios Pilates instructor course.
-//
-// NOTE: copy below uses sensible defaults / placeholders. Anywhere you
-// see the literal string "CONFIRM" in text, that's a spot Kelly needs
-// to fill in (dates, pricing, tutor bios). Search for "CONFIRM" to
-// find them all quickly.
-//
-// The previous hero-style landing page is preserved at
-// src/app/_legacy/page-original.tsx if anyone wants to roll back.
-import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
-import ApplicationForm from "@/components/landing/ApplicationForm";
-import HeroFullBleed from "@/components/landing/templates/HeroFullBleed";
-import HeroSplitScreen from "@/components/landing/templates/HeroSplitScreen";
-import TutorsSideBySide from "@/components/landing/templates/TutorsSideBySide";
-import TutorsAlternatingRows from "@/components/landing/templates/TutorsAlternatingRows";
-import GalleryMosaic from "@/components/landing/templates/GalleryMosaic";
-import GalleryEqualGrid from "@/components/landing/templates/GalleryEqualGrid";
-import PathwaysCards from "@/components/landing/templates/PathwaysCards";
-import PathwaysComparisonTable from "@/components/landing/templates/PathwaysComparisonTable";
-import { loadLandingData } from "@/lib/landing/loader";
-import type {
-  HeroContent,
-  TutorsContent,
-  GalleryContent,
-  PathwaysContent,
-} from "@/lib/landing/config";
+import Image from "next/image";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title:
-    "balance studios | Pilates Instructor Training — Dublin",
+  title: "balance | Premium Pilates Training Course",
   description:
-    "A four-weekend Pilates instructor training course at balance studios, Dublin. Three pathways: comprehensive, mat-only, reformer-only. Applications open.",
+    "Transform your practice with balance. A structured Pilates training course combining expert in-person sessions with comprehensive online learning.",
 };
 
-// ----- Quick-edit content blocks -----
-
-// Hero / tutors / gallery / pathways content lives in the DB (editable
-// via /admin/landing); defaults are in src/lib/landing/config.ts.
-
-const HOOK = {
-  short:
-    "Most Pilates courses send you home with a checklist of exercises. balance studios sends you home with the eye, the language and the confidence to teach.",
-  long: "Four weekends at our Dublin studio with Catherine and Kelly. Three pathways depending on what you want to teach. Everything you need — printed manuals, video library, open studio days — included.",
-};
-
-const WHAT_YOU_WILL_LEARN = [
-  "Cue clients with clarity, calm and confidence",
-  "Read a body across the room and adapt the session in real time",
-  "Build safe, progressive class plans for mixed-ability rooms",
-  "Use the reformer with intention — not just the workout, the why",
-  "Modify for pregnancy, injury and special populations",
-  "Run a sustainable teaching practice that suits your life",
-];
-
-const WEEKENDS = [
-  {
-    n: 1,
-    title: "Foundations & functional anatomy",
-    body: "The Pilates method, the principles, and the anatomy you'll cue every day. Neutral spine, the powerhouse, lateral breath, joints, muscles, compensations.",
-  },
-  {
-    n: 2,
-    title: "Mat — teaching the room",
-    body: "The balance approach to mat teaching. Class structure, cueing on the floor, the exercise library, common modifications.",
-  },
-  {
-    n: 3,
-    title: "Reformer — equipment & exercises",
-    body: "Springs, setup, safety. The exercise library on the reformer. Programming reformer classes for real clients.",
-  },
-  {
-    n: 4,
-    title: "Special populations & teaching practice",
-    body: "Adapting for pregnancy, older adults, injury recovery. Building inclusive classes. Practical assessments, sign-off, and next steps.",
-  },
-];
-
-const FOR_YOU_IF = [
-  "You're a regular Pilates client who's been told you should teach",
-  "You're a yoga / fitness pro looking to add Pilates with depth",
-  "You want a small cohort with real tutor time, not a 200-person Zoom course",
-  "You can commit to four weekends in Dublin plus self-practice between",
-];
-
-const NOT_FOR_YOU_IF = [
-  "You've never done a Pilates session in your life — try ten classes first",
-  "You're looking for a one-weekend 'mat certificate' to put on Instagram",
-  "You can't make the four weekend dates (we don't catch up online)",
-];
-
-const PACKAGE_ITEMS = [
-  {
-    icon: "📕",
-    title: "Two printed booklets",
-    body: "Anatomy & teaching manuals — yours to keep, scribble on, and refer back to for years.",
-  },
-  {
-    icon: "💻",
-    title: "Full LMS access",
-    body: "Every weekend's content online: videos, written guides, downloadable workbooks, MCQ exams and your hour-log tracker.",
-  },
-  {
-    icon: "🎥",
-    title: "Exercise video library",
-    body: "Filmed in the balance studio — every mat and reformer exercise with cueing, common faults and modifications.",
-  },
-  {
-    icon: "🚪",
-    title: "Three open studio days",
-    body: "Drop-in days to teach under supervision, troubleshoot exercises and sign off your practical hours.",
-  },
-];
-
-const FAQS = [
-  {
-    q: "Do I need experience?",
-    a: "You don't need any teaching experience, but you do need a regular Pilates practice. Pathway C (reformer only) requires an existing mat qualification.",
-  },
-  {
-    q: "What insurance can I get when I finish?",
-    a: "On successful completion you can apply for instructor insurance with the usual UK / Ireland providers. CONFIRM list of accredited insurers we recommend.",
-  },
-  {
-    q: "Can I pay in instalments?",
-    a: "Yes — payment plans are available on application. Get in touch and we'll work something out.",
-  },
-  {
-    q: "What happens if I miss a weekend?",
-    a: "The four weekends are designed to build on each other and we don't run catch-up sessions. If you miss one, you'll roll into the next cohort to make it up. Talk to us if life happens.",
-  },
-  {
-    q: "Is there support between weekends?",
-    a: "Yes. You'll have LMS access throughout, Q&A on every section, log feedback after each weekend, and three open studio days to teach under supervision.",
-  },
-];
-
-// ----- Page -----
-
-export default async function HomePage() {
-  // CMS-driven sections (hero / tutors / gallery / pathways). Anything
-  // not picked by an admin falls back to the in-code defaults below.
-  const data = await loadLandingData();
-
-  const heroContent = data.sections.hero.content as HeroContent;
-  const tutorsContent = data.sections.tutors.content as TutorsContent;
-  const galleryContent = data.sections.gallery.content as GalleryContent;
-  const pathwaysContent = data.sections.pathways.content as PathwaysContent;
-  const heroImageUrl = data.imageUrls.get("hero-bg") ?? "/images/studio-reformers-row.jpg";
-
+export default function HomePage() {
   return (
-    <div className="bg-brand-surface text-brand-primary">
-      <Nav />
+    <div className="flex flex-col min-h-screen">
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-brand-border">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="/images/balance-logo.jpg"
+              alt="balance"
+              width={32}
+              height={32}
+              className="rounded-full"
+            />
+            <span className="text-xl tracking-wide font-light">balance</span>
+          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/login"
+              className="px-5 py-2 text-sm text-brand-primary hover:text-brand-sage transition-colors"
+            >
+              Log In
+            </Link>
+            <Link
+              href="/signup"
+              className="px-6 py-2 bg-brand-sage text-white text-sm tracking-wider uppercase rounded-full hover:bg-brand-sage-dark transition-colors"
+            >
+              Sign Up
+            </Link>
+          </div>
+        </div>
+      </nav>
 
-      {data.sections.hero.template === "split-screen" ? (
-        <HeroSplitScreen content={heroContent} imageUrl={heroImageUrl} />
-      ) : (
-        <HeroFullBleed content={heroContent} imageUrl={heroImageUrl} />
-      )}
-      <Hook />
-      <CourseOverview />
-      <WhatYouWillLearn />
-      <FourWeekends />
-      <WhoItsFor />
-      {data.sections.tutors.template === "alternating-rows" ? (
-        <TutorsAlternatingRows content={tutorsContent} imageUrls={data.imageUrls} />
-      ) : (
-        <TutorsSideBySide content={tutorsContent} imageUrls={data.imageUrls} />
-      )}
-      {data.sections.gallery.template === "equal-grid" ? (
-        <GalleryEqualGrid content={galleryContent} imageUrls={data.imageUrls} />
-      ) : (
-        <GalleryMosaic content={galleryContent} imageUrls={data.imageUrls} />
-      )}
-      <WhatYouGet />
-      {data.sections.pathways.template === "comparison-table" ? (
-        <PathwaysComparisonTable content={pathwaysContent} />
-      ) : (
-        <PathwaysCards content={pathwaysContent} />
-      )}
-      <Faqs />
-      <SocialProof />
-      <Timeline />
-      <ApplicationSection />
-      <InstagramEmbed />
-      <Footer />
-    </div>
-  );
-}
-
-// ------------------------------------------------------------------
-// Nav
-// ------------------------------------------------------------------
-function Nav() {
-  return (
-    <nav className="fixed top-0 w-full z-50 bg-white/85 backdrop-blur-md border-b border-brand-border">
-      <div className="max-w-7xl mx-auto px-5 md:px-8 h-16 flex items-center justify-between">
-        <Link href="#top" className="flex items-center gap-2">
+      {/* Hero */}
+      <section className="relative min-h-screen flex items-center justify-center">
+        <div className="absolute inset-0">
+          <Image
+            src="/images/studio-wide.jpg"
+            alt="balance reformer studio"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-black/40" />
+        </div>
+        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center text-white">
           <Image
             src="/images/balance-logo.jpg"
             alt="balance"
-            width={32}
-            height={32}
-            className="rounded-full"
+            width={80}
+            height={80}
+            className="rounded-full mx-auto mb-8 shadow-lg"
           />
-          <span className="text-xl tracking-wide font-light">balance</span>
-        </Link>
-        <div className="hidden md:flex items-center gap-7 text-sm">
-          <a href="#overview" className="text-brand-primary/80 hover:text-brand-sage transition-colors">Overview</a>
-          <a href="#pathways" className="text-brand-primary/80 hover:text-brand-sage transition-colors">Pathways</a>
-          <a href="#tutors" className="text-brand-primary/80 hover:text-brand-sage transition-colors">Tutors</a>
-          <a href="#faqs" className="text-brand-primary/80 hover:text-brand-sage transition-colors">FAQs</a>
-          <Link href="/login" className="text-brand-primary/80 hover:text-brand-sage transition-colors">Log in</Link>
-        </div>
-        <a
-          href="#apply"
-          className="px-5 py-2 text-xs tracking-wider uppercase bg-brand-primary text-white rounded-full hover:bg-brand-primary/90 transition-colors"
-        >
-          Apply
-        </a>
-      </div>
-    </nav>
-  );
-}
-
-// ------------------------------------------------------------------
-// Hook
-// ------------------------------------------------------------------
-function Hook() {
-  return (
-    <section className="py-20 md:py-28 px-5 md:px-8">
-      <div className="max-w-3xl mx-auto text-center">
-        <p className="text-xs tracking-[0.3em] uppercase text-brand-sage mb-5">
-          Why this course
-        </p>
-        <p className="text-2xl md:text-3xl font-light leading-snug text-brand-primary">
-          {HOOK.long}
-        </p>
-      </div>
-    </section>
-  );
-}
-
-// ------------------------------------------------------------------
-// Course overview
-// ------------------------------------------------------------------
-function CourseOverview() {
-  return (
-    <section id="overview" className="py-20 md:py-28 px-5 md:px-8 bg-white border-y border-brand-border">
-      <div className="max-w-6xl mx-auto">
-        <SectionHeader eyebrow="Course overview" title="What it is, how long, how it works" />
-        <div className="grid md:grid-cols-3 gap-6 mt-12">
-          <OverviewCard
-            title="Three pathways"
-            body="Comprehensive (mat + reformer), mat only, or reformer only. Pick the depth and modality that fits where you're going."
-          />
-          <OverviewCard
-            title="Four in-person weekends"
-            body="At the balance studio in Dublin. Small cohort, real tutor time, repertoire on the equipment — not Zoom theory."
-          />
-          <OverviewCard
-            title="Online learning support"
-            body="LMS access throughout: video library, written guides, MCQ exams, hour-log tracker. You'll never lose your notes."
-          />
-        </div>
-        <div className="mt-10 text-center text-sm text-brand-muted">
-          CONFIRM: total hours · format · location address · prerequisites
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function OverviewCard({ title, body }: { title: string; body: string }) {
-  return (
-    <div className="bg-brand-surface rounded-2xl border border-brand-border p-7">
-      <h3 className="text-lg font-medium text-brand-primary mb-2">{title}</h3>
-      <p className="text-sm text-brand-primary/80 leading-relaxed">{body}</p>
-    </div>
-  );
-}
-
-// ------------------------------------------------------------------
-// What you will learn
-// ------------------------------------------------------------------
-function WhatYouWillLearn() {
-  return (
-    <section className="py-20 md:py-28 px-5 md:px-8">
-      <div className="max-w-5xl mx-auto">
-        <SectionHeader eyebrow="What you'll learn" title="By the time you finish, you'll be able to —" />
-        <ul className="mt-12 grid md:grid-cols-2 gap-x-10 gap-y-5">
-          {WHAT_YOU_WILL_LEARN.map((item) => (
-            <li
-              key={item}
-              className="flex items-start gap-3 text-brand-primary text-base md:text-lg"
+          <p className="text-brand-sage-light text-sm tracking-[0.3em] uppercase mb-6">
+            Premium Pilates Training
+          </p>
+          <h1 className="text-5xl md:text-7xl font-light tracking-tight mb-8 leading-[1.1]">
+            Master the art
+            <br />
+            <span className="italic">of movement</span>
+          </h1>
+          <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto mb-12 leading-relaxed">
+            A structured training course combining expert in-person sessions
+            with comprehensive online guidance. Designed for aspiring Pilates
+            instructors who are serious about their craft.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/signup"
+              className="px-10 py-4 bg-brand-sage text-white text-sm tracking-wider uppercase rounded-full hover:bg-brand-sage-dark transition-colors font-medium"
             >
-              <span className="text-brand-sage shrink-0 mt-1">✓</span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
+              Sign Up Now
+            </Link>
+            <a
+              href="#curriculum"
+              className="px-10 py-4 border border-white/40 text-white text-sm tracking-wider uppercase rounded-full hover:bg-white/10 transition-colors"
+            >
+              View Curriculum
+            </a>
+          </div>
+        </div>
+      </section>
 
-// ------------------------------------------------------------------
-// Four weekends
-// ------------------------------------------------------------------
-function FourWeekends() {
-  return (
-    <section className="py-20 md:py-28 px-5 md:px-8 bg-white border-y border-brand-border">
-      <div className="max-w-6xl mx-auto">
-        <SectionHeader eyebrow="The four weekends" title="A clear path through the course" />
-        <div className="grid md:grid-cols-2 gap-6 mt-12">
-          {WEEKENDS.map((w) => (
-            <div key={w.n} className="rounded-2xl border border-brand-border bg-brand-surface p-7">
-              <p className="text-xs tracking-[0.3em] uppercase text-brand-sage mb-3">
-                Weekend {w.n}
+      {/* Who Is This For */}
+      <section className="py-24 md:py-32 bg-background">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div>
+              <p className="text-brand-sage text-sm tracking-[0.3em] uppercase mb-4">
+                Is This You?
               </p>
-              <h3 className="text-xl font-medium text-brand-primary mb-3">{w.title}</h3>
-              <p className="text-sm text-brand-primary/80 leading-relaxed">{w.body}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ------------------------------------------------------------------
-// Who it's for
-// ------------------------------------------------------------------
-function WhoItsFor() {
-  return (
-    <section className="py-20 md:py-28 px-5 md:px-8">
-      <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10">
-        <div>
-          <p className="text-xs tracking-[0.3em] uppercase text-brand-sage mb-4">For you if</p>
-          <ul className="space-y-3">
-            {FOR_YOU_IF.map((item) => (
-              <li key={item} className="flex items-start gap-3 text-brand-primary">
-                <span className="text-brand-sage shrink-0 mt-1">✓</span>
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <p className="text-xs tracking-[0.3em] uppercase text-brand-muted mb-4">Not for you if</p>
-          <ul className="space-y-3">
-            {NOT_FOR_YOU_IF.map((item) => (
-              <li key={item} className="flex items-start gap-3 text-brand-primary/70">
-                <span className="text-brand-muted shrink-0 mt-1">×</span>
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ------------------------------------------------------------------
-// What you get
-// ------------------------------------------------------------------
-function WhatYouGet() {
-  return (
-    <section className="py-20 md:py-28 px-5 md:px-8 bg-white border-y border-brand-border">
-      <div className="max-w-5xl mx-auto">
-        <SectionHeader
-          eyebrow="What you get"
-          title="Everything in one package"
-        />
-        <div className="grid sm:grid-cols-2 gap-5 mt-12">
-          {PACKAGE_ITEMS.map((p) => (
-            <div
-              key={p.title}
-              className="rounded-2xl border border-brand-border bg-brand-surface p-7"
-            >
-              <p className="text-3xl mb-3">{p.icon}</p>
-              <h3 className="font-medium text-brand-primary mb-2">{p.title}</h3>
-              <p className="text-sm text-brand-primary/80 leading-relaxed">{p.body}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ------------------------------------------------------------------
-// FAQs
-// ------------------------------------------------------------------
-function Faqs() {
-  return (
-    <section id="faqs" className="py-20 md:py-28 px-5 md:px-8 bg-white border-y border-brand-border">
-      <div className="max-w-3xl mx-auto">
-        <SectionHeader eyebrow="FAQs" title="The questions everyone asks" />
-        <div className="mt-12 space-y-3">
-          {FAQS.map((f) => (
-            <details
-              key={f.q}
-              className="group rounded-xl border border-brand-border bg-brand-surface p-5"
-            >
-              <summary className="cursor-pointer list-none flex items-center justify-between gap-4">
-                <span className="font-medium text-brand-primary">{f.q}</span>
-                <span className="text-brand-sage transition-transform group-open:rotate-45">+</span>
-              </summary>
-              <p className="mt-3 text-brand-primary/80 leading-relaxed">{f.a}</p>
-            </details>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ------------------------------------------------------------------
-// Social proof
-// ------------------------------------------------------------------
-function SocialProof() {
-  return (
-    <section className="py-20 md:py-28 px-5 md:px-8">
-      <div className="max-w-5xl mx-auto text-center">
-        <p className="text-xs tracking-[0.3em] uppercase text-brand-sage mb-5">
-          Trusted by Dublin clients
-        </p>
-        <h2 className="text-3xl md:text-4xl font-light text-brand-primary leading-snug max-w-3xl mx-auto">
-          You&rsquo;re learning from a working studio &mdash; not just a course.
-        </h2>
-        <div className="grid sm:grid-cols-3 gap-6 mt-14 max-w-3xl mx-auto">
-          {/* CONFIRM stats once Kelly signs off the exact numbers */}
-          <Stat value="10+" label="Years in business" />
-          <Stat value="40+" label="Classes per week" />
-          <Stat value="5★" label="Client reviews" />
-        </div>
-        <p className="mt-10 text-sm text-brand-muted max-w-xl mx-auto">
-          When the first cohort graduates we&rsquo;ll add their stories here. For now, the
-          balance studio&rsquo;s ten-year reputation does the talking.
-        </p>
-      </div>
-    </section>
-  );
-}
-
-function Stat({ value, label }: { value: string; label: string }) {
-  return (
-    <div className="bg-white rounded-2xl border border-brand-border p-7">
-      <p className="text-4xl font-light text-brand-primary">{value}</p>
-      <p className="text-xs tracking-wider uppercase text-brand-muted mt-2">{label}</p>
-    </div>
-  );
-}
-
-// ------------------------------------------------------------------
-// Timeline
-// ------------------------------------------------------------------
-function Timeline() {
-  // CONFIRM all dates with Kelly before launch
-  const items = [
-    { label: "Applications open", date: "CONFIRM" },
-    { label: "Weekend 1 — Foundations", date: "CONFIRM weekend date" },
-    { label: "Weekend 2 — Mat", date: "CONFIRM weekend date" },
-    { label: "Open studio day 1", date: "CONFIRM date" },
-    { label: "Weekend 3 — Reformer", date: "CONFIRM weekend date" },
-    { label: "Open studio day 2", date: "CONFIRM date" },
-    { label: "Weekend 4 — Special populations + assessment", date: "CONFIRM weekend date" },
-    { label: "Open studio day 3 / sign-off", date: "CONFIRM date" },
-  ];
-  return (
-    <section className="py-20 md:py-28 px-5 md:px-8 bg-white border-y border-brand-border">
-      <div className="max-w-3xl mx-auto">
-        <SectionHeader eyebrow="The timeline" title="Save the dates" />
-        <ul className="mt-12 space-y-2">
-          {items.map((item, i) => (
-            <li
-              key={item.label}
-              className="flex items-center justify-between gap-4 px-5 py-4 rounded-xl border border-brand-border bg-brand-surface"
-            >
-              <div className="flex items-center gap-4 min-w-0">
-                <div className="w-7 h-7 rounded-full bg-brand-sage/10 text-brand-sage border border-brand-sage/30 flex items-center justify-center shrink-0 text-xs font-medium">
-                  {i + 1}
-                </div>
-                <span className="text-brand-primary font-medium truncate">{item.label}</span>
+              <h2 className="text-3xl md:text-4xl font-light tracking-tight text-brand-primary mb-8">
+                Built for aspiring
+                <br />
+                <span className="italic">Pilates instructors</span>
+              </h2>
+              <div className="space-y-5">
+                {[
+                  "You want to become a qualified Pilates instructor",
+                  "You're passionate about movement and helping others",
+                  "You want to understand the reformer inside and out",
+                  "You learn best with a mix of hands-on and theory",
+                  "You value expert mentorship and personal feedback",
+                ].map((item) => (
+                  <div key={item} className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-brand-sage/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <svg
+                        className="w-3.5 h-3.5 text-brand-sage"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2.5}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                    <p className="text-brand-primary">{item}</p>
+                  </div>
+                ))}
               </div>
-              <span className="text-sm text-brand-muted shrink-0">{item.date}</span>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-6 text-center text-xs text-brand-muted">
-          Check against your diary before you apply. We don&rsquo;t run catch-up sessions.
-        </p>
-      </div>
-    </section>
-  );
-}
-
-// ------------------------------------------------------------------
-// Application form
-// ------------------------------------------------------------------
-function ApplicationSection() {
-  return (
-    <section id="apply" className="py-20 md:py-28 px-5 md:px-8">
-      <div className="max-w-3xl mx-auto">
-        <SectionHeader
-          eyebrow="Apply or join the waitlist"
-          title="A short form. We'll get back to you within a week."
-        />
-        <div className="mt-12 bg-white rounded-2xl border border-brand-border p-7 md:p-10">
-          <ApplicationForm />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ------------------------------------------------------------------
-// Instagram embed
-// ------------------------------------------------------------------
-function InstagramEmbed() {
-  // CONFIRM Instagram handle. Embed shown as a simple CTA card for now
-  // because the official Instagram embed iframe needs a per-post URL.
-  return (
-    <section className="py-20 md:py-28 px-5 md:px-8 bg-white border-y border-brand-border">
-      <div className="max-w-3xl mx-auto text-center">
-        <SectionHeader eyebrow="Instagram" title="What life at the studio looks like" />
-        <a
-          href="https://www.instagram.com/balancestudios"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block mt-10 px-8 py-3.5 bg-brand-primary text-white text-xs tracking-[0.25em] uppercase rounded-full hover:bg-brand-primary/90 transition-colors"
-        >
-          @balancestudios on Instagram
-        </a>
-        <p className="text-xs text-brand-muted mt-6">
-          CONFIRM Instagram handle. Swap this CTA for an embedded grid (LightWidget / Instagram embed iframe) once the handle is confirmed.
-        </p>
-      </div>
-    </section>
-  );
-}
-
-// ------------------------------------------------------------------
-// Footer
-// ------------------------------------------------------------------
-function Footer() {
-  return (
-    <footer className="px-5 md:px-8 pt-16 pb-10 bg-brand-primary text-white">
-      <div className="max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-3 gap-10 mb-10">
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <Image src="/images/balance-logo.jpg" alt="balance" width={32} height={32} className="rounded-full" />
-              <span className="text-xl tracking-wide font-light">balance studios</span>
             </div>
-            <p className="text-white/70 text-sm leading-relaxed max-w-xs">
-              Pilates instructor training, mat &amp; reformer. Dublin.
-            </p>
-          </div>
-          <div>
-            <p className="text-xs tracking-[0.3em] uppercase text-brand-sage-light mb-3">Contact</p>
-            <p className="text-sm text-white/85">
-              {/* CONFIRM email + phone */}
-              <a href="mailto:hello@balancestudios.ie" className="hover:text-brand-sage-light">hello@balancestudios.ie</a>
-            </p>
-          </div>
-          <div>
-            <p className="text-xs tracking-[0.3em] uppercase text-brand-sage-light mb-3">Links</p>
-            <ul className="space-y-2 text-sm">
-              <li><a href="https://www.instagram.com/balancestudios" target="_blank" rel="noopener noreferrer" className="text-white/85 hover:text-brand-sage-light">Instagram</a></li>
-              <li><a href="https://balancestudios.ie" target="_blank" rel="noopener noreferrer" className="text-white/85 hover:text-brand-sage-light">balance studio site</a></li>
-              <li><Link href="/login" className="text-white/85 hover:text-brand-sage-light">Student log-in</Link></li>
-              <li><a href="#" className="text-white/85 hover:text-brand-sage-light">Privacy policy</a></li>
-            </ul>
+            <div className="relative h-[500px] rounded-2xl overflow-hidden hidden md:block">
+              <Image
+                src="/images/instructor-helping.jpg"
+                alt="Instructor guiding a student"
+                fill
+                className="object-cover"
+              />
+            </div>
           </div>
         </div>
-        <p className="text-xs text-white/40 border-t border-white/10 pt-6">
-          © {new Date().getFullYear()} balance studios. All rights reserved.
-        </p>
-      </div>
-    </footer>
-  );
-}
+      </section>
 
-// ------------------------------------------------------------------
-// Shared
-// ------------------------------------------------------------------
-function SectionHeader({ eyebrow, title }: { eyebrow: string; title: string }) {
-  return (
-    <div className="text-center">
-      <p className="text-xs tracking-[0.3em] uppercase text-brand-sage mb-4">{eyebrow}</p>
-      <h2 className="text-3xl md:text-4xl font-light text-brand-primary leading-tight max-w-3xl mx-auto">
-        {title}
-      </h2>
+      {/* About the Course */}
+      <section id="about" className="py-24 md:py-32 bg-brand-surface">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-20">
+            <p className="text-brand-sage text-sm tracking-[0.3em] uppercase mb-4">
+              The Course
+            </p>
+            <h2 className="text-3xl md:text-5xl font-light tracking-tight text-brand-primary">
+              A different approach to learning
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="group">
+              <div className="relative h-64 rounded-2xl overflow-hidden mb-6">
+                <Image
+                  src="/images/reformer-stretch.jpg"
+                  alt="Structured learning on reformers"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <h3 className="text-lg font-medium text-brand-primary mb-3">
+                Structured Learning
+              </h3>
+              <p className="text-brand-muted leading-relaxed">
+                Follow a carefully designed curriculum that builds your
+                knowledge and skills progressively over weeks.
+              </p>
+            </div>
+            <div className="group">
+              <div className="relative h-64 rounded-2xl overflow-hidden mb-6">
+                <Image
+                  src="/images/studio-instructor.jpg"
+                  alt="Instructor helping student"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <h3 className="text-lg font-medium text-brand-primary mb-3">
+                In-Person & Online
+              </h3>
+              <p className="text-brand-muted leading-relaxed">
+                Blend hands-on studio sessions with online learning materials.
+                The perfect combination for deep understanding.
+              </p>
+            </div>
+            <div className="group">
+              <div className="relative h-64 rounded-2xl overflow-hidden mb-6">
+                <Image
+                  src="/images/instructor-chat.jpg"
+                  alt="Instructors discussing technique"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <h3 className="text-lg font-medium text-brand-primary mb-3">
+                Direct Feedback
+              </h3>
+              <p className="text-brand-muted leading-relaxed">
+                Ask questions directly within each section and receive
+                personalised responses from our expert instructors.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* What You'll Learn — Curriculum */}
+      <section id="curriculum" className="py-24 md:py-32 bg-background">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <p className="text-brand-sage text-sm tracking-[0.3em] uppercase mb-4">
+              Curriculum
+            </p>
+            <h2 className="text-3xl md:text-5xl font-light tracking-tight text-brand-primary mb-6">
+              What you&apos;ll learn
+            </h2>
+            <p className="text-brand-muted text-lg max-w-2xl mx-auto">
+              8 comprehensive sections delivered over 8 weeks, each building
+              on the last. Theory meets practice.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-4">
+            {[
+              {
+                num: "01",
+                title: "Foundations of Pilates",
+                desc: "Core principles, history, and philosophy of the method",
+              },
+              {
+                num: "02",
+                title: "Anatomy & Alignment",
+                desc: "Key anatomical concepts and proper body alignment",
+              },
+              {
+                num: "03",
+                title: "Core Activation & Breathing",
+                desc: "The powerhouse, deep core engagement, lateral breathing",
+              },
+              {
+                num: "04",
+                title: "Mat Work Essentials",
+                desc: "Fundamental mat exercises, modifications, and progressions",
+              },
+              {
+                num: "05",
+                title: "Reformer Fundamentals",
+                desc: "Setup, safety, and foundational reformer exercises",
+              },
+              {
+                num: "06",
+                title: "Programming & Sequencing",
+                desc: "Designing sessions that flow logically and safely",
+              },
+              {
+                num: "07",
+                title: "Cueing & Communication",
+                desc: "Verbal, visual, and tactile cueing techniques",
+              },
+              {
+                num: "08",
+                title: "Special Populations",
+                desc: "Adapting for pre/postnatal, injuries, and more",
+              },
+            ].map((item) => (
+              <div
+                key={item.num}
+                className="flex gap-4 p-5 rounded-2xl bg-white border border-brand-border hover:border-brand-sage/40 transition-colors"
+              >
+                <span className="text-2xl font-light text-brand-sage/50 shrink-0 w-10">
+                  {item.num}
+                </span>
+                <div>
+                  <h3 className="font-medium text-brand-primary mb-1">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-brand-muted">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Full-width image break */}
+      <section className="relative h-[50vh] md:h-[60vh]">
+        <Image
+          src="/images/studio-ball-workout.jpg"
+          alt="Group Pilates class with medicine balls"
+          fill
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
+      </section>
+
+      {/* Why balance */}
+      <section className="py-24 md:py-32 bg-background">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <p className="text-brand-sage text-sm tracking-[0.3em] uppercase mb-4">
+              Why balance
+            </p>
+            <h2 className="text-3xl md:text-5xl font-light tracking-tight text-brand-primary">
+              Built on real experience
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-12 items-center max-w-4xl mx-auto">
+            <div className="relative h-[450px] rounded-2xl overflow-hidden">
+              <Image
+                src="/images/studio-welcome.jpg"
+                alt="balance studio"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div>
+              <p className="text-brand-muted leading-relaxed mb-6">
+                This course was created by a team with years of experience
+                in reformer Pilates and a genuine passion for developing
+                the next generation of instructors. Every section has been
+                shaped by real-world teaching, not just textbooks.
+              </p>
+              <p className="text-brand-muted leading-relaxed mb-8">
+                With multiple studios across Kildare and Wicklow and
+                thousands of clients trained, we understand what it takes
+                to go from student to confident, capable instructor.
+              </p>
+              <div className="flex gap-8">
+                <div>
+                  <p className="text-2xl font-light text-brand-primary">5</p>
+                  <p className="text-xs text-brand-muted tracking-wider uppercase">
+                    Studios
+                  </p>
+                </div>
+                <div>
+                  <p className="text-2xl font-light text-brand-primary">1000+</p>
+                  <p className="text-xs text-brand-muted tracking-wider uppercase">
+                    Clients Trained
+                  </p>
+                </div>
+                <div>
+                  <p className="text-2xl font-light text-brand-primary">8+</p>
+                  <p className="text-xs text-brand-muted tracking-wider uppercase">
+                    Years Experience
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-24 md:py-32 bg-brand-surface">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <p className="text-brand-sage text-sm tracking-[0.3em] uppercase mb-4">
+              Testimonials
+            </p>
+            <h2 className="text-3xl md:text-5xl font-light tracking-tight text-brand-primary">
+              What our students say
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                quote:
+                  "This course completely changed how I understand Pilates. The combination of in-person and online made it so much easier to retain everything.",
+                name: "Sarah M.",
+                role: "Graduate, Cohort 1",
+              },
+              {
+                quote:
+                  "The feedback system is incredible. Being able to ask questions within each section and get personal responses made all the difference.",
+                name: "Emma K.",
+                role: "Graduate, Cohort 1",
+              },
+              {
+                quote:
+                  "I went from complete beginner to teaching my first class in 8 weeks. The structured approach gave me the confidence I needed.",
+                name: "Rachel D.",
+                role: "Graduate, Cohort 2",
+              },
+            ].map((t) => (
+              <div
+                key={t.name}
+                className="bg-white rounded-2xl border border-brand-border p-8"
+              >
+                <svg
+                  className="w-8 h-8 text-brand-sage/30 mb-4"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                </svg>
+                <p className="text-brand-primary leading-relaxed mb-6 italic">
+                  &ldquo;{t.quote}&rdquo;
+                </p>
+                <div>
+                  <p className="font-medium text-brand-primary">{t.name}</p>
+                  <p className="text-sm text-brand-muted">{t.role}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="py-24 md:py-32 bg-background">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-20">
+            <p className="text-brand-sage text-sm tracking-[0.3em] uppercase mb-4">
+              How It Works
+            </p>
+            <h2 className="text-3xl md:text-5xl font-light tracking-tight text-brand-primary">
+              Your journey with balance
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div className="space-y-12">
+              {[
+                {
+                  step: "01",
+                  title: "Enrol & Get Access",
+                  desc: "Sign up for the course and receive your personal login. Your learning space is ready.",
+                },
+                {
+                  step: "02",
+                  title: "Follow the Flow",
+                  desc: "New sections unlock weekly, perfectly synced with your in-person training sessions.",
+                },
+                {
+                  step: "03",
+                  title: "Learn & Practice",
+                  desc: "Work through each section at your own pace. Mark sections complete as you progress.",
+                },
+                {
+                  step: "04",
+                  title: "Ask Questions",
+                  desc: "Have a question about any section? Ask directly on the page and get expert feedback.",
+                },
+              ].map((item) => (
+                <div key={item.step} className="flex gap-8 items-start">
+                  <span className="text-4xl font-light text-brand-sage/40 shrink-0 w-16">
+                    {item.step}
+                  </span>
+                  <div>
+                    <h3 className="text-xl font-medium text-brand-primary mb-2">
+                      {item.title}
+                    </h3>
+                    <p className="text-brand-muted leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="relative h-[500px] rounded-2xl overflow-hidden hidden md:block">
+              <Image
+                src="/images/reformer-class.jpg"
+                alt="Pilates reformer class"
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section id="pricing" className="py-24 md:py-32 bg-brand-surface">
+        <div className="max-w-3xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <p className="text-brand-sage text-sm tracking-[0.3em] uppercase mb-4">
+              Investment
+            </p>
+            <h2 className="text-3xl md:text-5xl font-light tracking-tight text-brand-primary">
+              Start your career in Pilates
+            </h2>
+          </div>
+
+          <div className="bg-white rounded-3xl border border-brand-border p-10 md:p-12 shadow-sm">
+            <div className="text-center mb-8">
+              <p className="text-sm text-brand-muted tracking-wider uppercase mb-3">
+                Full Course Access
+              </p>
+              <div className="flex items-baseline justify-center gap-1">
+                <span className="text-5xl md:text-6xl font-light text-brand-primary">
+                  €499
+                </span>
+              </div>
+              <p className="text-brand-muted mt-2">One-time payment</p>
+            </div>
+
+            <div className="border-t border-brand-border pt-8 mb-8">
+              <div className="grid sm:grid-cols-2 gap-4">
+                {[
+                  "8 comprehensive course sections",
+                  "In-person training sessions",
+                  "Online learning platform access",
+                  "Personal progress tracking",
+                  "Direct Q&A with instructors",
+                  "Lifetime access to materials",
+                  "Certificate on completion",
+                  "balance community membership",
+                ].map((item) => (
+                  <div key={item} className="flex items-center gap-3">
+                    <svg
+                      className="w-5 h-5 text-brand-sage shrink-0"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    <span className="text-sm text-brand-primary">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Link
+              href="/signup"
+              className="block w-full py-4 bg-brand-sage text-white text-sm tracking-wider uppercase rounded-full hover:bg-brand-sage-dark transition-colors font-medium text-center"
+            >
+              Enrol Now
+            </Link>
+
+            <p className="text-xs text-brand-muted text-center mt-4">
+              Secure payment via Stripe. Instant access after enrolment.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-24 md:py-32 bg-background">
+        <div className="max-w-3xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <p className="text-brand-sage text-sm tracking-[0.3em] uppercase mb-4">
+              FAQ
+            </p>
+            <h2 className="text-3xl md:text-5xl font-light tracking-tight text-brand-primary">
+              Common questions
+            </h2>
+          </div>
+
+          <div className="space-y-6">
+            {[
+              {
+                q: "Do I need any prior Pilates experience?",
+                a: "No prior teaching experience is required, though a basic understanding of Pilates as a participant is helpful. This course is designed to take you from enthusiast to instructor.",
+              },
+              {
+                q: "How is the course structured?",
+                a: "The course runs over 8 weeks with one section unlocking each week. Each section combines online theory with in-person practical sessions at our studio.",
+              },
+              {
+                q: "Where do the in-person sessions take place?",
+                a: "In-person sessions take place at our balance studios in Kildare and Wicklow. You'll be notified of the exact location and times when you enrol.",
+              },
+              {
+                q: "How long do I have access to the online content?",
+                a: "You get lifetime access to all course materials. You can revisit any section at any time, even after completing the course.",
+              },
+              {
+                q: "Can I ask questions during the course?",
+                a: "Absolutely. Every section has a built-in Q&A feature where you can ask questions and receive personalised responses directly from our instructors.",
+              },
+              {
+                q: "Will I receive a certificate?",
+                a: "Yes, upon successful completion of all 8 sections, you'll receive a balance Pilates instructor certificate.",
+              },
+              {
+                q: "What is the refund policy?",
+                a: "We offer a full refund within 7 days of enrolment if you haven't accessed more than 2 sections. Please contact us for details.",
+              },
+            ].map((item) => (
+              <div
+                key={item.q}
+                className="bg-white rounded-2xl border border-brand-border p-6"
+              >
+                <h3 className="font-medium text-brand-primary mb-2">
+                  {item.q}
+                </h3>
+                <p className="text-brand-muted leading-relaxed text-sm">
+                  {item.a}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="relative py-32 md:py-40 text-center">
+        <div className="absolute inset-0">
+          <Image
+            src="/images/studio-mirror.jpg"
+            alt="balance studio"
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-brand-primary/80" />
+        </div>
+        <div className="relative z-10 max-w-3xl mx-auto px-6 text-white">
+          <h2 className="text-3xl md:text-5xl font-light tracking-tight mb-6">
+            Your Pilates career starts here
+          </h2>
+          <p className="text-white/70 text-lg mb-12 leading-relaxed">
+            Join the next cohort of balance-trained instructors.
+            Expert guidance, structured learning, real results.
+          </p>
+          <Link
+            href="/signup"
+            className="inline-block px-10 py-4 bg-brand-sage text-white text-sm tracking-wider uppercase rounded-full hover:bg-brand-sage-dark transition-colors font-medium"
+          >
+            Sign Up Now
+          </Link>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-12 bg-background border-t border-brand-border">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <Image
+              src="/images/balance-logo.jpg"
+              alt="balance"
+              width={24}
+              height={24}
+              className="rounded-full"
+            />
+            <p className="text-sm text-brand-muted">
+              &copy; {new Date().getFullYear()} balance. All rights reserved.
+            </p>
+          </div>
+          <a
+            href="https://balancestudios.ie"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-brand-muted hover:text-brand-primary transition-colors"
+          >
+            balancestudios.ie
+          </a>
+        </div>
+      </footer>
     </div>
   );
 }
