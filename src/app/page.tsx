@@ -11,6 +11,21 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import ApplicationForm from "@/components/landing/ApplicationForm";
+import HeroFullBleed from "@/components/landing/templates/HeroFullBleed";
+import HeroSplitScreen from "@/components/landing/templates/HeroSplitScreen";
+import TutorsSideBySide from "@/components/landing/templates/TutorsSideBySide";
+import TutorsAlternatingRows from "@/components/landing/templates/TutorsAlternatingRows";
+import GalleryMosaic from "@/components/landing/templates/GalleryMosaic";
+import GalleryEqualGrid from "@/components/landing/templates/GalleryEqualGrid";
+import PathwaysCards from "@/components/landing/templates/PathwaysCards";
+import PathwaysComparisonTable from "@/components/landing/templates/PathwaysComparisonTable";
+import { loadLandingData } from "@/lib/landing/loader";
+import type {
+  HeroContent,
+  TutorsContent,
+  GalleryContent,
+  PathwaysContent,
+} from "@/lib/landing/config";
 
 export const metadata: Metadata = {
   title:
@@ -21,14 +36,8 @@ export const metadata: Metadata = {
 
 // ----- Quick-edit content blocks -----
 
-const COURSE_TAGLINE = "Pilates Instructor Training — Dublin";
-const HEADLINE_LINE_1 = "Most Pilates courses";
-const HEADLINE_LINE_2 = "teach you exercises.";
-const HEADLINE_LINE_3 = "This one teaches you";
-const HEADLINE_LINE_4_ITALIC = "how to teach.";
-
-// CONFIRM: replace with actual cohort dates once Kelly signs them off
-const COHORT_DATES_TAGLINE = "Cohort 1 · Starts Spring 2026";
+// Hero / tutors / gallery / pathways content lives in the DB (editable
+// via /admin/landing); defaults are in src/lib/landing/config.ts.
 
 const HOOK = {
   short:
@@ -81,23 +90,6 @@ const NOT_FOR_YOU_IF = [
   "You can't make the four weekend dates (we don't catch up online)",
 ];
 
-const TUTORS = [
-  {
-    name: "Kelly",
-    role: "Course director · balance studios founder",
-    bio: "CONFIRM short bio — years teaching, training lineage, philosophy, anything memorable about how she runs the studio. 60–90 words is plenty.",
-    // CONFIRM: drop Kelly's portrait into public/images/tutor-kelly.jpg
-    image: "/images/instructor-chat.jpg",
-  },
-  {
-    name: "Catherine",
-    role: "Lead tutor",
-    bio: "CONFIRM short bio — Catherine's background, training, and what she's known for in the studio.",
-    // CONFIRM: drop Catherine's portrait into public/images/tutor-catherine.jpg
-    image: "/images/instructor-helping.jpg",
-  },
-];
-
 const PACKAGE_ITEMS = [
   {
     icon: "📕",
@@ -118,33 +110,6 @@ const PACKAGE_ITEMS = [
     icon: "🚪",
     title: "Three open studio days",
     body: "Drop-in days to teach under supervision, troubleshoot exercises and sign off your practical hours.",
-  },
-];
-
-const PATHWAYS = [
-  {
-    code: "A",
-    title: "Full comprehensive",
-    summary: "Mat + reformer + special populations. The complete instructor pathway.",
-    duration: "Four weekends · open studio days · practical assessment",
-    price: "CONFIRM pricing",
-    bestFor: "Aspiring full-time instructors who want both modalities and the broadest career options.",
-  },
-  {
-    code: "B",
-    title: "Mat only",
-    summary: "Mat module + foundations. Shortest pathway to teaching mat classes.",
-    duration: "Weekends 1 & 2 · mat practical assessment",
-    price: "CONFIRM pricing",
-    bestFor: "Yoga / fitness instructors adding Pilates mat to their offering, or anyone testing the water before going comprehensive.",
-  },
-  {
-    code: "C",
-    title: "Reformer only",
-    summary: "Reformer module + foundations. Requires an existing mat qualification.",
-    duration: "Weekends 1 & 3 · reformer practical assessment",
-    price: "CONFIRM pricing",
-    bestFor: "Existing mat instructors specialising into reformer. Prerequisite: an STA / Polestar / equivalent mat qualification.",
   },
 ];
 
@@ -173,21 +138,47 @@ const FAQS = [
 
 // ----- Page -----
 
-export default function HomePage() {
+export default async function HomePage() {
+  // CMS-driven sections (hero / tutors / gallery / pathways). Anything
+  // not picked by an admin falls back to the in-code defaults below.
+  const data = await loadLandingData();
+
+  const heroContent = data.sections.hero.content as HeroContent;
+  const tutorsContent = data.sections.tutors.content as TutorsContent;
+  const galleryContent = data.sections.gallery.content as GalleryContent;
+  const pathwaysContent = data.sections.pathways.content as PathwaysContent;
+  const heroImageUrl = data.imageUrls.get("hero-bg") ?? "/images/studio-reformers-row.jpg";
+
   return (
     <div className="bg-brand-surface text-brand-primary">
       <Nav />
 
-      <Hero />
+      {data.sections.hero.template === "split-screen" ? (
+        <HeroSplitScreen content={heroContent} imageUrl={heroImageUrl} />
+      ) : (
+        <HeroFullBleed content={heroContent} imageUrl={heroImageUrl} />
+      )}
       <Hook />
       <CourseOverview />
       <WhatYouWillLearn />
       <FourWeekends />
       <WhoItsFor />
-      <Tutors />
-      <Studio />
+      {data.sections.tutors.template === "alternating-rows" ? (
+        <TutorsAlternatingRows content={tutorsContent} imageUrls={data.imageUrls} />
+      ) : (
+        <TutorsSideBySide content={tutorsContent} imageUrls={data.imageUrls} />
+      )}
+      {data.sections.gallery.template === "equal-grid" ? (
+        <GalleryEqualGrid content={galleryContent} imageUrls={data.imageUrls} />
+      ) : (
+        <GalleryMosaic content={galleryContent} imageUrls={data.imageUrls} />
+      )}
       <WhatYouGet />
-      <Pathways />
+      {data.sections.pathways.template === "comparison-table" ? (
+        <PathwaysComparisonTable content={pathwaysContent} />
+      ) : (
+        <PathwaysCards content={pathwaysContent} />
+      )}
       <Faqs />
       <SocialProof />
       <Timeline />
@@ -230,57 +221,6 @@ function Nav() {
         </a>
       </div>
     </nav>
-  );
-}
-
-// ------------------------------------------------------------------
-// Hero (above the fold)
-// ------------------------------------------------------------------
-function Hero() {
-  return (
-    <section id="top" className="relative min-h-screen flex items-center pt-16">
-      <div className="absolute inset-0">
-        <Image
-          src="/images/studio-reformers-row.jpg"
-          alt="balance studios reformer line"
-          fill
-          priority
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/40 to-black/20" />
-      </div>
-      <div className="relative z-10 max-w-5xl mx-auto px-5 md:px-8 text-white py-20">
-        <p className="text-brand-sage-light text-xs sm:text-sm tracking-[0.35em] uppercase mb-5">
-          {COURSE_TAGLINE}
-        </p>
-        <h1 className="text-4xl sm:text-5xl md:text-7xl font-light leading-[1.05] tracking-tight mb-8">
-          {HEADLINE_LINE_1}
-          <br />
-          {HEADLINE_LINE_2}
-          <br />
-          {HEADLINE_LINE_3}{" "}
-          <span className="italic">{HEADLINE_LINE_4_ITALIC}</span>
-        </h1>
-        <p className="text-white/85 text-base sm:text-lg max-w-2xl mb-10 leading-relaxed">
-          {HOOK.short}
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-          <a
-            href="#apply"
-            className="inline-flex items-center justify-center px-8 py-3.5 bg-brand-sage text-white text-xs tracking-[0.25em] uppercase rounded-full hover:bg-brand-sage-dark transition-colors"
-          >
-            Apply / join waitlist
-          </a>
-          <a
-            href="#overview"
-            className="inline-flex items-center justify-center px-8 py-3.5 text-xs tracking-[0.25em] uppercase rounded-full border border-white/40 text-white hover:bg-white/10 transition-colors"
-          >
-            See the course
-          </a>
-        </div>
-        <p className="mt-8 text-sm text-white/70">{COHORT_DATES_TAGLINE}</p>
-      </div>
-    </section>
   );
 }
 
@@ -424,77 +364,6 @@ function WhoItsFor() {
 }
 
 // ------------------------------------------------------------------
-// Tutors
-// ------------------------------------------------------------------
-function Tutors() {
-  return (
-    <section id="tutors" className="py-20 md:py-28 px-5 md:px-8 bg-white border-y border-brand-border">
-      <div className="max-w-5xl mx-auto">
-        <SectionHeader eyebrow="Meet the tutors" title="Real teachers, real studio time" />
-        <div className="grid md:grid-cols-2 gap-10 mt-12">
-          {TUTORS.map((t) => (
-            <div key={t.name} className="flex flex-col items-start">
-              <div className="relative w-full aspect-[4/5] mb-5 rounded-2xl overflow-hidden bg-brand-surface">
-                <Image
-                  src={t.image}
-                  alt={t.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
-              </div>
-              <p className="text-xs tracking-[0.3em] uppercase text-brand-sage mb-2">{t.role}</p>
-              <h3 className="text-2xl font-light text-brand-primary mb-3">{t.name}</h3>
-              <p className="text-sm text-brand-primary/80 leading-relaxed">{t.bio}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ------------------------------------------------------------------
-// Studio gallery
-// ------------------------------------------------------------------
-function Studio() {
-  const photos = [
-    "/images/studio-reformers-row.jpg",
-    "/images/studio-wide.jpg",
-    "/images/studio-instructor.jpg",
-    "/images/reformer-class.jpg",
-    "/images/studio-mirror.jpg",
-    "/images/studio-equipment.jpg",
-  ];
-  return (
-    <section className="py-20 md:py-28 px-5 md:px-8">
-      <div className="max-w-6xl mx-auto">
-        <SectionHeader eyebrow="The studio" title="Where you'll train" />
-        <p className="text-center text-brand-primary/70 max-w-2xl mx-auto mt-4">
-          A working studio in Dublin — not a hotel function room. You learn on the equipment you&rsquo;ll teach on.
-        </p>
-        <div className="mt-12 grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-          {photos.map((src, i) => (
-            <div
-              key={src}
-              className={`relative overflow-hidden rounded-2xl ${i === 0 ? "col-span-2 row-span-2 aspect-square" : "aspect-square"}`}
-            >
-              <Image
-                src={src}
-                alt="balance studio"
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-700"
-                sizes="(max-width: 768px) 50vw, 33vw"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ------------------------------------------------------------------
 // What you get
 // ------------------------------------------------------------------
 function WhatYouGet() {
@@ -514,47 +383,6 @@ function WhatYouGet() {
               <p className="text-3xl mb-3">{p.icon}</p>
               <h3 className="font-medium text-brand-primary mb-2">{p.title}</h3>
               <p className="text-sm text-brand-primary/80 leading-relaxed">{p.body}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ------------------------------------------------------------------
-// Pathways
-// ------------------------------------------------------------------
-function Pathways() {
-  return (
-    <section id="pathways" className="py-20 md:py-28 px-5 md:px-8">
-      <div className="max-w-6xl mx-auto">
-        <SectionHeader
-          eyebrow="Three pathways"
-          title="Pick the route that fits where you're going"
-        />
-        <div className="grid md:grid-cols-3 gap-5 mt-12">
-          {PATHWAYS.map((p) => (
-            <div
-              key={p.code}
-              className="rounded-2xl border border-brand-border bg-white p-7 flex flex-col"
-            >
-              <p className="text-xs tracking-[0.3em] uppercase text-brand-sage mb-3">Pathway {p.code}</p>
-              <h3 className="text-xl font-medium text-brand-primary mb-3">{p.title}</h3>
-              <p className="text-sm text-brand-primary/80 mb-4">{p.summary}</p>
-              <p className="text-xs text-brand-muted mb-1">Format</p>
-              <p className="text-sm text-brand-primary/90 mb-4">{p.duration}</p>
-              <p className="text-xs text-brand-muted mb-1">Best for</p>
-              <p className="text-sm text-brand-primary/90 mb-6">{p.bestFor}</p>
-              <div className="mt-auto pt-4 border-t border-brand-border flex items-center justify-between">
-                <p className="text-lg font-light text-brand-primary">{p.price}</p>
-                <a
-                  href="#apply"
-                  className="text-xs tracking-wider uppercase text-brand-sage hover:text-brand-sage-dark"
-                >
-                  Apply →
-                </a>
-              </div>
             </div>
           ))}
         </div>

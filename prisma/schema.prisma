@@ -69,6 +69,28 @@ model Application {
   @@index([createdAt])
 }
 
+/// One row per editable landing-page section. `template` picks the
+/// React layout variant; `content` is a JSON blob whose shape depends
+/// on the section (typed in code).
+model LandingSection {
+  id        String   @id @default(cuid())
+  section   String   @unique // "hero" | "tutors" | "gallery" | "pathways"
+  template  String   // layout variant id, e.g. "full-bleed" / "split-screen"
+  content   Json
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+/// One row per uploaded image slot. Slot id is well-known
+/// ("hero-bg", "tutor-kelly", etc.) — admin only uploads/overwrites.
+model LandingAsset {
+  id        String   @id @default(cuid())
+  slot      String   @unique
+  imagePath String // storage path inside the "landing/" bucket folder
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
 model Section {
   id                      String     @id @default(cuid())
   title                   String

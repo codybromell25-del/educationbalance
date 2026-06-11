@@ -31,7 +31,7 @@ function getStorageClient(): StorageClient {
   });
 }
 
-export type StorageFolder = "parts" | "submissions" | "hourlogs";
+export type StorageFolder = "parts" | "submissions" | "hourlogs" | "landing";
 
 /** Uploads a File / Blob and returns its storage path (e.g. "parts/abc.pdf"). */
 export async function uploadFile(
