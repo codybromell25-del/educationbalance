@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { HeroContent } from "@/lib/landing/config";
 
 export default function HeroSplitScreen({
@@ -40,15 +41,16 @@ export default function HeroSplitScreen({
             {content.description}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+            {/* Sign Up button is hard-wired to /signup — do not remove. */}
+            <Link
+              href="/signup"
+              className="inline-flex items-center justify-center px-10 py-4 bg-brand-sage text-white text-xs tracking-[0.25em] uppercase rounded-full hover:bg-brand-sage-dark transition-colors font-medium"
+            >
+              Sign Up Now
+            </Link>
             <a
               href="#apply"
-              className="inline-flex items-center justify-center px-8 py-3.5 bg-brand-primary text-white text-xs tracking-[0.25em] uppercase rounded-full hover:bg-brand-primary/90 transition-colors"
-            >
-              {content.ctaPrimaryLabel}
-            </a>
-            <a
-              href="#overview"
-              className="inline-flex items-center justify-center px-8 py-3.5 text-xs tracking-[0.25em] uppercase rounded-full border border-brand-border text-brand-primary hover:bg-white transition-colors"
+              className="inline-flex items-center justify-center px-10 py-4 text-xs tracking-[0.25em] uppercase rounded-full border border-brand-border text-brand-primary hover:bg-white transition-colors"
             >
               {content.ctaSecondaryLabel}
             </a>

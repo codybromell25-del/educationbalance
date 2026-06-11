@@ -102,19 +102,18 @@ export default function HeroEditor({
         multiline
       />
 
-      <div className="grid sm:grid-cols-2 gap-4">
+      <div>
         <Field
-          label="Primary button label"
-          value={content.ctaPrimaryLabel}
-          onChange={(v) => setContent({ ...content, ctaPrimaryLabel: v })}
-          disabled={busy}
-        />
-        <Field
-          label="Secondary button label"
+          label='Secondary button label (next to "Sign Up Now")'
           value={content.ctaSecondaryLabel}
           onChange={(v) => setContent({ ...content, ctaSecondaryLabel: v })}
           disabled={busy}
         />
+        <p className="text-xs text-brand-muted mt-2">
+          The <strong>Sign Up Now</strong> button is hard-wired in the hero
+          and can&rsquo;t be removed &mdash; it always sends users to{" "}
+          <code>/signup</code>.
+        </p>
       </div>
 
       <Field

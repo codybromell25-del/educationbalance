@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { HeroContent } from "@/lib/landing/config";
 
 export default function HeroFullBleed({
@@ -19,10 +20,10 @@ export default function HeroFullBleed({
           priority
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/40 to-black/20" />
+        <div className="absolute inset-0 bg-black/45" />
       </div>
-      <div className="relative z-10 max-w-5xl mx-auto px-5 md:px-8 text-white py-20">
-        <p className="text-brand-sage-light text-xs sm:text-sm tracking-[0.35em] uppercase mb-5">
+      <div className="relative z-10 max-w-5xl mx-auto px-5 md:px-8 text-white py-20 text-center">
+        <p className="text-brand-sage-light text-xs sm:text-sm tracking-[0.35em] uppercase mb-6">
           {content.tagline}
         </p>
         <h1 className="text-4xl sm:text-5xl md:text-7xl font-light leading-[1.05] tracking-tight mb-8">
@@ -41,24 +42,25 @@ export default function HeroFullBleed({
           )}
           {l4 && <span className="italic">{l4}</span>}
         </h1>
-        <p className="text-white/85 text-base sm:text-lg max-w-2xl mb-10 leading-relaxed">
+        <p className="text-white/85 text-base sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
           {content.description}
         </p>
-        <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          {/* Sign Up button is hard-wired to /signup — do not remove. */}
+          <Link
+            href="/signup"
+            className="inline-flex items-center justify-center px-10 py-4 bg-brand-sage text-white text-xs tracking-[0.25em] uppercase rounded-full hover:bg-brand-sage-dark transition-colors font-medium"
+          >
+            Sign Up Now
+          </Link>
           <a
             href="#apply"
-            className="inline-flex items-center justify-center px-8 py-3.5 bg-brand-sage text-white text-xs tracking-[0.25em] uppercase rounded-full hover:bg-brand-sage-dark transition-colors"
-          >
-            {content.ctaPrimaryLabel}
-          </a>
-          <a
-            href="#overview"
-            className="inline-flex items-center justify-center px-8 py-3.5 text-xs tracking-[0.25em] uppercase rounded-full border border-white/40 text-white hover:bg-white/10 transition-colors"
+            className="inline-flex items-center justify-center px-10 py-4 text-xs tracking-[0.25em] uppercase rounded-full border border-white/40 text-white hover:bg-white/10 transition-colors"
           >
             {content.ctaSecondaryLabel}
           </a>
         </div>
-        <p className="mt-8 text-sm text-white/70">{content.cohortDates}</p>
+        <p className="mt-10 text-sm text-white/75">{content.cohortDates}</p>
       </div>
     </section>
   );
