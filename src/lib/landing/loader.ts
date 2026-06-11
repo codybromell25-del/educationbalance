@@ -4,18 +4,40 @@ import {
   SECTION_REGISTRY,
   type SectionKey,
   type HeroContent,
+  type CoursePillarsContent,
+  type WhoForContent,
+  type WhatYouLearnContent,
+  type WeekendsContent,
   type TutorsContent,
   type GalleryContent,
+  type WhatYouGetContent,
   type PathwaysContent,
+  type TimelineContent,
+  type WhyBalanceContent,
+  type FaqsContent,
+  type FinalCtaContent,
+  type FooterContent,
 } from "./config";
+
+export type AnySectionContent =
+  | HeroContent
+  | CoursePillarsContent
+  | WhoForContent
+  | WhatYouLearnContent
+  | WeekendsContent
+  | TutorsContent
+  | GalleryContent
+  | WhatYouGetContent
+  | PathwaysContent
+  | TimelineContent
+  | WhyBalanceContent
+  | FaqsContent
+  | FinalCtaContent
+  | FooterContent;
 
 export type ResolvedSection = {
   template: string;
-  content:
-    | HeroContent
-    | TutorsContent
-    | GalleryContent
-    | PathwaysContent;
+  content: AnySectionContent;
 };
 
 export type LandingData = {
@@ -26,11 +48,6 @@ export type LandingData = {
   imageUrls: Map<string, string>;
 };
 
-/**
- * Loads every editable section's template + content and every uploaded
- * landing image, with fallbacks pre-applied. Safe to call from any
- * server component.
- */
 export async function loadLandingData(): Promise<LandingData> {
   const [sectionRows, assetRows] = await Promise.all([
     prisma.landingSection.findMany(),
@@ -48,19 +65,15 @@ export async function loadLandingData(): Promise<LandingData> {
         {
           template: row?.template ?? cfg.defaultTemplate,
           content:
-            (row?.content as
-              | HeroContent
-              | TutorsContent
-              | GalleryContent
-              | PathwaysContent
-              | undefined) ?? cfg.defaultContent,
+            (row?.content as AnySectionContent | undefined) ??
+            (cfg.defaultContent as AnySectionContent),
         },
       ];
     }),
   ) as Record<SectionKey, ResolvedSection>;
 
   // Collect every slot we know about + every uploaded slot
-  const knownSlots = new Map<string, string>(); // slot → fallback
+  const knownSlots = new Map<string, string>();
   for (const cfg of Object.values(SECTION_REGISTRY)) {
     for (const s of cfg.assetSlots) {
       knownSlots.set(s.key, s.fallback);
@@ -69,7 +82,6 @@ export async function loadLandingData(): Promise<LandingData> {
 
   const assetsBySlot = new Map(assetRows.map((a) => [a.slot, a.imagePath]));
 
-  // Resolve each known slot → URL (uploaded signed URL or fallback)
   const imageUrls = new Map<string, string>();
   await Promise.all(
     [...knownSlots.entries()].map(async ([slot, fallback]) => {

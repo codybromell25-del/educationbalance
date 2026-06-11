@@ -2,26 +2,56 @@ import { prisma } from "@/lib/db";
 import { loadLandingData } from "@/lib/landing/loader";
 import {
   SECTION_REGISTRY,
+  type SectionKey,
   type HeroContent,
+  type CoursePillarsContent,
+  type WhoForContent,
+  type WhatYouLearnContent,
+  type WeekendsContent,
   type TutorsContent,
   type GalleryContent,
+  type WhatYouGetContent,
   type PathwaysContent,
+  type TimelineContent,
+  type WhyBalanceContent,
+  type FaqsContent,
+  type FinalCtaContent,
+  type FooterContent,
+  type AssetSlot,
 } from "@/lib/landing/config";
 import HeroEditor from "@/components/admin/landing/HeroEditor";
+import CoursePillarsEditor from "@/components/admin/landing/CoursePillarsEditor";
+import WhoForEditor from "@/components/admin/landing/WhoForEditor";
+import WhatYouLearnEditor from "@/components/admin/landing/WhatYouLearnEditor";
+import WeekendsEditor from "@/components/admin/landing/WeekendsEditor";
 import TutorsEditor from "@/components/admin/landing/TutorsEditor";
 import GalleryEditor from "@/components/admin/landing/GalleryEditor";
+import WhatYouGetEditor from "@/components/admin/landing/WhatYouGetEditor";
 import PathwaysEditor from "@/components/admin/landing/PathwaysEditor";
+import TimelineEditor from "@/components/admin/landing/TimelineEditor";
+import WhyBalanceEditor from "@/components/admin/landing/WhyBalanceEditor";
+import FaqsEditor from "@/components/admin/landing/FaqsEditor";
+import FinalCtaEditor from "@/components/admin/landing/FinalCtaEditor";
+import FooterEditor from "@/components/admin/landing/FooterEditor";
 import ImageSlotEditor from "@/components/admin/landing/ImageSlotEditor";
 
 export default async function AdminLandingPage() {
   const data = await loadLandingData();
-  // Which slots currently have a custom upload (so we know whether to
-  // show a "Reset to default" button)
   const customAssets = new Set(
     (await prisma.landingAsset.findMany({ select: { slot: true } })).map(
       (a) => a.slot,
     ),
   );
+
+  function slotsFor(sectionKey: SectionKey) {
+    const cfg = SECTION_REGISTRY[sectionKey];
+    return cfg.assetSlots.map((s: AssetSlot) => ({
+      key: s.key,
+      label: s.label,
+      currentUrl: data.imageUrls.get(s.key) ?? s.fallback,
+      hasCustom: customAssets.has(s.key),
+    }));
+  }
 
   return (
     <div className="p-5 md:p-8 max-w-5xl mx-auto">
@@ -30,64 +60,103 @@ export default async function AdminLandingPage() {
           Landing page editor
         </h1>
         <p className="text-brand-muted mt-2">
-          Pick a template for each section and edit its content + images. Saves
-          appear on the public site immediately.
+          Every section of the public landing page is editable here. Saves
+          appear on <code>/</code> immediately.
         </p>
       </div>
 
-      {/* HERO */}
       <SectionWrapper title={SECTION_REGISTRY.hero.label}>
         <HeroEditor
           initialTemplate={data.sections.hero.template}
           initialContent={data.sections.hero.content as HeroContent}
         />
-        <SlotsBlock
-          slots={SECTION_REGISTRY.hero.assetSlots.map((s) => ({
-            key: s.key,
-            label: s.label,
-            currentUrl: data.imageUrls.get(s.key) ?? s.fallback,
-            hasCustom: customAssets.has(s.key),
-          }))}
+        <SlotsBlock slots={slotsFor("hero")} />
+      </SectionWrapper>
+
+      <SectionWrapper title={SECTION_REGISTRY["course-pillars"].label}>
+        <CoursePillarsEditor
+          initialContent={data.sections["course-pillars"].content as CoursePillarsContent}
+        />
+        <SlotsBlock slots={slotsFor("course-pillars")} />
+      </SectionWrapper>
+
+      <SectionWrapper title={SECTION_REGISTRY["who-for"].label}>
+        <WhoForEditor
+          initialContent={data.sections["who-for"].content as WhoForContent}
+        />
+        <SlotsBlock slots={slotsFor("who-for")} />
+      </SectionWrapper>
+
+      <SectionWrapper title={SECTION_REGISTRY["what-you-learn"].label}>
+        <WhatYouLearnEditor
+          initialContent={data.sections["what-you-learn"].content as WhatYouLearnContent}
         />
       </SectionWrapper>
 
-      {/* TUTORS */}
+      <SectionWrapper title={SECTION_REGISTRY.weekends.label}>
+        <WeekendsEditor
+          initialContent={data.sections.weekends.content as WeekendsContent}
+        />
+      </SectionWrapper>
+
       <SectionWrapper title={SECTION_REGISTRY.tutors.label}>
         <TutorsEditor
           initialTemplate={data.sections.tutors.template}
           initialContent={data.sections.tutors.content as TutorsContent}
         />
-        <SlotsBlock
-          slots={SECTION_REGISTRY.tutors.assetSlots.map((s) => ({
-            key: s.key,
-            label: s.label,
-            currentUrl: data.imageUrls.get(s.key) ?? s.fallback,
-            hasCustom: customAssets.has(s.key),
-          }))}
-        />
+        <SlotsBlock slots={slotsFor("tutors")} />
       </SectionWrapper>
 
-      {/* GALLERY */}
       <SectionWrapper title={SECTION_REGISTRY.gallery.label}>
         <GalleryEditor
           initialTemplate={data.sections.gallery.template}
           initialContent={data.sections.gallery.content as GalleryContent}
         />
-        <SlotsBlock
-          slots={SECTION_REGISTRY.gallery.assetSlots.map((s) => ({
-            key: s.key,
-            label: s.label,
-            currentUrl: data.imageUrls.get(s.key) ?? s.fallback,
-            hasCustom: customAssets.has(s.key),
-          }))}
+        <SlotsBlock slots={slotsFor("gallery")} />
+      </SectionWrapper>
+
+      <SectionWrapper title={SECTION_REGISTRY["what-you-get"].label}>
+        <WhatYouGetEditor
+          initialContent={data.sections["what-you-get"].content as WhatYouGetContent}
         />
       </SectionWrapper>
 
-      {/* PATHWAYS */}
       <SectionWrapper title={SECTION_REGISTRY.pathways.label}>
         <PathwaysEditor
           initialTemplate={data.sections.pathways.template}
           initialContent={data.sections.pathways.content as PathwaysContent}
+        />
+      </SectionWrapper>
+
+      <SectionWrapper title={SECTION_REGISTRY.timeline.label}>
+        <TimelineEditor
+          initialContent={data.sections.timeline.content as TimelineContent}
+        />
+      </SectionWrapper>
+
+      <SectionWrapper title={SECTION_REGISTRY["why-balance"].label}>
+        <WhyBalanceEditor
+          initialContent={data.sections["why-balance"].content as WhyBalanceContent}
+        />
+        <SlotsBlock slots={slotsFor("why-balance")} />
+      </SectionWrapper>
+
+      <SectionWrapper title={SECTION_REGISTRY.faqs.label}>
+        <FaqsEditor
+          initialContent={data.sections.faqs.content as FaqsContent}
+        />
+      </SectionWrapper>
+
+      <SectionWrapper title={SECTION_REGISTRY["final-cta"].label}>
+        <FinalCtaEditor
+          initialContent={data.sections["final-cta"].content as FinalCtaContent}
+        />
+        <SlotsBlock slots={slotsFor("final-cta")} />
+      </SectionWrapper>
+
+      <SectionWrapper title={SECTION_REGISTRY.footer.label}>
+        <FooterEditor
+          initialContent={data.sections.footer.content as FooterContent}
         />
       </SectionWrapper>
     </div>
