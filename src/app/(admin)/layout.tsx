@@ -15,11 +15,12 @@ export default async function AdminLayout({
   if (!session?.user) redirect("/login");
   if (session.user.role !== "ADMIN") redirect("/dashboard");
 
-  const [unansweredQuestions, pendingSubmissions, pendingHours] =
+  const [unansweredQuestions, pendingSubmissions, pendingHours, newApps] =
     await Promise.all([
       prisma.question.count({ where: { response: null } }),
       prisma.submission.count({ where: { reviewed: false } }),
       prisma.hourLog.count({ where: { signedOffAt: null } }),
+      prisma.application.count({ where: { contacted: false } }),
     ]);
 
   return (
@@ -73,6 +74,14 @@ export default async function AdminLayout({
                 {pendingHours > 0 && (
                   <span className="bg-brand-sage text-white text-xs font-semibold rounded-full min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center">
                     {pendingHours}
+                  </span>
+                )}
+              </Link>
+              <Link href="/admin/applications" className="flex items-center justify-between px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">
+                <span>Applications</span>
+                {newApps > 0 && (
+                  <span className="bg-brand-sage text-white text-xs font-semibold rounded-full min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center">
+                    {newApps}
                   </span>
                 )}
               </Link>
@@ -233,6 +242,30 @@ export default async function AdminLayout({
               {pendingHours > 0 && (
                 <span className="bg-brand-sage text-white text-xs font-semibold rounded-full min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center">
                   {pendingHours}
+                </span>
+              )}
+            </Link>
+            <Link
+              href="/admin/applications"
+              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-brand-primary hover:bg-brand-surface transition-colors"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 0H9a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 009 21h9a2.25 2.25 0 002.25-2.25V8.25l-4.5-4.5z"
+                />
+              </svg>
+              <span className="flex-1">Applications</span>
+              {newApps > 0 && (
+                <span className="bg-brand-sage text-white text-xs font-semibold rounded-full min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center">
+                  {newApps}
                 </span>
               )}
             </Link>

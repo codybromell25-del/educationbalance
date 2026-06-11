@@ -57,6 +57,18 @@ model PasswordResetToken {
   @@index([expiresAt])
 }
 
+model Application {
+  id         String   @id @default(cuid())
+  name       String
+  email      String
+  pathway    String // "A" | "B" | "C" — free-text so we can add pathways without a migration
+  notes      String?  @db.Text
+  contacted  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+}
+
 model Section {
   id                      String     @id @default(cuid())
   title                   String
