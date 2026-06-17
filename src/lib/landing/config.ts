@@ -390,7 +390,7 @@ export const FINAL_CTA_DEFAULT_CONTENT: FinalCtaContent = {
   title: "Your Pilates career starts here",
   description:
     "Join the next cohort of balance-trained instructors. Expert guidance, structured learning, real results.",
-  primaryLabel: "Sign Up Now",
+  primaryLabel: "Register Interest",
   secondaryLabel: "Apply for a pathway",
 };
 

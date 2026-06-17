@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import type { HeroContent } from "@/lib/landing/config";
 
 export default function HeroSplitScreen({
@@ -41,15 +40,16 @@ export default function HeroSplitScreen({
             {content.description}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-            {/* Sign Up button is hard-wired to /signup — do not remove. */}
-            <Link
-              href="/signup"
-              className="inline-flex items-center justify-center px-10 py-4 bg-brand-sage text-white text-xs tracking-[0.25em] uppercase rounded-full hover:bg-brand-sage-dark transition-colors font-medium"
-            >
-              Sign Up Now
-            </Link>
+            {/* Routes to #apply (the on-page form) while pricing isn't live.
+                Swap to a Link href="/signup" once Stripe is ready. */}
             <a
               href="#apply"
+              className="inline-flex items-center justify-center px-10 py-4 bg-brand-sage text-white text-xs tracking-[0.25em] uppercase rounded-full hover:bg-brand-sage-dark transition-colors font-medium"
+            >
+              Register Interest
+            </a>
+            <a
+              href="#about"
               className="inline-flex items-center justify-center px-10 py-4 text-xs tracking-[0.25em] uppercase rounded-full border border-brand-border text-brand-primary hover:bg-white transition-colors"
             >
               {content.ctaSecondaryLabel}

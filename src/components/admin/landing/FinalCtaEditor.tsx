@@ -29,13 +29,13 @@ export default function FinalCtaEditor({
       />
       <div className="grid sm:grid-cols-2 gap-4">
         <TextInput
-          label='Primary button label ("Sign Up Now" → /signup)'
+          label="Primary button label (scrolls to the form)"
           value={content.primaryLabel}
           onChange={(v) => setContent({ ...content, primaryLabel: v })}
           disabled={busy}
         />
         <TextInput
-          label='Secondary button label (scrolls to apply form)'
+          label="Secondary button label (also scrolls to the form)"
           value={content.secondaryLabel}
           onChange={(v) => setContent({ ...content, secondaryLabel: v })}
           disabled={busy}

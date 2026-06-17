@@ -127,12 +127,14 @@ function Nav() {
           >
             Log In
           </Link>
-          <Link
-            href="/signup"
+          {/* Routes to the on-page application form for now while pricing is
+              not finalised. Swap to a Link href="/signup" once Stripe is live. */}
+          <a
+            href="#apply"
             className="px-5 sm:px-6 py-2 bg-brand-sage text-white text-sm tracking-wider uppercase rounded-full hover:bg-brand-sage-dark transition-colors"
           >
-            Sign Up
-          </Link>
+            Register Interest
+          </a>
         </div>
       </div>
     </nav>
@@ -493,13 +495,14 @@ function FinalCta({
           {content.description}
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          {/* Primary link is hard-wired to /signup */}
-          <Link
-            href="/signup"
+          {/* Primary scrolls to #apply (the on-page form) while pricing isn't
+              live. Swap back to a Link href="/signup" once Stripe is ready. */}
+          <a
+            href="#apply"
             className="inline-flex items-center justify-center px-10 py-4 bg-brand-sage text-white text-xs tracking-[0.25em] uppercase rounded-full hover:bg-brand-sage-dark transition-colors font-medium"
           >
             {content.primaryLabel}
-          </Link>
+          </a>
           <a
             href="#apply"
             className="inline-flex items-center justify-center px-10 py-4 text-xs tracking-[0.25em] uppercase rounded-full border border-white/40 text-white hover:bg-white/10 transition-colors"
@@ -574,9 +577,12 @@ function Footer({ content }: { content: FooterContent }) {
                 </Link>
               </li>
               <li>
-                <Link href="/signup" className="text-white/85 hover:text-brand-sage-light">
-                  Sign up
-                </Link>
+                <a
+                  href="#apply"
+                  className="text-white/85 hover:text-brand-sage-light"
+                >
+                  Register interest
+                </a>
               </li>
             </ul>
           </div>
