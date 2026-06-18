@@ -156,18 +156,17 @@ function CoursePillars({
     <section id="about" className="py-20 md:py-28 bg-brand-surface">
       <div className="max-w-6xl mx-auto px-5 md:px-6">
         <div className="text-center mb-14 md:mb-20">
-          <p className="text-brand-sage text-xs tracking-[0.3em] uppercase mb-4">
+          <p className="text-brand-sage text-sm md:text-base tracking-[0.35em] uppercase mb-5">
             {content.eyebrow}
           </p>
-          <h2 className="text-3xl md:text-5xl font-light tracking-tight text-brand-primary leading-tight max-w-3xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-light tracking-tight text-brand-primary leading-snug max-w-4xl mx-auto">
             {l1}
-            {l2 && (
-              <>
-                <br />
-                <span className="italic">{l2}</span>
-              </>
-            )}
           </h2>
+          {l2 && (
+            <p className="mt-4 md:mt-5 text-lg md:text-2xl italic text-brand-primary leading-snug md:whitespace-nowrap">
+              {l2}
+            </p>
+          )}
         </div>
         <div className="grid md:grid-cols-3 gap-8">
           {content.pillars.map((p, i) => (
