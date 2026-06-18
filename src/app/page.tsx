@@ -181,20 +181,28 @@ function CoursePillars({
         <div className="grid md:grid-cols-3 gap-8">
           {content.pillars.map((p, i) => (
             <div key={i} className="group">
-              <div className="relative h-72 md:h-80 rounded-2xl overflow-hidden mb-6">
+              <div className="relative h-72 md:h-80 rounded-2xl overflow-hidden mb-6 bg-brand-primary">
                 <Image
                   src={imageUrls.get(p.slotKey) ?? "/images/studio-wide.jpg"}
                   alt={p.title}
                   fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  className={`object-cover ${
+                    i % 2 === 0 ? "animate-pan-lr" : "animate-pan-rl"
+                  }`}
                 />
                 {usePhraseOverlays && (
                   <>
                     {/* Soft dark gradient so the text stays legible
                         over any image. */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/40 to-black/65" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-black/70" />
                     <div className="absolute inset-0 flex items-center justify-center px-6">
-                      <p className="font-heading italic text-white text-center text-2xl sm:text-3xl md:text-3xl lg:text-4xl leading-tight drop-shadow-md">
+                      <p
+                        className="font-heading italic text-white text-center text-2xl sm:text-3xl md:text-3xl lg:text-4xl leading-tight"
+                        style={{
+                          textShadow:
+                            "0 2px 18px rgba(0,0,0,0.55), 0 1px 2px rgba(0,0,0,0.4)",
+                        }}
+                      >
                         {overlayPhrases[i]}.
                       </p>
                     </div>

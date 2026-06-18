@@ -59,3 +59,35 @@ select:focus {
   outline: 2px solid var(--brand-sage);
   outline-offset: 1px;
 }
+
+/* Subtle Ken-Burns-style horizontal drift for the course-pillar images.
+ * Two flavours alternate across the row so adjacent tiles always move
+ * in opposite directions for a calm but lively feel.
+ * `transform-origin: center` + a slight scale (1.08) prevents the
+ * edges of the image from peeking out of the rounded mask. */
+@keyframes pan-lr {
+  0%, 100% { transform: scale(1.08) translateX(-2.5%); }
+  50%      { transform: scale(1.08) translateX( 2.5%); }
+}
+@keyframes pan-rl {
+  0%, 100% { transform: scale(1.08) translateX( 2.5%); }
+  50%      { transform: scale(1.08) translateX(-2.5%); }
+}
+.animate-pan-lr {
+  animation: pan-lr 14s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+.animate-pan-rl {
+  animation: pan-rl 14s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+/* Respect the user's reduced-motion preference. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-pan-lr, .animate-pan-rl {
+    animation: none;
+    transform: scale(1.05);
+  }
+}
