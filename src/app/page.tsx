@@ -149,10 +149,9 @@ function Nav() {
 }
 
 // ------------------------------------------------------------------
-// Brand moment — autoplay logo video, masked into a circle so the
-// background of the render is cropped off (only the centred logo
-// shows through). Muted + loop + playsInline so it autoplays cleanly
-// on every browser including mobile Safari.
+// Brand moment — plays the intro of the logo render once on page load
+// and then freezes on the last frame (no `loop`, no spin). Masked
+// into a circle so the corners of the original render are cropped off.
 // ------------------------------------------------------------------
 function BrandMoment() {
   return (
@@ -162,7 +161,6 @@ function BrandMoment() {
           <video
             src="/videos/balance-logo-spin.mp4"
             autoPlay
-            loop
             muted
             playsInline
             preload="metadata"
