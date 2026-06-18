@@ -155,9 +155,9 @@ function Nav() {
 // ------------------------------------------------------------------
 function BrandMoment() {
   return (
-    <section className="py-14 md:py-20 bg-brand-surface">
+    <section className="pt-14 md:pt-20 pb-4 md:pb-6 bg-brand-surface">
       <div className="max-w-3xl mx-auto px-5 md:px-6 text-center">
-        <div className="relative w-40 h-40 md:w-48 md:h-48 mx-auto rounded-full overflow-hidden shadow-lg bg-brand-surface">
+        <div className="relative w-64 h-64 md:w-80 md:h-80 mx-auto rounded-full overflow-hidden shadow-lg bg-brand-surface">
           <video
             src="/videos/balance-logo-spin.mp4"
             autoPlay
@@ -168,7 +168,7 @@ function BrandMoment() {
             aria-label="balance studios logo"
           />
         </div>
-        <p className="mt-6 text-xs tracking-[0.4em] uppercase text-brand-sage">
+        <p className="mt-8 text-xs tracking-[0.4em] uppercase text-brand-sage">
           balance studios
         </p>
       </div>
@@ -198,7 +198,7 @@ function CoursePillars({
     overlayPhrases.length === content.pillars.length;
 
   return (
-    <section id="about" className="py-20 md:py-28 bg-brand-surface">
+    <section id="about" className="pt-8 md:pt-12 pb-20 md:pb-28 bg-brand-surface">
       <div className="max-w-6xl mx-auto px-5 md:px-6">
         <div className="text-center mb-14 md:mb-20">
           <p className="text-brand-sage text-sm md:text-base tracking-[0.35em] uppercase mb-5">
