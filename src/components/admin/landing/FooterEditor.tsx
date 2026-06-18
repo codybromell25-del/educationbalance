@@ -32,7 +32,7 @@ export default function FooterEditor({
         value={content.instagramUrl}
         onChange={(v) => setContent({ ...content, instagramUrl: v })}
         disabled={busy}
-        placeholder="https://www.instagram.com/balancestudios"
+        placeholder="https://www.instagram.com/balancereformer/?hl=en"
       />
       <TextInput
         label="balance studio site URL"

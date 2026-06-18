@@ -146,7 +146,7 @@ export const SINGLE_TEMPLATE = [{ id: "default", label: "Default" }] as const;
 // ----- Defaults -----
 
 export const HERO_DEFAULT_CONTENT: HeroContent = {
-  tagline: "Pilates Instructor Training — Dublin",
+  tagline: "Pilates Instructor Training",
   headlineLines: [
     "Most Pilates courses",
     "teach you exercises.",
@@ -170,7 +170,7 @@ export const COURSE_PILLARS_DEFAULT_CONTENT: CoursePillarsContent = {
     {
       slotKey: "pillar-1",
       title: "Small cohort, real studio",
-      desc: "Four weekends at the balance studio in Dublin. Tutor-led, equipment-on, repertoire learned on the same reformers you'll teach on.",
+      desc: "Four weekends at the balance studio. Tutor-led, equipment-on, repertoire learned on the same reformers you'll teach on.",
     },
     {
       slotKey: "pillar-2",
@@ -256,7 +256,7 @@ export const TUTORS_DEFAULT_CONTENT: TutorsContent = {
 
 export const GALLERY_DEFAULT_CONTENT: GalleryContent = {
   intro:
-    "A working studio in Dublin — not a hotel function room. You learn on the equipment you'll teach on.",
+    "A working studio — not a hotel function room. You learn on the equipment you'll teach on.",
   slotKeys: [
     "gallery-1",
     "gallery-2",
@@ -395,9 +395,9 @@ export const FINAL_CTA_DEFAULT_CONTENT: FinalCtaContent = {
 };
 
 export const FOOTER_DEFAULT_CONTENT: FooterContent = {
-  tagline: "Pilates instructor training, mat & reformer. Dublin.",
+  tagline: "Pilates instructor training, mat & reformer.",
   contactEmail: "hello@balancestudios.ie",
-  instagramUrl: "https://www.instagram.com/balancestudios",
+  instagramUrl: "https://www.instagram.com/balancereformer/?hl=en",
   studioUrl: "https://balancestudios.ie",
 };
 

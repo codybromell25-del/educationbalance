@@ -39,9 +39,9 @@ import type {
 } from "@/lib/landing/config";
 
 export const metadata: Metadata = {
-  title: "balance studios | Pilates Instructor Training — Dublin",
+  title: "balance studios | Pilates Instructor Training",
   description:
-    "A four-weekend Pilates instructor training course at balance studios, Dublin. Three pathways: comprehensive, mat-only, reformer-only.",
+    "A four-weekend Pilates instructor training course at balance studios. Three pathways: comprehensive, mat-only, reformer-only.",
 };
 
 export default async function HomePage() {
