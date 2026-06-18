@@ -152,6 +152,16 @@ function CoursePillars({
   imageUrls: Map<string, string>;
 }) {
   const [l1, l2] = content.headlineLines;
+  // Split the italic strapline into one phrase per pillar image overlay.
+  // Falls back to showing the strapline below the heading if it doesn't
+  // split cleanly into N pieces (where N = number of pillars).
+  const overlayPhrases = (l2 ?? "")
+    .split(".")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const usePhraseOverlays =
+    overlayPhrases.length === content.pillars.length;
+
   return (
     <section id="about" className="py-20 md:py-28 bg-brand-surface">
       <div className="max-w-6xl mx-auto px-5 md:px-6">
@@ -162,7 +172,7 @@ function CoursePillars({
           <h2 className="text-2xl md:text-3xl font-light tracking-tight text-brand-primary leading-snug max-w-4xl mx-auto">
             {l1}
           </h2>
-          {l2 && (
+          {l2 && !usePhraseOverlays && (
             <p className="mt-4 md:mt-5 text-lg md:text-2xl italic text-brand-primary leading-snug md:whitespace-nowrap">
               {l2}
             </p>
@@ -171,13 +181,25 @@ function CoursePillars({
         <div className="grid md:grid-cols-3 gap-8">
           {content.pillars.map((p, i) => (
             <div key={i} className="group">
-              <div className="relative h-64 rounded-2xl overflow-hidden mb-6">
+              <div className="relative h-72 md:h-80 rounded-2xl overflow-hidden mb-6">
                 <Image
                   src={imageUrls.get(p.slotKey) ?? "/images/studio-wide.jpg"}
                   alt={p.title}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
+                {usePhraseOverlays && (
+                  <>
+                    {/* Soft dark gradient so the text stays legible
+                        over any image. */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/40 to-black/65" />
+                    <div className="absolute inset-0 flex items-center justify-center px-6">
+                      <p className="font-heading italic text-white text-center text-2xl sm:text-3xl md:text-3xl lg:text-4xl leading-tight drop-shadow-md">
+                        {overlayPhrases[i]}.
+                      </p>
+                    </div>
+                  </>
+                )}
               </div>
               <h3 className="text-lg font-medium text-brand-primary mb-3">{p.title}</h3>
               <p className="text-brand-muted leading-relaxed">{p.desc}</p>
