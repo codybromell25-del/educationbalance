@@ -409,7 +409,7 @@ export const PATHWAYS_DEFAULT_TEMPLATE = "cards";
 
 // Asset slots
 export const HERO_ASSET_SLOTS: AssetSlot[] = [
-  { key: "hero-bg", label: "Hero background / side image", fallback: "/images/studio-reformers-row.jpg" },
+  { key: "hero-bg", label: "Hero background / side image", fallback: "/images/studio-bray-hero.jpg" },
 ];
 
 export const COURSE_PILLARS_ASSET_SLOTS: AssetSlot[] = [
