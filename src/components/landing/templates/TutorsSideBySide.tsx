@@ -34,15 +34,19 @@ export default function TutorsSideBySide({
                   sizes="(max-width: 768px) 100vw, 50vw"
                 />
               </div>
-              <p className="text-xs tracking-[0.3em] uppercase text-brand-sage mb-2">
-                {t.role}
-              </p>
+              {t.role && (
+                <p className="text-xs tracking-[0.3em] uppercase text-brand-sage mb-2">
+                  {t.role}
+                </p>
+              )}
               <h3 className="text-2xl font-light text-brand-primary mb-3">
                 {t.name}
               </h3>
-              <p className="text-sm text-brand-primary/80 leading-relaxed">
-                {t.bio}
-              </p>
+              {t.bio && (
+                <p className="text-sm text-brand-primary/80 leading-relaxed">
+                  {t.bio}
+                </p>
+              )}
             </div>
           ))}
         </div>

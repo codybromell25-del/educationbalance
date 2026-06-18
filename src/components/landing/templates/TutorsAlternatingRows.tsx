@@ -42,15 +42,19 @@ export default function TutorsAlternatingRows({
                   />
                 </div>
                 <div className="md:[direction:ltr]">
-                  <p className="text-xs tracking-[0.3em] uppercase text-brand-sage mb-3">
-                    {t.role}
-                  </p>
+                  {t.role && (
+                    <p className="text-xs tracking-[0.3em] uppercase text-brand-sage mb-3">
+                      {t.role}
+                    </p>
+                  )}
                   <h3 className="text-3xl md:text-4xl font-light text-brand-primary mb-4">
                     {t.name}
                   </h3>
-                  <p className="text-brand-primary/80 leading-relaxed">
-                    {t.bio}
-                  </p>
+                  {t.bio && (
+                    <p className="text-brand-primary/80 leading-relaxed">
+                      {t.bio}
+                    </p>
+                  )}
                 </div>
               </div>
             );
