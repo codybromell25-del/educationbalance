@@ -428,7 +428,7 @@ export const TUTORS_ASSET_SLOTS: AssetSlot[] = [
 ];
 
 export const GALLERY_ASSET_SLOTS: AssetSlot[] = [
-  { key: "gallery-1", label: "Gallery photo 1 (feature tile)", fallback: "/images/studio-reformers-row.jpg" },
+  { key: "gallery-1", label: "Gallery photo 1 (feature tile)", fallback: "/images/studio-bray-hero.jpg" },
   { key: "gallery-2", label: "Gallery photo 2", fallback: "/images/studio-wide.jpg" },
   { key: "gallery-3", label: "Gallery photo 3", fallback: "/images/studio-instructor.jpg" },
   { key: "gallery-4", label: "Gallery photo 4", fallback: "/images/reformer-class.jpg" },
