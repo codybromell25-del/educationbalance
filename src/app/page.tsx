@@ -123,7 +123,7 @@ function Nav() {
             alt="balance"
             width={32}
             height={32}
-            className="rounded-full animate-logo-spin"
+            className="rounded-full"
           />
           <span className="text-xl tracking-wide font-light">balance</span>
         </Link>
@@ -592,7 +592,7 @@ function Footer({ content }: { content: FooterContent }) {
                 alt="balance"
                 width={32}
                 height={32}
-                className="rounded-full animate-logo-spin"
+                className="rounded-full"
               />
               <span className="text-xl tracking-wide font-light">balance studios</span>
             </div>
