@@ -116,8 +116,8 @@ export default async function HomePage() {
 function Nav() {
   return (
     <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-brand-border">
-      <div className="max-w-7xl mx-auto px-5 md:px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+        <Link href="/" className="flex items-center gap-2 shrink-0">
           <Image
             src="/images/balance-logo.jpg"
             alt="balance"
@@ -125,12 +125,14 @@ function Nav() {
             height={32}
             className="rounded-full"
           />
-          <span className="text-xl tracking-wide font-light">balance</span>
+          <span className="text-lg sm:text-xl tracking-wide font-light">
+            balance
+          </span>
         </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
           <Link
             href="/login"
-            className="px-4 sm:px-5 py-2 text-sm text-brand-primary hover:text-brand-sage transition-colors"
+            className="px-2.5 sm:px-4 py-2 text-sm text-brand-primary hover:text-brand-sage transition-colors"
           >
             Log In
           </Link>
@@ -138,9 +140,10 @@ function Nav() {
               not finalised. Swap to a Link href="/signup" once Stripe is live. */}
           <a
             href="#apply"
-            className="px-5 sm:px-6 py-2 bg-brand-sage text-white text-sm tracking-wider uppercase rounded-full hover:bg-brand-sage-dark transition-colors"
+            className="inline-flex items-center justify-center px-3.5 sm:px-6 h-9 sm:h-10 bg-brand-sage text-white text-[11px] sm:text-sm font-medium sm:font-normal tracking-wide sm:tracking-wider uppercase rounded-full hover:bg-brand-sage-dark transition-colors whitespace-nowrap"
           >
-            Register Interest
+            <span className="sm:hidden">Register</span>
+            <span className="hidden sm:inline">Register Interest</span>
           </a>
         </div>
       </div>
