@@ -149,21 +149,25 @@ function Nav() {
 }
 
 // ------------------------------------------------------------------
-// Brand moment — featured spinning logo between Hero and Course pillars.
-// Pure CSS animation on the existing logo image, no video required.
+// Brand moment — autoplay logo video, masked into a circle so the
+// background of the render is cropped off (only the centred logo
+// shows through). Muted + loop + playsInline so it autoplays cleanly
+// on every browser including mobile Safari.
 // ------------------------------------------------------------------
 function BrandMoment() {
   return (
     <section className="py-14 md:py-20 bg-brand-surface">
       <div className="max-w-3xl mx-auto px-5 md:px-6 text-center">
-        <div className="inline-block">
-          <Image
-            src="/images/balance-logo.jpg"
-            alt="balance studios"
-            width={140}
-            height={140}
-            className="rounded-full mx-auto animate-logo-spin-featured shadow-lg"
-            priority={false}
+        <div className="relative w-40 h-40 md:w-48 md:h-48 mx-auto rounded-full overflow-hidden shadow-lg bg-brand-surface">
+          <video
+            src="/videos/balance-logo-spin.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            className="absolute inset-0 w-full h-full object-cover scale-125"
+            aria-label="balance studios logo"
           />
         </div>
         <p className="mt-6 text-xs tracking-[0.4em] uppercase text-brand-sage">
