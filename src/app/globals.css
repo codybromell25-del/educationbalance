@@ -84,10 +84,32 @@ select:focus {
   will-change: transform;
 }
 
+/* Continuous full-circle rotation for the balance logo. Two speeds:
+ *   `animate-logo-spin`          — slow, for inline nav/footer marks
+ *   `animate-logo-spin-featured` — slightly quicker, for the dedicated
+ *                                   brand-moment section. */
+@keyframes logo-spin {
+  to { transform: rotate(360deg); }
+}
+.animate-logo-spin {
+  animation: logo-spin 30s linear infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+.animate-logo-spin-featured {
+  animation: logo-spin 18s linear infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
 /* Respect the user's reduced-motion preference. */
 @media (prefers-reduced-motion: reduce) {
   .animate-pan-lr, .animate-pan-rl {
     animation: none;
     transform: scale(1.05);
+  }
+  .animate-logo-spin,
+  .animate-logo-spin-featured {
+    animation: none;
   }
 }

@@ -72,6 +72,7 @@ export default async function HomePage() {
         <HeroFullBleed content={hero} imageUrl={heroImageUrl} />
       )}
 
+      <BrandMoment />
       <CoursePillars content={coursePillars} imageUrls={data.imageUrls} />
       <WhoFor content={whoFor} imageUrls={data.imageUrls} />
       <WhatYouLearn content={whatLearn} />
@@ -117,7 +118,13 @@ function Nav() {
     <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-brand-border">
       <div className="max-w-7xl mx-auto px-5 md:px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="/images/balance-logo.jpg" alt="balance" width={32} height={32} className="rounded-full" />
+          <Image
+            src="/images/balance-logo.jpg"
+            alt="balance"
+            width={32}
+            height={32}
+            className="rounded-full animate-logo-spin"
+          />
           <span className="text-xl tracking-wide font-light">balance</span>
         </Link>
         <div className="flex items-center gap-3">
@@ -138,6 +145,32 @@ function Nav() {
         </div>
       </div>
     </nav>
+  );
+}
+
+// ------------------------------------------------------------------
+// Brand moment — featured spinning logo between Hero and Course pillars.
+// Pure CSS animation on the existing logo image, no video required.
+// ------------------------------------------------------------------
+function BrandMoment() {
+  return (
+    <section className="py-14 md:py-20 bg-brand-surface">
+      <div className="max-w-3xl mx-auto px-5 md:px-6 text-center">
+        <div className="inline-block">
+          <Image
+            src="/images/balance-logo.jpg"
+            alt="balance studios"
+            width={140}
+            height={140}
+            className="rounded-full mx-auto animate-logo-spin-featured shadow-lg"
+            priority={false}
+          />
+        </div>
+        <p className="mt-6 text-xs tracking-[0.4em] uppercase text-brand-sage">
+          balance studios
+        </p>
+      </div>
+    </section>
   );
 }
 
@@ -557,7 +590,7 @@ function Footer({ content }: { content: FooterContent }) {
                 alt="balance"
                 width={32}
                 height={32}
-                className="rounded-full"
+                className="rounded-full animate-logo-spin"
               />
               <span className="text-xl tracking-wide font-light">balance studios</span>
             </div>
