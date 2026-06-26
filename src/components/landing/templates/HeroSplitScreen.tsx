@@ -40,13 +40,13 @@ export default function HeroSplitScreen({
             {content.description}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-            {/* Routes to #apply (the on-page form) while pricing isn't live.
-                Swap to a Link href="/signup" once Stripe is ready. */}
+            {/* Scrolls to the pricing section so users can pick a pathway +
+                payment plan and go straight to Stripe checkout. */}
             <a
-              href="#apply"
+              href="#pathways"
               className="inline-flex items-center justify-center px-10 py-4 bg-brand-sage text-white text-xs tracking-[0.25em] uppercase rounded-full hover:bg-brand-sage-dark transition-colors font-medium"
             >
-              Register Interest
+              Book your space now
             </a>
             <a
               href="#about"

@@ -104,15 +104,15 @@ export default function HeroEditor({
 
       <div>
         <Field
-          label='Secondary button label (next to "Register Interest")'
+          label='Secondary button label (next to "Book your space now")'
           value={content.ctaSecondaryLabel}
           onChange={(v) => setContent({ ...content, ctaSecondaryLabel: v })}
           disabled={busy}
         />
         <p className="text-xs text-brand-muted mt-2">
-          The <strong>Register Interest</strong> button is hard-wired and
-          scrolls to the application form at <code>#apply</code>. Once Stripe
-          pricing is live we&rsquo;ll point it back at <code>/signup</code>.
+          The <strong>Book your space now</strong> button is hard-wired and
+          scrolls to the pricing section at <code>#pathways</code> so users
+          can pick a pathway + payment plan.
         </p>
       </div>
 

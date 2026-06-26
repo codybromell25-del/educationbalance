@@ -136,14 +136,14 @@ function Nav() {
           >
             Log In
           </Link>
-          {/* Routes to the on-page application form for now while pricing is
-              not finalised. Swap to a Link href="/signup" once Stripe is live. */}
+          {/* Scrolls to the pricing section (#pathways) so users can pick
+              a pathway + payment plan and go straight to Stripe checkout. */}
           <a
-            href="#apply"
+            href="#pathways"
             className="inline-flex items-center justify-center px-3.5 sm:px-6 h-9 sm:h-10 bg-brand-sage text-white text-[11px] sm:text-sm font-medium sm:font-normal tracking-wide sm:tracking-wider uppercase rounded-full hover:bg-brand-sage-dark transition-colors whitespace-nowrap"
           >
-            <span className="sm:hidden">Register</span>
-            <span className="hidden sm:inline">Register Interest</span>
+            <span className="sm:hidden">Book now</span>
+            <span className="hidden sm:inline">Book your space now</span>
           </a>
         </div>
       </div>
@@ -563,10 +563,10 @@ function FinalCta({
           {content.description}
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          {/* Primary scrolls to #apply (the on-page form) while pricing isn't
-              live. Swap back to a Link href="/signup" once Stripe is ready. */}
+          {/* Primary scrolls to #pathways (pricing + Stripe). Secondary
+              still scrolls to #apply for users who want to ask first. */}
           <a
-            href="#apply"
+            href="#pathways"
             className="inline-flex items-center justify-center px-10 py-4 bg-brand-sage text-white text-xs tracking-[0.25em] uppercase rounded-full hover:bg-brand-sage-dark transition-colors font-medium"
           >
             {content.primaryLabel}
@@ -646,10 +646,10 @@ function Footer({ content }: { content: FooterContent }) {
               </li>
               <li>
                 <a
-                  href="#apply"
+                  href="#pathways"
                   className="text-white/85 hover:text-brand-sage-light"
                 >
-                  Register interest
+                  Book your space
                 </a>
               </li>
             </ul>

@@ -75,13 +75,23 @@ export type WhatYouGetContent = {
 };
 
 export type PathwaysContent = {
+  eyebrow: string; // e.g. "OCTOBER 2026 COHORT"
+  title: string;
+  description: string;
+  footnote: string;
   pathways: Array<{
     code: string;
     title: string;
-    summary: string;
-    duration: string;
-    price: string;
-    bestFor: string;
+    subtitle: string; // e.g. "Comprehensive Mat Pilates"
+    priceOriginal: string; // strikethrough RRP, e.g. "€1,195"
+    priceFull: string; // discounted full-pay price, e.g. "€1,095"
+    saveLine: string; // e.g. "Save €100 when you pay in full"
+    depositAmount: string; // e.g. "€500"
+    installments: string; // e.g. "1 payment of €695" or "3 payments of €665"
+    totalSplit: string; // e.g. "€1,195 total over 2 payments"
+    popular: boolean; // shows the "MOST COMPLETE" badge
+    payInFullUrl: string;
+    payDepositUrl: string;
   }>;
 };
 
@@ -295,36 +305,54 @@ export const WHAT_YOU_GET_DEFAULT_CONTENT: WhatYouGetContent = {
 };
 
 export const PATHWAYS_DEFAULT_CONTENT: PathwaysContent = {
+  eyebrow: "OCTOBER 2026 COHORT",
+  title: "Choose your certification & payment plan",
+  description:
+    "Pay in full and save, or spread the cost with a €500 deposit. Only 12 places per cohort — this is a launch price offer!",
+  footnote:
+    "A €500 deposit secures your place, with the remaining balance due ahead of your course start date. The pay-in-full saving applies to single payments only. Deposits are limited to the 12 places per cohort.",
   pathways: [
     {
-      code: "A",
-      title: "Full comprehensive",
-      summary:
-        "Mat + reformer + special populations. The complete instructor pathway.",
-      duration: "Four weekends · open studio days · practical assessment",
-      price: "CONFIRM pricing",
-      bestFor:
-        "Aspiring full-time instructors who want both modalities and the broadest career options.",
+      code: "MAT",
+      title: "Mat Certification",
+      subtitle: "Comprehensive Mat Pilates",
+      priceOriginal: "€1,195",
+      priceFull: "€1,095",
+      saveLine: "Save €100 when you pay in full",
+      depositAmount: "€500",
+      installments: "1 payment of €695",
+      totalSplit: "€1,195 total over 2 payments",
+      popular: false,
+      payInFullUrl: "https://book.stripe.com/28E00ka5B9mD9ZT6HKb7y05",
+      payDepositUrl: "https://buy.stripe.com/00w6oI91xaqH3Bvc24b7y02",
     },
     {
-      code: "B",
-      title: "Mat only",
-      summary:
-        "Mat module + foundations. Shortest pathway to teaching mat classes.",
-      duration: "Weekends 1 & 2 · mat practical assessment",
-      price: "CONFIRM pricing",
-      bestFor:
-        "Yoga / fitness instructors adding Pilates mat to their offering, or anyone testing the water.",
+      code: "COMP",
+      title: "Comprehensive Certification",
+      subtitle: "Mat & Reformer combined",
+      priceOriginal: "€2,495",
+      priceFull: "€2,345",
+      saveLine: "Save €150 when you pay in full",
+      depositAmount: "€500",
+      installments: "3 payments of €665",
+      totalSplit: "€2,495 total over 4 payments",
+      popular: true,
+      payInFullUrl: "https://buy.stripe.com/dRm14oa5BdCT6NH3vyb7y03",
+      payDepositUrl: "https://book.stripe.com/6oUeVeb9FdCT7RL1nqb7y01",
     },
     {
-      code: "C",
-      title: "Reformer only",
-      summary:
-        "Reformer module + foundations. Requires an existing mat qualification.",
-      duration: "Weekends 1 & 3 · reformer practical assessment",
-      price: "CONFIRM pricing",
-      bestFor:
-        "Existing mat instructors specialising into reformer. Needs an STA / Polestar / equivalent mat qualification.",
+      code: "REF",
+      title: "Reformer Certification",
+      subtitle: "Comprehensive Reformer Pilates",
+      priceOriginal: "€1,595",
+      priceFull: "€1,495",
+      saveLine: "Save €100 when you pay in full",
+      depositAmount: "€500",
+      installments: "1 payment of €1,095",
+      totalSplit: "€1,595 total over 2 payments",
+      popular: false,
+      payInFullUrl: "https://buy.stripe.com/8x28wQ1z50Q74Fzfegb7y04",
+      payDepositUrl: "https://book.stripe.com/6oUeVeb9FdCT7RL1nqb7y01",
     },
   ],
 };
@@ -391,7 +419,7 @@ export const FINAL_CTA_DEFAULT_CONTENT: FinalCtaContent = {
   title: "Your Pilates career starts here",
   description:
     "Join the next cohort of balance-trained instructors. Expert guidance, structured learning, real results.",
-  primaryLabel: "Register Interest",
+  primaryLabel: "Book your space now",
   secondaryLabel: "Apply for a pathway",
 };
 
