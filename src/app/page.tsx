@@ -525,7 +525,7 @@ function ApplicationSection() {
     <section id="apply" className="py-20 md:py-28 bg-background">
       <div className="max-w-3xl mx-auto px-5 md:px-6">
         <SectionHeader
-          eyebrow="Apply or join the waitlist"
+          eyebrow="Express interest"
           title="A short form. We'll get back to you within a week."
         />
         <div className="mt-12 bg-white rounded-2xl border border-brand-border p-7 md:p-10">
