@@ -20,7 +20,7 @@ export function welcomeEmail(args: {
   const html = `<!doctype html>
 <html><body style="margin:0; padding:24px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:#F8F6F1; color:#1e1a1a;">
   <div style="max-width: 540px; margin: 0 auto; background: #ffffff; border-radius: 16px; padding: 32px; border: 1px solid #E5E1D8;">
-    <p style="margin: 0 0 6px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #A3C1AD;">balance studios</p>
+    <p style="margin: 0 0 6px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #1E4D4A;">balance studios</p>
     <h1 style="margin: 0 0 16px; font-size: 22px; font-weight: 300;">Welcome to your Pilates training</h1>
     <p style="margin: 0 0 16px; font-size: 14px; color: #4A4A4A; line-height: 1.6;">
       Hi ${escape(recipientName)},
@@ -40,7 +40,7 @@ export function welcomeEmail(args: {
     </a>
     <p style="margin: 24px 0 0; font-size: 13px; color: #777; line-height: 1.6;">
       Please change your password as soon as you sign in. You can do that from the
-      <a href="${appUrl}/forgot-password" style="color: #A3C1AD;">forgot-password page</a> using this email address.
+      <a href="${appUrl}/forgot-password" style="color: #1E4D4A;">forgot-password page</a> using this email address.
     </p>
   </div>
 </body></html>`;

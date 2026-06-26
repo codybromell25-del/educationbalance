@@ -16,7 +16,7 @@ import React from "react";
 const PALETTE = {
   primary: "#1e1a1a",
   muted: "#4A4A4A",
-  sage: "#A3C1AD",
+  sage: "#1E4D4A",
   surface: "#F8F6F1",
   border: "#E5E1D8",
 };

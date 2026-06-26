@@ -29,8 +29,8 @@ export function hoursSignedOffEmail(args: {
   const subject = `${categoryLabel} hours signed off — ${friendlyDuration}`;
 
   const feedbackBlock = feedback
-    ? `<div style="margin: 16px 0; padding: 16px; border-left: 3px solid #A3C1AD; background: #F8F6F1; color: #1e1a1a;">
-         <p style="margin: 0 0 6px; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: #A3C1AD;">Feedback from your instructor</p>
+    ? `<div style="margin: 16px 0; padding: 16px; border-left: 3px solid #1E4D4A; background: #F8F6F1; color: #1e1a1a;">
+         <p style="margin: 0 0 6px; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: #1E4D4A;">Feedback from your instructor</p>
          <p style="margin: 0; font-size: 14px; line-height: 1.6; white-space: pre-wrap;">${escape(feedback)}</p>
        </div>`
     : "";
@@ -38,7 +38,7 @@ export function hoursSignedOffEmail(args: {
   const html = `<!doctype html>
 <html><body style="margin:0; padding:24px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:#F8F6F1; color:#1e1a1a;">
   <div style="max-width: 540px; margin: 0 auto; background: #ffffff; border-radius: 16px; padding: 32px; border: 1px solid #E5E1D8;">
-    <p style="margin: 0 0 6px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #A3C1AD;">balance studios</p>
+    <p style="margin: 0 0 6px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #1E4D4A;">balance studios</p>
     <h1 style="margin: 0 0 16px; font-size: 22px; font-weight: 300;">Your hours have been signed off</h1>
     <p style="margin: 0 0 8px; font-size: 14px; color: #4A4A4A;">Hi ${escape(studentName)},</p>
     <p style="margin: 0 0 8px; font-size: 14px; color: #4A4A4A;">

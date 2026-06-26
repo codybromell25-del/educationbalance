@@ -16,13 +16,13 @@ export function applicationReceivedEmail(args: {
   const subject = `New course application — ${applicantName}`;
 
   const notesBlock = notes
-    ? `<blockquote style="margin: 16px 0; padding: 12px 16px; border-left: 3px solid #A3C1AD; background: #F8F6F1; color: #4A4A4A; white-space: pre-wrap;">${escape(notes)}</blockquote>`
+    ? `<blockquote style="margin: 16px 0; padding: 12px 16px; border-left: 3px solid #1E4D4A; background: #F8F6F1; color: #4A4A4A; white-space: pre-wrap;">${escape(notes)}</blockquote>`
     : "";
 
   const html = `<!doctype html>
 <html><body style="margin:0; padding:24px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:#F8F6F1; color:#1e1a1a;">
   <div style="max-width: 540px; margin: 0 auto; background: #ffffff; border-radius: 16px; padding: 32px; border: 1px solid #E5E1D8;">
-    <p style="margin: 0 0 6px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #A3C1AD;">balance studios</p>
+    <p style="margin: 0 0 6px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #1E4D4A;">balance studios</p>
     <h1 style="margin: 0 0 16px; font-size: 22px; font-weight: 300;">New course application</h1>
     <p style="margin: 0 0 8px; font-size: 14px; color: #4A4A4A;"><strong style="color:#1e1a1a;">${escape(applicantName)}</strong></p>
     <p style="margin: 0 0 16px; font-size: 13px; color: #777;">
