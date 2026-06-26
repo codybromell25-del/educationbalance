@@ -166,7 +166,7 @@ export const HERO_DEFAULT_CONTENT: HeroContent = {
   description:
     "Most Pilates courses send you home with a checklist of exercises. balance studios sends you home with the eye, the language and the confidence to teach.",
   ctaPrimaryLabel: "Sign Up Now",
-  ctaSecondaryLabel: "Apply / join waitlist",
+  ctaSecondaryLabel: "Express interest",
   cohortDates: "Cohort 1 · Starts Autumn 2026",
 };
 

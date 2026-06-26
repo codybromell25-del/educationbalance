@@ -49,7 +49,7 @@ export default function HeroSplitScreen({
               Book your space now
             </a>
             <a
-              href="#about"
+              href="#apply"
               className="inline-flex items-center justify-center px-10 py-4 text-xs tracking-[0.25em] uppercase rounded-full border border-brand-border text-brand-primary hover:bg-white transition-colors"
             >
               {content.ctaSecondaryLabel}
