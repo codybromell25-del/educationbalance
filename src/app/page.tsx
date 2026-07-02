@@ -16,6 +16,7 @@ import HeroFullBleed from "@/components/landing/templates/HeroFullBleed";
 import HeroSplitScreen from "@/components/landing/templates/HeroSplitScreen";
 import TutorsSideBySide from "@/components/landing/templates/TutorsSideBySide";
 import TutorsAlternatingRows from "@/components/landing/templates/TutorsAlternatingRows";
+import TutorsFeaturedPlusRow from "@/components/landing/templates/TutorsFeaturedPlusRow";
 import GalleryMosaic from "@/components/landing/templates/GalleryMosaic";
 import GalleryEqualGrid from "@/components/landing/templates/GalleryEqualGrid";
 import PathwaysCards from "@/components/landing/templates/PathwaysCards";
@@ -80,8 +81,10 @@ export default async function HomePage() {
 
       {data.sections.tutors.template === "alternating-rows" ? (
         <TutorsAlternatingRows content={tutors} imageUrls={data.imageUrls} />
-      ) : (
+      ) : data.sections.tutors.template === "side-by-side" ? (
         <TutorsSideBySide content={tutors} imageUrls={data.imageUrls} />
+      ) : (
+        <TutorsFeaturedPlusRow content={tutors} imageUrls={data.imageUrls} />
       )}
 
       <ImageBreak imageUrls={data.imageUrls} />

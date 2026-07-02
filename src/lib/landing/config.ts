@@ -147,7 +147,8 @@ export const HERO_TEMPLATES = [
 ] as const;
 
 export const TUTORS_TEMPLATES = [
-  { id: "side-by-side", label: "Side by side (current)" },
+  { id: "featured-plus-row", label: "Featured director + row of instructors" },
+  { id: "side-by-side", label: "Side by side" },
   { id: "alternating-rows", label: "Alternating rows (1 tutor per row)" },
 ] as const;
 
@@ -280,15 +281,39 @@ export const TUTORS_DEFAULT_CONTENT: TutorsContent = {
   tutors: [
     {
       slotKey: "tutor-kelly",
-      name: "Kelly",
+      name: "Kelly O'Neill",
       role: "Course director · balance studios founder",
       bio: "CONFIRM short bio — years teaching, training lineage, philosophy. 60–90 words.",
     },
     {
       slotKey: "tutor-catherine",
-      name: "Catherine",
-      role: "Lead tutor",
-      bio: "CONFIRM short bio — Catherine's background, training, and what she's known for in the studio.",
+      name: "Catherine Keon",
+      role: "Instructor",
+      bio: "",
+    },
+    {
+      slotKey: "tutor-ciara",
+      name: "Ciara Whelan",
+      role: "Instructor",
+      bio: "",
+    },
+    {
+      slotKey: "tutor-cathy",
+      name: "Cathy O'Grady",
+      role: "Instructor",
+      bio: "",
+    },
+    {
+      slotKey: "tutor-sarah",
+      name: "Sarah McCormack",
+      role: "Instructor",
+      bio: "",
+    },
+    {
+      slotKey: "tutor-sorcha",
+      name: "Sorcha Hayward",
+      role: "Instructor",
+      bio: "",
     },
   ],
 };
@@ -462,7 +487,7 @@ export const FOOTER_DEFAULT_CONTENT: FooterContent = {
 
 // Default templates
 export const HERO_DEFAULT_TEMPLATE = "full-bleed";
-export const TUTORS_DEFAULT_TEMPLATE = "side-by-side";
+export const TUTORS_DEFAULT_TEMPLATE = "featured-plus-row";
 export const GALLERY_DEFAULT_TEMPLATE = "mosaic";
 export const PATHWAYS_DEFAULT_TEMPLATE = "cards";
 
@@ -482,8 +507,12 @@ export const WHO_FOR_ASSET_SLOTS: AssetSlot[] = [
 ];
 
 export const TUTORS_ASSET_SLOTS: AssetSlot[] = [
-  { key: "tutor-kelly", label: "Kelly portrait", fallback: "/images/instructor-chat.jpg" },
-  { key: "tutor-catherine", label: "Catherine portrait", fallback: "/images/instructor-helping.jpg" },
+  { key: "tutor-kelly", label: "Kelly O'Neill portrait", fallback: "/images/instructor-chat.jpg" },
+  { key: "tutor-catherine", label: "Catherine Keon portrait", fallback: "" },
+  { key: "tutor-ciara", label: "Ciara Whelan portrait", fallback: "" },
+  { key: "tutor-cathy", label: "Cathy O'Grady portrait", fallback: "" },
+  { key: "tutor-sarah", label: "Sarah McCormack portrait", fallback: "" },
+  { key: "tutor-sorcha", label: "Sorcha Hayward portrait", fallback: "" },
 ];
 
 export const GALLERY_ASSET_SLOTS: AssetSlot[] = [
