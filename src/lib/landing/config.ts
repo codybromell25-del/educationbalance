@@ -86,6 +86,9 @@ export type PathwaysContent = {
   title: string;
   description: string;
   footnote: string;
+  // Small deadline line rendered inside each pricing card, just above
+  // the CTA buttons. One string here means all three cards stay in sync.
+  bookingDeadline?: string;
   pathways: Array<{
     code: string;
     title: string;
@@ -337,6 +340,7 @@ export const PATHWAYS_DEFAULT_CONTENT: PathwaysContent = {
     "Pay in full and save, or spread the cost with a €500 deposit. Only 12 places per cohort — this is a launch price offer!",
   footnote:
     "A €500 deposit secures your place, with the remaining balance due ahead of your course start date. The pay-in-full saving applies to single payments only. Deposits are limited to the 12 places per cohort.",
+  bookingDeadline: "Booking closes on 18th September",
   pathways: [
     {
       code: "MAT",

@@ -212,6 +212,14 @@ export default function PathwaysEditor({
         ))}
       </div>
 
+      <Input
+        label="Booking deadline (small urgent line above each card's CTA)"
+        value={content.bookingDeadline ?? ""}
+        onChange={(v) => setContent({ ...content, bookingDeadline: v })}
+        placeholder="Booking closes on 18th September"
+        disabled={busy}
+      />
+
       <Textarea
         label="Footnote (small print under the cards)"
         value={content.footnote ?? ""}

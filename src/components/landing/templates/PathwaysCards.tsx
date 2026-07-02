@@ -24,7 +24,11 @@ export default function PathwaysCards({
 
         <div className="grid md:grid-cols-3 gap-5 md:gap-6 items-stretch">
           {content.pathways.map((p) => (
-            <PricingCard key={p.code} pathway={p} />
+            <PricingCard
+              key={p.code}
+              pathway={p}
+              bookingDeadline={content.bookingDeadline}
+            />
           ))}
         </div>
 
@@ -40,8 +44,10 @@ export default function PathwaysCards({
 
 function PricingCard({
   pathway: p,
+  bookingDeadline,
 }: {
   pathway: PathwaysContent["pathways"][number];
+  bookingDeadline?: string;
 }) {
   return (
     <div
@@ -101,6 +107,11 @@ function PricingCard({
 
       {/* CTAs — pinned to the bottom so all cards align */}
       <div className="mt-auto pt-7 flex flex-col gap-2">
+        {bookingDeadline && (
+          <p className="text-center text-[11px] tracking-[0.18em] uppercase text-brand-accent mb-1">
+            {bookingDeadline}
+          </p>
+        )}
         <a
           href={p.payInFullUrl || "#"}
           className={`inline-flex items-center justify-center px-5 py-3 text-xs tracking-[0.2em] uppercase rounded-full transition-colors ${
