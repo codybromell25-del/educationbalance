@@ -191,15 +191,6 @@ function CoursePillars({
   imageUrls: Map<string, string>;
 }) {
   const [l1, l2] = content.headlineLines;
-  // Split the italic strapline into one phrase per pillar image overlay.
-  // Falls back to showing the strapline below the heading if it doesn't
-  // split cleanly into N pieces (where N = number of pillars).
-  const overlayPhrases = (l2 ?? "")
-    .split(".")
-    .map((s) => s.trim())
-    .filter(Boolean);
-  const usePhraseOverlays =
-    overlayPhrases.length === content.pillars.length;
 
   return (
     <section id="about" className="pt-8 md:pt-12 pb-20 md:pb-28 bg-brand-surface">
@@ -211,7 +202,7 @@ function CoursePillars({
           <h2 className="text-2xl md:text-3xl font-light tracking-tight text-brand-primary leading-snug max-w-4xl mx-auto">
             {l1}
           </h2>
-          {l2 && !usePhraseOverlays && (
+          {l2 && (
             <p className="mt-4 md:mt-5 text-lg md:text-2xl italic text-brand-primary leading-snug md:whitespace-nowrap">
               {l2}
             </p>
@@ -229,24 +220,7 @@ function CoursePillars({
                     i % 2 === 0 ? "animate-pan-lr" : "animate-pan-rl"
                   }`}
                 />
-                {usePhraseOverlays && (
-                  <>
-                    {/* Soft dark gradient so the text stays legible
-                        over any image. */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-black/70" />
-                    <div className="absolute inset-0 flex items-center justify-center px-6">
-                      <p
-                        className="font-heading italic text-white text-center text-2xl sm:text-3xl md:text-3xl lg:text-4xl leading-tight"
-                        style={{
-                          textShadow:
-                            "0 2px 18px rgba(0,0,0,0.55), 0 1px 2px rgba(0,0,0,0.4)",
-                        }}
-                      >
-                        {overlayPhrases[i]}.
-                      </p>
-                    </div>
-                  </>
-                )}
+                <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-black/70" />
               </div>
               <h3 className="text-lg font-medium text-brand-primary mb-3">{p.title}</h3>
               {p.breakdown && p.breakdown.length > 0 && (

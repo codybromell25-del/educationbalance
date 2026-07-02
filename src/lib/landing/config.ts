@@ -181,7 +181,7 @@ export const COURSE_PILLARS_DEFAULT_CONTENT: CoursePillarsContent = {
   eyebrow: "Why this course",
   headlineLines: [
     "Most Pilates courses teach you exercises.",
-    "Trained to teach. Read the room. Know the body.",
+    "This one teaches you how to teach.",
   ],
   pillars: [
     {
