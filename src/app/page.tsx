@@ -249,6 +249,20 @@ function CoursePillars({
                 )}
               </div>
               <h3 className="text-lg font-medium text-brand-primary mb-3">{p.title}</h3>
+              {p.breakdown && p.breakdown.length > 0 && (
+                <ul className="mb-4 space-y-3">
+                  {p.breakdown.map((row, ri) => (
+                    <li key={ri}>
+                      <p className="text-brand-sage text-[11px] tracking-[0.18em] uppercase font-medium mb-1">
+                        {row.label}
+                      </p>
+                      <p className="text-brand-muted text-sm leading-relaxed">
+                        {row.detail}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              )}
               <p className="text-brand-muted leading-relaxed">{p.desc}</p>
             </div>
           ))}

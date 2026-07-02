@@ -33,7 +33,14 @@ export type HeroContent = {
 export type CoursePillarsContent = {
   eyebrow: string;
   headlineLines: string[]; // [line1, line2 (italic)]
-  pillars: Array<{ slotKey: string; title: string; desc: string }>;
+  pillars: Array<{
+    slotKey: string;
+    title: string;
+    desc: string;
+    // Optional structured hour/detail rows rendered between title and desc.
+    // Used by the "230 hours" pillar to show the per-pathway breakdown.
+    breakdown?: Array<{ label: string; detail: string }>;
+  }>;
 };
 
 export type WhoForContent = {
@@ -156,15 +163,15 @@ export const SINGLE_TEMPLATE = [{ id: "default", label: "Default" }] as const;
 // ----- Defaults -----
 
 export const HERO_DEFAULT_CONTENT: HeroContent = {
-  tagline: "Pilates Instructor Training",
+  tagline: "IICT ACCREDITED · 230 HOURS",
   headlineLines: [
-    "Most Pilates courses",
-    "teach you exercises.",
-    "This one teaches you",
-    "how to teach.",
+    "Trained",
+    "to teach.",
+    "Accredited to",
+    "practise.",
   ],
   description:
-    "Most Pilates courses send you home with a checklist of exercises. balance studios sends you home with the eye, the language and the confidence to teach.",
+    "Seventy two hours in person, twenty eight online, fifty hours of self practice, sixty hours of supervised teaching and twenty hours of structured observation, supported by senior balance instructors throughout. Grounded in biomechanics, rooted in classic Pilates principles with a contemporary, modern element, so graduates leave IICT accredited and ready to apply for insurance and teach.",
   ctaPrimaryLabel: "Sign Up Now",
   ctaSecondaryLabel: "Express interest",
   cohortDates: "Cohort 1 · Starts Autumn 2026",
@@ -179,18 +186,35 @@ export const COURSE_PILLARS_DEFAULT_CONTENT: CoursePillarsContent = {
   pillars: [
     {
       slotKey: "pillar-1",
-      title: "Small cohort, real studio",
-      desc: "Four weekends at the balance studio. Tutor-led, equipment-on, repertoire learned on the same reformers you'll teach on.",
+      title: "An accredited qualification, not a weekend course",
+      desc: "Choose Mat, Reformer, or full Comprehensive. Every pathway is IICT accredited, meeting the standard required to apply for insurance and teach professionally.",
     },
     {
       slotKey: "pillar-2",
-      title: "Theory meets practice",
-      desc: "Online learning supports every weekend — manuals, video library, MCQ exams and your hour-log tracker live in your account.",
+      title: "Science based.",
+      desc: "Every exercise is taught alongside the anatomy behind it: the muscles, the joints, the movement pattern. You'll learn to read a body in real time and adapt the session accordingly, backed by manuals, a video library, MCQ exams, and a live hour log.",
     },
     {
       slotKey: "pillar-3",
-      title: "Pathway that fits you",
-      desc: "Mat-only, reformer-only, or full comprehensive. Pick the depth and modality that fits where you're going.",
+      title: "230 hours, classic method with a modern edge",
+      desc: "Tutor led, hands on, grounded in classic Pilates principles with a contemporary, modern element.",
+      breakdown: [
+        {
+          label: "Comprehensive — 230 hours total",
+          detail:
+            "78 in person · 49 online · 63 self practice · 40 structured observation, supported by expert balance instructors throughout.",
+        },
+        {
+          label: "Mat — 105 hours total",
+          detail:
+            "36 in person · 19 online · 30 self practice · 20 structured observation",
+        },
+        {
+          label: "Reformer — 125 hours total",
+          detail:
+            "42 in person · 30 online · 33 self practice · 20 structured observation",
+        },
+      ],
     },
   ],
 };
@@ -204,6 +228,7 @@ export const WHO_FOR_DEFAULT_CONTENT: WhoForContent = {
     "You're a yoga or fitness pro looking to add Pilates with real depth",
     "You learn best with a mix of hands-on, theory and self-practice",
     "You want a small cohort with real tutor time, not a 200-person Zoom course",
+    "You want a qualification that's accredited and insurance ready from day one",
   ],
 };
 
@@ -217,6 +242,7 @@ export const WHAT_YOU_LEARN_DEFAULT_CONTENT: WhatYouLearnContent = {
     "Use the reformer with intention — not just the workout, the why",
     "Modify for pregnancy, injury and special populations",
     "Run a sustainable teaching practice that suits your life",
+    "Graduate IICT accredited, recognised for insurance in over thirty countries",
   ],
 };
 
