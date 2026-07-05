@@ -194,23 +194,35 @@ function CoursePillars({
   imageUrls: Map<string, string>;
 }) {
   const [l1, l2] = content.headlineLines;
+  const hasHeader = Boolean(content.eyebrow) || Boolean(l1) || Boolean(l2);
 
   return (
-    <section id="about" className="pt-8 md:pt-12 pb-20 md:pb-28 bg-brand-surface">
+    <section
+      id="about"
+      className={`${
+        hasHeader ? "pt-8 md:pt-12" : "pt-20 md:pt-28"
+      } pb-20 md:pb-28 bg-brand-surface`}
+    >
       <div className="max-w-6xl mx-auto px-5 md:px-6">
-        <div className="text-center mb-14 md:mb-20">
-          <p className="text-brand-sage text-sm md:text-base tracking-[0.35em] uppercase mb-5">
-            {content.eyebrow}
-          </p>
-          <h2 className="text-2xl md:text-3xl font-light tracking-tight text-brand-primary leading-snug max-w-4xl mx-auto">
-            {l1}
-          </h2>
-          {l2 && (
-            <p className="mt-4 md:mt-5 text-lg md:text-2xl italic text-brand-primary leading-snug md:whitespace-nowrap">
-              {l2}
-            </p>
-          )}
-        </div>
+        {hasHeader && (
+          <div className="text-center mb-14 md:mb-20">
+            {content.eyebrow && (
+              <p className="text-brand-sage text-sm md:text-base tracking-[0.35em] uppercase mb-5">
+                {content.eyebrow}
+              </p>
+            )}
+            {l1 && (
+              <h2 className="text-2xl md:text-3xl font-light tracking-tight text-brand-primary leading-snug max-w-4xl mx-auto">
+                {l1}
+              </h2>
+            )}
+            {l2 && (
+              <p className="mt-4 md:mt-5 text-lg md:text-2xl italic text-brand-primary leading-snug md:whitespace-nowrap">
+                {l2}
+              </p>
+            )}
+          </div>
+        )}
         <div className="grid md:grid-cols-3 gap-8">
           {content.pillars.map((p, i) => (
             <div key={i} className="group">

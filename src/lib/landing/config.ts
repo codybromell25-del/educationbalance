@@ -402,7 +402,7 @@ export const PATHWAYS_DEFAULT_CONTENT: PathwaysContent = {
       priceFull: "€2,345",
       saveLine: "Save €150 when you pay in full",
       depositAmount: "€500",
-      installments: "4 instalments of €498.74",
+      installments: "4 instalments of €498.75",
       totalSplit: "Due 1st October, November, December and January",
       popular: true,
       payInFullUrl: "https://buy.stripe.com/dRm14oa5BdCT6NH3vyb7y03",
