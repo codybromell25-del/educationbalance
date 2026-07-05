@@ -244,6 +244,18 @@ function CoursePillars({
             </div>
           ))}
         </div>
+        {content.narrative && content.narrative.length > 0 && (
+          <div className="mt-16 md:mt-20 max-w-3xl mx-auto space-y-5">
+            {content.narrative.map((para, i) => (
+              <p
+                key={i}
+                className="text-brand-primary/85 leading-relaxed text-base md:text-lg"
+              >
+                {para}
+              </p>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
@@ -569,6 +581,11 @@ function FinalCta({
             {content.secondaryLabel}
           </a>
         </div>
+        {content.bookingLine && (
+          <p className="mt-10 text-white/70 text-sm md:text-base leading-relaxed max-w-2xl mx-auto">
+            {content.bookingLine}
+          </p>
+        )}
       </div>
     </section>
   );

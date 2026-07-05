@@ -38,9 +38,13 @@ export type CoursePillarsContent = {
     title: string;
     desc: string;
     // Optional structured hour/detail rows rendered between title and desc.
-    // Used by the "230 hours" pillar to show the per-pathway breakdown.
+    // Used by the "Course Details" pillar to show the per-pathway breakdown.
     breakdown?: Array<{ label: string; detail: string }>;
   }>;
+  // Optional long-form paragraphs rendered as a centred prose block
+  // under the three tiles. Home for the balance-approach / Pilates-is-
+  // more-than-repertoire narrative that doesn't fit in the tiles.
+  narrative?: string[];
 };
 
 export type WhoForContent = {
@@ -130,6 +134,9 @@ export type FinalCtaContent = {
   description: string;
   primaryLabel: string;
   secondaryLabel: string;
+  // Small line under the CTA buttons. Used for "want to speak to us
+  // first? email X" style pre-booking prompts.
+  bookingLine?: string;
 };
 
 export type FooterContent = {
@@ -191,35 +198,41 @@ export const COURSE_PILLARS_DEFAULT_CONTENT: CoursePillarsContent = {
     {
       slotKey: "pillar-1",
       title: "An accredited qualification, not a weekend course",
-      desc: "Choose Mat, Reformer, or full Comprehensive. Every pathway is IICT accredited, meeting the standard required to apply for insurance and teach professionally.",
+      desc: "Choose Mat, Reformer, or Comprehensive. Each pathway is IICT accredited, meeting the standard required to apply for insurance and teach professionally.",
     },
     {
       slotKey: "pillar-2",
       title: "Science based.",
-      desc: "Every exercise is taught alongside the anatomy behind it: the muscles, the joints, the movement pattern. You'll learn to read a body in real time and adapt the session accordingly, backed by manuals, a video library, MCQ exams, and a live hour log.",
+      desc: "Every exercise is taught alongside the anatomy behind it: the muscles, the joints, the pattern of movement. You will learn to read a body in real time and adapt exercises accordingly.",
     },
     {
       slotKey: "pillar-3",
-      title: "230 hours, classic method with a modern edge",
-      desc: "Tutor led, hands on, grounded in classic Pilates principles with a contemporary, modern element.",
+      title: "Course Details",
+      desc: "Our aim is to produce competent and confident instructors who respect and understand Pilates in all its forms.",
       breakdown: [
         {
-          label: "Comprehensive — 230 hours total",
+          label: "Comprehensive",
           detail:
-            "78 in person · 49 online · 63 self practice · 40 structured observation, supported by expert balance instructors throughout.",
+            "4 in-studio weekends, online learning, and 3 open studio days for reformer self practice, supervised by balance instructors.",
         },
         {
-          label: "Mat — 105 hours total",
+          label: "Mat",
           detail:
-            "36 in person · 19 online · 30 self practice · 20 structured observation",
+            "2 in-studio weekends, 19 hours of online learning, self practice, and structured observation.",
         },
         {
-          label: "Reformer — 125 hours total",
+          label: "Reformer",
           detail:
-            "42 in person · 30 online · 33 self practice · 20 structured observation",
+            "2 in-studio weekends, 3 open studio days, and 30 hours of online learning, plus self practice and structured observation. Prerequisite: a valid Mat qualification.",
         },
       ],
     },
+  ],
+  narrative: [
+    "The balance teacher training course respects the changes taking place in the industry and makes room for modern thinking and updated ideas, while staying firmly rooted in the classical foundations of Pilates. You will leave understanding Pilates, the body, why the industry has changed, and how to manage that change as a confident, capable instructor.",
+    "Pilates is more than repertoire. It is an understanding and respect for how the body responds, and why. From there, we build toward becoming a competent and capable instructor. Understanding and instructing are two different skill sets, and this course teaches both.",
+    "With so many trends in Pilates, balance Education is focused on physiology and science, giving you a foundation of understanding that cannot be disputed. The Pilates world is an exciting and wonderful industry to be part of, and we will support you in becoming a valuable part of it, helping you support clients safely and effectively. Becoming part of this community brings real satisfaction, and balance Education is proud to educate and support you on that journey.",
+    "Your training doesn't end when the course does. balance is here to support your career on an ongoing basis, in whatever way we can.",
   ],
 };
 
@@ -433,11 +446,11 @@ export const WHY_BALANCE_DEFAULT_CONTENT: WhyBalanceContent = {
   eyebrow: "Why balance",
   title: "Built on real studio experience",
   paragraphs: [
-    "You're not learning in a hotel function room from a roving trainer. You're learning at a working studio with thousands of clients across Kildare and Wicklow, taught by people who run classes every week.",
-    "Every section of the course has been shaped by what actually works on the studio floor — not just textbooks.",
+    "You're learning at a working studio with thousands of clients across Kildare and Wicklow, taught by people who run classes every week. This certification is designed to create great instructors, not just qualified ones. Learn how to understand the body, connect with people, and teach with confidence.",
+    "Every section of the course has been shaped by what actually works on the studio floor, not just textbooks.",
   ],
   stats: [
-    { value: "5", label: "Studios" },
+    { value: "6", label: "Studios" },
     { value: "1000+", label: "Clients trained" },
     { value: "8+", label: "Years experience" },
   ],
@@ -476,6 +489,8 @@ export const FINAL_CTA_DEFAULT_CONTENT: FinalCtaContent = {
     "Join the next cohort of balance-trained instructors. Expert guidance, structured learning, real results.",
   primaryLabel: "Book your space now",
   secondaryLabel: "Apply for a pathway",
+  bookingLine:
+    "Would you like to speak to us about this course before you book? Email us to arrange a phone call at education@balancestudios.ie.",
 };
 
 export const FOOTER_DEFAULT_CONTENT: FooterContent = {
