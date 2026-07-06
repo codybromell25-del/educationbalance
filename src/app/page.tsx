@@ -252,22 +252,24 @@ function CoursePillars({
                   ))}
                 </ul>
               )}
-              <p className="text-brand-muted leading-relaxed">{p.desc}</p>
+              {p.desc && (
+                <p className="text-brand-muted leading-relaxed">{p.desc}</p>
+              )}
+              {p.paragraphs && p.paragraphs.length > 0 && (
+                <div className={`${p.desc ? "mt-4" : ""} space-y-4`}>
+                  {p.paragraphs.map((para, pi) => (
+                    <p
+                      key={pi}
+                      className="text-sm text-brand-muted leading-relaxed"
+                    >
+                      {para}
+                    </p>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>
-        {content.narrative && content.narrative.length > 0 && (
-          <div className="mt-16 md:mt-20 max-w-3xl mx-auto space-y-5">
-            {content.narrative.map((para, i) => (
-              <p
-                key={i}
-                className="text-brand-primary/85 leading-relaxed text-base md:text-lg"
-              >
-                {para}
-              </p>
-            ))}
-          </div>
-        )}
       </div>
     </section>
   );

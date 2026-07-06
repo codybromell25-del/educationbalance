@@ -40,10 +40,14 @@ export type CoursePillarsContent = {
     // Optional structured hour/detail rows rendered between title and desc.
     // Used by the "Course Details" pillar to show the per-pathway breakdown.
     breakdown?: Array<{ label: string; detail: string }>;
+    // Optional long-form paragraphs rendered under the pillar's desc.
+    // Holds the extended narrative belonging to *this* pillar so each
+    // theme's copy lives with its own tile instead of stacking under
+    // one section-wide block.
+    paragraphs?: string[];
   }>;
-  // Optional long-form paragraphs rendered as a centred prose block
-  // under the three tiles. Home for the balance-approach / Pilates-is-
-  // more-than-repertoire narrative that doesn't fit in the tiles.
+  // Deprecated section-level narrative — kept for backwards compat but
+  // no longer rendered. Extended copy now lives on each pillar.
   narrative?: string[];
 };
 
@@ -199,16 +203,23 @@ export const COURSE_PILLARS_DEFAULT_CONTENT: CoursePillarsContent = {
       slotKey: "pillar-1",
       title: "An accredited qualification, not a weekend course",
       desc: "Choose Mat, Reformer, or Comprehensive. Each pathway is IICT accredited, meeting the standard required to apply for insurance and teach professionally.",
+      paragraphs: [
+        "The balance teacher training course respects the changes taking place in the industry and makes room for modern thinking and updated ideas, while staying firmly rooted in the classical foundations of Pilates. You will leave understanding Pilates, the body, why the industry has changed, and how to manage that change as a confident, capable instructor.",
+        "Pilates is more than repertoire. It is an understanding and respect for how the body responds, and why. From there, we build toward becoming a competent and capable instructor. Understanding and instructing are two different skill sets, and this course teaches both.",
+      ],
     },
     {
       slotKey: "pillar-2",
       title: "Science based.",
       desc: "Every exercise is taught alongside the anatomy behind it: the muscles, the joints, the pattern of movement. You will learn to read a body in real time and adapt exercises accordingly.",
+      paragraphs: [
+        "With so many trends in Pilates, balance Education is focused on physiology and science, giving you a foundation of understanding that cannot be disputed. The Pilates world is an exciting and wonderful industry to be part of, and we will support you in becoming a valuable part of it, helping you support clients safely and effectively. Becoming part of this community brings real satisfaction, and balance Education is proud to educate and support you on that journey.",
+      ],
     },
     {
       slotKey: "pillar-3",
       title: "Course Details",
-      desc: "Our aim is to produce competent and confident instructors who respect and understand Pilates in all its forms.",
+      desc: "",
       breakdown: [
         {
           label: "Comprehensive",
@@ -226,13 +237,11 @@ export const COURSE_PILLARS_DEFAULT_CONTENT: CoursePillarsContent = {
             "2 in-studio weekends, 3 open studio days, and 30 hours of online learning, plus self practice and structured observation. Prerequisite: a valid Mat qualification.",
         },
       ],
+      paragraphs: [
+        "Your training doesn't end when the course does. balance is here to support your career on an ongoing basis, in whatever way we can.",
+        "Our aim is to produce competent and confident instructors who respect and understand Pilates in all its forms.",
+      ],
     },
-  ],
-  narrative: [
-    "The balance teacher training course respects the changes taking place in the industry and makes room for modern thinking and updated ideas, while staying firmly rooted in the classical foundations of Pilates. You will leave understanding Pilates, the body, why the industry has changed, and how to manage that change as a confident, capable instructor.",
-    "Pilates is more than repertoire. It is an understanding and respect for how the body responds, and why. From there, we build toward becoming a competent and capable instructor. Understanding and instructing are two different skill sets, and this course teaches both.",
-    "With so many trends in Pilates, balance Education is focused on physiology and science, giving you a foundation of understanding that cannot be disputed. The Pilates world is an exciting and wonderful industry to be part of, and we will support you in becoming a valuable part of it, helping you support clients safely and effectively. Becoming part of this community brings real satisfaction, and balance Education is proud to educate and support you on that journey.",
-    "Your training doesn't end when the course does. balance is here to support your career on an ongoing basis, in whatever way we can.",
   ],
 };
 
