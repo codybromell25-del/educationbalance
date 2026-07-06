@@ -406,7 +406,7 @@ function ImageBreak({ imageUrls }: { imageUrls: Map<string, string> }) {
   return (
     <section className="relative h-[50vh] md:h-[60vh]">
       <Image
-        src={imageUrls.get("image-break") ?? "/images/studio-ball-workout.jpg"}
+        src={imageUrls.get("image-break") ?? "/images/image-break.jpg"}
         alt="balance studios"
         fill
         className="object-cover"

@@ -581,7 +581,7 @@ export const GALLERY_ASSET_SLOTS: AssetSlot[] = [
 ];
 
 export const IMAGE_BREAK_ASSET_SLOTS: AssetSlot[] = [
-  { key: "image-break", label: "Atmospheric break image (full-width)", fallback: "/images/studio-ball-workout.jpg" },
+  { key: "image-break", label: "Atmospheric break image (full-width)", fallback: "/images/image-break.jpg" },
 ];
 
 export const WHY_BALANCE_ASSET_SLOTS: AssetSlot[] = [
