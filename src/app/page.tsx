@@ -375,6 +375,24 @@ function FourWeekends({ content }: { content: WeekendsContent }) {
               </p>
               <h3 className="text-xl font-medium text-brand-primary mb-3">{w.title}</h3>
               <p className="text-sm text-brand-primary/80 leading-relaxed">{w.body}</p>
+              {w.bullets && w.bullets.length > 0 && (
+                <>
+                  <p className="mt-5 text-xs tracking-[0.2em] uppercase text-brand-muted">
+                    What you&apos;ll cover
+                  </p>
+                  <ul className="mt-3 space-y-2">
+                    {w.bullets.map((b, bi) => (
+                      <li
+                        key={bi}
+                        className="flex items-start gap-2 text-sm text-brand-primary/85 leading-relaxed"
+                      >
+                        <span className="text-brand-sage shrink-0 mt-1">✓</span>
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
             </div>
           ))}
         </div>

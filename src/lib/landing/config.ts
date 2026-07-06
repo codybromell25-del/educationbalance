@@ -66,7 +66,13 @@ export type WhatYouLearnContent = {
 export type WeekendsContent = {
   eyebrow: string;
   title: string;
-  weekends: Array<{ n: number; title: string; body: string }>;
+  weekends: Array<{
+    n: number;
+    title: string;
+    body: string;
+    // Optional "What you'll cover:" checklist rendered under the body.
+    bullets?: string[];
+  }>;
 };
 
 export type TutorsContent = {
@@ -279,22 +285,48 @@ export const WEEKENDS_DEFAULT_CONTENT: WeekendsContent = {
     {
       n: 1,
       title: "Foundations & functional anatomy",
-      body: "The Pilates method, the principles, and the anatomy you'll cue every day.",
+      body: "The starting point for everything that follows. You will learn the Pilates method and its core principles, then build the functional anatomy that sits behind every cue you give, so you understand not just what to teach but why it works.",
+      bullets: [
+        "The history and philosophy of the Pilates method",
+        "The core principles: breath, centering, control, precision, concentration and flow",
+        "Functional anatomy: the skeleton, key muscle groups and how the body moves",
+        "Planes of movement and how anatomy shapes your cueing",
+      ],
     },
     {
       n: 2,
-      title: "Mat — teaching the room",
-      body: "The balance approach to mat teaching. Class structure, cueing, exercise library, modifications.",
+      title: "Mat & Assessment preparation",
+      body: "The balance approach to mat teaching, from your first cue to a full class. You will work through the mat repertoire in detail and learn how to structure, sequence and adapt a class for real clients, while preparing for your mat assessment.",
+      bullets: [
+        "The full mat exercise library, with technique and teaching points",
+        "Class structure, sequencing and flow",
+        "Cueing frameworks that work for mixed ability rooms",
+        "Modifications, progressions and regressions",
+        "How to prepare and film your mat assessment",
+      ],
     },
     {
       n: 3,
-      title: "Reformer — equipment & exercises",
-      body: "Springs, setup, safety. Reformer exercise library. Programming reformer classes for real clients.",
+      title: "Reformer Foundations",
+      body: "Everything you need to teach reformer with confidence and safety. You will get comfortable with the machine itself, learn the foundational repertoire, and start programming beginner classes for real clients.",
+      bullets: [
+        "Reformer setup, springs, resistance and safety",
+        "The foundational reformer exercise library",
+        "Smooth transitions and class flow on the machine",
+        "Programming beginner reformer classes",
+      ],
     },
     {
       n: 4,
-      title: "Special populations & teaching practice",
-      body: "Pregnancy, older adults, injury recovery. Inclusive classes. Practical assessments + sign-off.",
+      title: "Advanced reformer, S&C & professional practice",
+      body: "The final weekend brings it all together. You will expand into advanced repertoire and strength and conditioning, learn to teach special populations and inclusive classes, and cover the professional side of working as an instructor, before your practical assessment and sign off.",
+      bullets: [
+        "Advanced reformer repertoire",
+        "Strength and conditioning principles within Pilates",
+        "Teaching special populations and inclusive classes",
+        "Professional practice: insurance, ethics and business basics",
+        "Practical assessment and sign off",
+      ],
     },
   ],
 };
