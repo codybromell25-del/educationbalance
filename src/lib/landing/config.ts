@@ -262,13 +262,13 @@ export const WHAT_YOU_LEARN_DEFAULT_CONTENT: WhatYouLearnContent = {
   eyebrow: "What you'll learn",
   title: "By the time you finish, you'll be able to —",
   bullets: [
+    "Graduate IICT accredited, recognised for insurance in over thirty countries",
+    "Run a sustainable teaching practice that suits your life",
     "Cue clients with clarity, calm and confidence",
     "Read a body across the room and adapt the session in real time",
     "Build safe, progressive class plans for mixed-ability rooms",
     "Use the reformer with intention — not just the workout, the why",
     "Modify for pregnancy, injury and special populations",
-    "Run a sustainable teaching practice that suits your life",
-    "Graduate IICT accredited, recognised for insurance in over thirty countries",
   ],
 };
 
