@@ -553,9 +553,9 @@ export const HERO_ASSET_SLOTS: AssetSlot[] = [
 ];
 
 export const COURSE_PILLARS_ASSET_SLOTS: AssetSlot[] = [
-  { key: "pillar-1", label: "Pillar 1 image", fallback: "/images/studio-instructor.jpg" },
-  { key: "pillar-2", label: "Pillar 2 image", fallback: "/images/reformer-stretch.jpg" },
-  { key: "pillar-3", label: "Pillar 3 image", fallback: "/images/instructor-chat.jpg" },
+  { key: "pillar-1", label: "Pillar 1 image", fallback: "/images/pillar-1.jpg" },
+  { key: "pillar-2", label: "Pillar 2 image", fallback: "/images/pillar-2.jpg" },
+  { key: "pillar-3", label: "Pillar 3 image", fallback: "/images/pillar-3.jpg" },
 ];
 
 export const WHO_FOR_ASSET_SLOTS: AssetSlot[] = [
