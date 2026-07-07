@@ -382,6 +382,7 @@ export const GALLERY_DEFAULT_CONTENT: GalleryContent = {
     "gallery-4",
     "gallery-5",
     "gallery-6",
+    "gallery-7",
   ],
 };
 
@@ -578,6 +579,7 @@ export const GALLERY_ASSET_SLOTS: AssetSlot[] = [
   { key: "gallery-4", label: "Gallery photo 4", fallback: "/images/gallery-4.jpg" },
   { key: "gallery-5", label: "Gallery photo 5", fallback: "/images/gallery-5.jpg" },
   { key: "gallery-6", label: "Gallery photo 6", fallback: "/images/gallery-6.jpg" },
+  { key: "gallery-7", label: "Gallery photo 7", fallback: "/images/gallery-7.jpg" },
 ];
 
 export const IMAGE_BREAK_ASSET_SLOTS: AssetSlot[] = [
