@@ -572,12 +572,12 @@ export const TUTORS_ASSET_SLOTS: AssetSlot[] = [
 ];
 
 export const GALLERY_ASSET_SLOTS: AssetSlot[] = [
-  { key: "gallery-1", label: "Gallery photo 1 (feature tile)", fallback: "/images/studio-bray-hero.jpg" },
-  { key: "gallery-2", label: "Gallery photo 2", fallback: "/images/studio-wide.jpg" },
-  { key: "gallery-3", label: "Gallery photo 3", fallback: "/images/studio-instructor.jpg" },
-  { key: "gallery-4", label: "Gallery photo 4", fallback: "/images/reformer-class.jpg" },
-  { key: "gallery-5", label: "Gallery photo 5", fallback: "/images/studio-mirror.jpg" },
-  { key: "gallery-6", label: "Gallery photo 6", fallback: "/images/studio-equipment.jpg" },
+  { key: "gallery-1", label: "Gallery photo 1 (feature tile)", fallback: "/images/gallery-1.jpg" },
+  { key: "gallery-2", label: "Gallery photo 2", fallback: "/images/gallery-2.jpg" },
+  { key: "gallery-3", label: "Gallery photo 3", fallback: "/images/gallery-3.jpg" },
+  { key: "gallery-4", label: "Gallery photo 4", fallback: "/images/gallery-4.jpg" },
+  { key: "gallery-5", label: "Gallery photo 5", fallback: "/images/gallery-5.jpg" },
+  { key: "gallery-6", label: "Gallery photo 6", fallback: "/images/gallery-6.jpg" },
 ];
 
 export const IMAGE_BREAK_ASSET_SLOTS: AssetSlot[] = [
