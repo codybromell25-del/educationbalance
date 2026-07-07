@@ -25,7 +25,6 @@ import { loadLandingData } from "@/lib/landing/loader";
 import type {
   HeroContent,
   CoursePillarsContent,
-  WhoForContent,
   WhatYouLearnContent,
   WeekendsContent,
   TutorsContent,
@@ -49,7 +48,6 @@ export default async function HomePage() {
   const data = await loadLandingData();
   const hero = data.sections.hero.content as HeroContent;
   const coursePillars = data.sections["course-pillars"].content as CoursePillarsContent;
-  const whoFor = data.sections["who-for"].content as WhoForContent;
   const whatLearn = data.sections["what-you-learn"].content as WhatYouLearnContent;
   const weekends = data.sections.weekends.content as WeekendsContent;
   const tutors = data.sections.tutors.content as TutorsContent;
@@ -75,7 +73,6 @@ export default async function HomePage() {
 
       <BrandMoment />
       <CoursePillars content={coursePillars} imageUrls={data.imageUrls} />
-      <WhoFor content={whoFor} imageUrls={data.imageUrls} />
       <WhatYouLearn content={whatLearn} />
       <FourWeekends content={weekends} />
 
@@ -277,65 +274,6 @@ function CoursePillars({
 
 // ------------------------------------------------------------------
 // Who is this for — CMS-driven (split with side image).
-// ------------------------------------------------------------------
-function WhoFor({
-  content,
-  imageUrls,
-}: {
-  content: WhoForContent;
-  imageUrls: Map<string, string>;
-}) {
-  const [l1, l2] = content.headlineLines;
-  return (
-    <section className="py-20 md:py-28 bg-background">
-      <div className="max-w-6xl mx-auto px-5 md:px-6">
-        <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
-          <div>
-            <p className="text-brand-sage text-xs tracking-[0.3em] uppercase mb-4">
-              {content.eyebrow}
-            </p>
-            <h2 className="text-3xl md:text-4xl font-light tracking-tight text-brand-primary mb-8">
-              {l1}
-              {l2 && (
-                <>
-                  <br />
-                  <span className="italic">{l2}</span>
-                </>
-              )}
-            </h2>
-            <div className="space-y-5">
-              {content.bullets.map((item) => (
-                <div key={item} className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-brand-sage/10 flex items-center justify-center shrink-0 mt-0.5">
-                    <svg
-                      className="w-3.5 h-3.5 text-brand-sage"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2.5}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <p className="text-brand-primary">{item}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="relative h-[500px] rounded-2xl overflow-hidden hidden md:block">
-            <Image
-              src={imageUrls.get("who-for") ?? "/images/instructor-helping.jpg"}
-              alt="Instructor guiding a student"
-              fill
-              className="object-cover"
-            />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 // ------------------------------------------------------------------
 function WhatYouLearn({ content }: { content: WhatYouLearnContent }) {
   return (
