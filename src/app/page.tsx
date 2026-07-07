@@ -366,7 +366,7 @@ function WhatYouGet({ content }: { content: WhatYouGetContent }) {
               key={p.title}
               className="rounded-2xl border border-brand-border bg-white p-7"
             >
-              <p className="text-3xl mb-3">{p.icon}</p>
+              {p.icon && <p className="text-3xl mb-3">{p.icon}</p>}
               <h3 className="font-medium text-brand-primary mb-2">{p.title}</h3>
               <p className="text-sm text-brand-primary/80 leading-relaxed">{p.body}</p>
             </div>

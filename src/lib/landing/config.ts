@@ -391,22 +391,22 @@ export const WHAT_YOU_GET_DEFAULT_CONTENT: WhatYouGetContent = {
   title: "Everything in one package",
   items: [
     {
-      icon: "📕",
+      icon: "",
       title: "Two printed booklets",
       body: "Anatomy & teaching manuals — yours to keep, scribble on, and refer back to for years.",
     },
     {
-      icon: "💻",
+      icon: "",
       title: "Full LMS access",
       body: "Every weekend's content online: videos, written guides, downloadable workbooks, MCQ exams and your hour-log tracker.",
     },
     {
-      icon: "🎥",
+      icon: "",
       title: "Exercise video library",
       body: "Filmed in the balance studio — every mat and reformer exercise with cueing, common faults and modifications.",
     },
     {
-      icon: "🚪",
+      icon: "",
       title: "Three open studio days",
       body: "Drop-in days to teach under supervision, troubleshoot exercises and sign off your practical hours.",
     },
