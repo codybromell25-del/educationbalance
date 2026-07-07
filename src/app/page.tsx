@@ -59,7 +59,7 @@ export default async function HomePage() {
   const faqs = data.sections.faqs.content as FaqsContent;
   const finalCta = data.sections["final-cta"].content as FinalCtaContent;
   const footer = data.sections.footer.content as FooterContent;
-  const heroImageUrl = data.imageUrls.get("hero-bg") ?? "/images/studio-bray-hero.jpg";
+  const heroImageUrl = data.imageUrls.get("hero-bg") ?? "/images/gallery-3.jpg";
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-brand-primary">
