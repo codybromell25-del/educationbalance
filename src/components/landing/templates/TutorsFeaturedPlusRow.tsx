@@ -47,20 +47,19 @@ export default function TutorsFeaturedPlusRow({
           )}
         </div>
 
-        {/* Row of the other instructors */}
+        {/* Row of the other instructors — name + title only, no photos */}
         {rest.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-x-8 gap-y-10 md:gap-x-10">
+          <div className="flex flex-wrap justify-center gap-x-10 gap-y-8 md:gap-x-14">
             {rest.map((t) => (
               <div
                 key={t.name}
-                className="flex flex-col items-center w-[150px] md:w-[170px]"
+                className="flex flex-col items-center min-w-[140px]"
               >
-                <Avatar src={imageUrls.get(t.slotKey)} label={t.name} />
-                <p className="mt-4 text-lg md:text-xl font-heading italic text-brand-primary leading-tight">
+                <p className="text-xl md:text-2xl font-heading italic text-brand-primary leading-tight">
                   {t.name}
                 </p>
                 {t.role && (
-                  <p className="mt-1 text-xs text-brand-muted leading-snug">
+                  <p className="mt-1 text-xs tracking-[0.15em] uppercase text-brand-muted">
                     {t.role}
                   </p>
                 )}
