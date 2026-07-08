@@ -564,7 +564,7 @@ export const WHO_FOR_ASSET_SLOTS: AssetSlot[] = [
 ];
 
 export const TUTORS_ASSET_SLOTS: AssetSlot[] = [
-  { key: "tutor-kelly", label: "Kelly O'Neill portrait", fallback: "/images/instructor-chat.jpg" },
+  { key: "tutor-kelly", label: "Kelly O'Neill portrait", fallback: "/images/tutor-kelly.jpg" },
   { key: "tutor-catherine", label: "Catherine Keon portrait", fallback: "" },
   { key: "tutor-ciara", label: "Ciara Whelan portrait", fallback: "" },
   { key: "tutor-cathy", label: "Cathy O'Grady portrait", fallback: "" },
