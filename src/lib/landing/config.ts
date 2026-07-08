@@ -407,8 +407,8 @@ export const WHAT_YOU_GET_DEFAULT_CONTENT: WhatYouGetContent = {
     },
     {
       icon: "",
-      title: "Three open studio days",
-      body: "Drop-in days to teach under supervision, troubleshoot exercises and sign off your practical hours.",
+      title: "In house studios days",
+      body: "As well as the 4 in-studio weekends, you'll have 3 drop-in days in our studio to use the reformer as you wish. These are supervised and designed to give you hands-on practice as part of your reformer training.",
     },
   ],
 };
