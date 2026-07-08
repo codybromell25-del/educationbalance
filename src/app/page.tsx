@@ -429,7 +429,7 @@ function WhyBalance({
         <div className="grid md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
           <div className="relative h-[400px] md:h-[450px] rounded-2xl overflow-hidden">
             <Image
-              src={imageUrls.get("why-balance") ?? "/images/studio-welcome.jpg"}
+              src={imageUrls.get("why-balance") ?? "/images/why-balance-hallway.jpg"}
               alt="balance studio"
               fill
               className="object-cover"

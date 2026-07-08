@@ -559,7 +559,7 @@ export const HERO_ASSET_SLOTS: AssetSlot[] = [
 export const COURSE_PILLARS_ASSET_SLOTS: AssetSlot[] = [
   { key: "pillar-1", label: "Pillar 1 image", fallback: "/images/pillar-1.jpg" },
   { key: "pillar-2", label: "Pillar 2 image", fallback: "/images/pillar-2.jpg" },
-  { key: "pillar-3", label: "Pillar 3 image", fallback: "/images/pillar-3.jpg" },
+  { key: "pillar-3", label: "Pillar 3 image", fallback: "/images/pillar-3-attic.jpg" },
 ];
 
 export const WHO_FOR_ASSET_SLOTS: AssetSlot[] = [
@@ -590,7 +590,7 @@ export const IMAGE_BREAK_ASSET_SLOTS: AssetSlot[] = [
 ];
 
 export const WHY_BALANCE_ASSET_SLOTS: AssetSlot[] = [
-  { key: "why-balance", label: "Side image", fallback: "/images/studio-welcome.jpg" },
+  { key: "why-balance", label: "Side image", fallback: "/images/why-balance-hallway.jpg" },
 ];
 
 export const FINAL_CTA_ASSET_SLOTS: AssetSlot[] = [
