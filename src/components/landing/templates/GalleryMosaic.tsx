@@ -21,6 +21,11 @@ export default function GalleryMosaic({
           <p className="text-brand-primary/70 max-w-2xl mx-auto mt-4">
             {content.intro}
           </p>
+          {content.address && (
+            <p className="mt-3 text-xs tracking-[0.2em] uppercase text-brand-muted">
+              {content.address}
+            </p>
+          )}
         </div>
         <div className="mt-12 grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
           {content.slotKeys.map((slot, i) => (

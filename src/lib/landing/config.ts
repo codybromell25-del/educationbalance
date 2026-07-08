@@ -87,6 +87,8 @@ export type TutorsContent = {
 export type GalleryContent = {
   intro: string;
   slotKeys: string[];
+  // Optional studio address rendered under the intro paragraph.
+  address?: string;
 };
 
 export type WhatYouGetContent = {
@@ -375,6 +377,7 @@ export const TUTORS_DEFAULT_CONTENT: TutorsContent = {
 export const GALLERY_DEFAULT_CONTENT: GalleryContent = {
   intro:
     "A working studio — not a hotel function room. You learn on the equipment you'll teach on.",
+  address: "Bray, Co Wicklow, A98 T276",
   slotKeys: [
     "gallery-1",
     "gallery-2",
