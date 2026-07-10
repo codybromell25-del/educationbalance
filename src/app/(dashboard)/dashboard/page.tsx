@@ -83,7 +83,7 @@ export default async function DashboardPage() {
       {/* Welcome hero banner */}
       <div className="relative h-64 md:h-80 overflow-hidden">
         <Image
-          src="/images/dashboard-banner.jpg"
+          src="/images/interior-2.jpg"
           alt="balance studio interior"
           fill
           className="object-cover"
