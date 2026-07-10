@@ -177,7 +177,7 @@ export default async function DashboardPage() {
               <div className="relative rounded-2xl overflow-hidden border border-brand-border shadow-sm hover:shadow-md transition-shadow">
                 <div className="relative h-40">
                   <Image
-                    src="/images/studio-instructor.jpg"
+                    src="/images/gallery-4.jpg"
                     alt="Continue learning"
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
