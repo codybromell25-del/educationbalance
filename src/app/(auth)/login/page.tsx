@@ -41,8 +41,8 @@ export default function LoginPage() {
       {/* Left — Image panel */}
       <div className="hidden lg:block lg:w-1/2 relative">
         <Image
-          src="/images/studio-lunge.jpg"
-          alt="Pilates reformer workout"
+          src="/images/interior-2.jpg"
+          alt="balance studio interior"
           fill
           className="object-cover"
           priority
