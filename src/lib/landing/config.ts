@@ -121,6 +121,10 @@ export type PathwaysContent = {
     // single "Register interest for next cohort" button that scrolls
     // to the #apply application form.
     soldOut?: boolean;
+    // Optional scarcity strap ("Only 5 spots remain", "Last 2 spots!")
+    // rendered as a gold badge in the same top-centre slot the
+    // MOST COMPLETE / SOLD OUT badges use. Ignored on sold-out cards.
+    remainingLabel?: string;
     payInFullUrl: string;
     payDepositUrl: string;
   }>;
@@ -441,6 +445,7 @@ export const PATHWAYS_DEFAULT_CONTENT: PathwaysContent = {
       installments: "2 instalments of €347.50",
       totalSplit: "Due 1st October and November",
       popular: false,
+      remainingLabel: "Only 5 spots remain",
       payInFullUrl: "https://book.stripe.com/28E00ka5B9mD9ZT6HKb7y05",
       payDepositUrl: "https://buy.stripe.com/00w6oI91xaqH3Bvc24b7y02",
     },

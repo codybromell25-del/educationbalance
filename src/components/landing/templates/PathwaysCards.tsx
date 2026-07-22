@@ -68,6 +68,10 @@ function PricingCard({
         <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-brand-sage text-white text-[10px] tracking-[0.2em] uppercase rounded-full whitespace-nowrap">
           Most complete
         </span>
+      ) : p.remainingLabel ? (
+        <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-brand-accent text-white text-[10px] tracking-[0.2em] uppercase rounded-full whitespace-nowrap">
+          {p.remainingLabel}
+        </span>
       ) : null}
 
       <div>
