@@ -470,6 +470,7 @@ export const PATHWAYS_DEFAULT_CONTENT: PathwaysContent = {
       installments: "3 instalments of €365",
       totalSplit: "Due 1st November, December and January",
       popular: false,
+      soldOut: true,
       payInFullUrl: "https://buy.stripe.com/8x28wQ1z50Q74Fzfegb7y04",
       payDepositUrl: "https://book.stripe.com/6oUeVeb9FdCT7RL1nqb7y01",
     },
