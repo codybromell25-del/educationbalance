@@ -116,6 +116,11 @@ export type PathwaysContent = {
     installments: string; // e.g. "1 payment of €695" or "3 payments of €665"
     totalSplit: string; // e.g. "€1,195 total over 2 payments"
     popular: boolean; // shows the "MOST COMPLETE" badge
+    // When true the card greys out, shows a "SOLD OUT" badge, drops
+    // the booking deadline and replaces both Stripe CTAs with a
+    // single "Register interest for next cohort" button that scrolls
+    // to the #apply application form.
+    soldOut?: boolean;
     payInFullUrl: string;
     payDepositUrl: string;
   }>;
@@ -450,6 +455,7 @@ export const PATHWAYS_DEFAULT_CONTENT: PathwaysContent = {
       installments: "4 instalments of €498.75",
       totalSplit: "Due 1st October, November, December and January",
       popular: true,
+      soldOut: true,
       payInFullUrl: "https://buy.stripe.com/dRm14oa5BdCT6NH3vyb7y03",
       payDepositUrl: "https://book.stripe.com/6oUeVeb9FdCT7RL1nqb7y01",
     },

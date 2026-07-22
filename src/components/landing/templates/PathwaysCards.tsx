@@ -49,19 +49,26 @@ function PricingCard({
   pathway: PathwaysContent["pathways"][number];
   bookingDeadline?: string;
 }) {
+  const soldOut = Boolean(p.soldOut);
   return (
     <div
       className={`relative flex flex-col bg-white rounded-2xl p-7 md:p-8 ${
-        p.popular
-          ? "border-2 border-brand-sage shadow-lg md:scale-[1.02]"
-          : "border border-brand-border"
+        soldOut
+          ? "border border-brand-border opacity-70 grayscale"
+          : p.popular
+            ? "border-2 border-brand-sage shadow-lg md:scale-[1.02]"
+            : "border border-brand-border"
       }`}
     >
-      {p.popular && (
+      {soldOut ? (
+        <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-brand-primary text-white text-[10px] tracking-[0.2em] uppercase rounded-full whitespace-nowrap">
+          Sold out
+        </span>
+      ) : p.popular ? (
         <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-brand-sage text-white text-[10px] tracking-[0.2em] uppercase rounded-full whitespace-nowrap">
           Most complete
         </span>
-      )}
+      ) : null}
 
       <div>
         <h3 className="text-xl md:text-2xl font-medium text-brand-primary">
@@ -107,27 +114,38 @@ function PricingCard({
 
       {/* CTAs — pinned to the bottom so all cards align */}
       <div className="mt-auto pt-7 flex flex-col gap-2">
-        {bookingDeadline && (
-          <p className="text-center text-[11px] tracking-[0.18em] uppercase text-brand-accent mb-1">
-            {bookingDeadline}
-          </p>
+        {soldOut ? (
+          <a
+            href="#apply"
+            className="inline-flex items-center justify-center px-5 py-3 text-xs tracking-[0.2em] uppercase rounded-full bg-brand-primary text-white hover:bg-brand-primary/90 transition-colors"
+          >
+            Register interest for next cohort
+          </a>
+        ) : (
+          <>
+            {bookingDeadline && (
+              <p className="text-center text-[11px] tracking-[0.18em] uppercase text-brand-accent mb-1">
+                {bookingDeadline}
+              </p>
+            )}
+            <a
+              href={p.payInFullUrl || "#"}
+              className={`inline-flex items-center justify-center px-5 py-3 text-xs tracking-[0.2em] uppercase rounded-full transition-colors ${
+                p.popular
+                  ? "bg-brand-sage text-white hover:bg-brand-sage-dark"
+                  : "bg-brand-primary text-white hover:bg-brand-primary/90"
+              }`}
+            >
+              Pay in full
+            </a>
+            <a
+              href={p.payDepositUrl || "#"}
+              className="inline-flex items-center justify-center px-5 py-3 text-xs tracking-[0.2em] uppercase rounded-full border border-brand-border text-brand-primary hover:bg-brand-surface transition-colors"
+            >
+              Pay deposit
+            </a>
+          </>
         )}
-        <a
-          href={p.payInFullUrl || "#"}
-          className={`inline-flex items-center justify-center px-5 py-3 text-xs tracking-[0.2em] uppercase rounded-full transition-colors ${
-            p.popular
-              ? "bg-brand-sage text-white hover:bg-brand-sage-dark"
-              : "bg-brand-primary text-white hover:bg-brand-primary/90"
-          }`}
-        >
-          Pay in full
-        </a>
-        <a
-          href={p.payDepositUrl || "#"}
-          className="inline-flex items-center justify-center px-5 py-3 text-xs tracking-[0.2em] uppercase rounded-full border border-brand-border text-brand-primary hover:bg-brand-surface transition-colors"
-        >
-          Pay deposit
-        </a>
       </div>
     </div>
   );
