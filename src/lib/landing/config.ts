@@ -445,7 +445,7 @@ export const PATHWAYS_DEFAULT_CONTENT: PathwaysContent = {
       installments: "2 instalments of €347.50",
       totalSplit: "Due 1st October and November",
       popular: false,
-      remainingLabel: "Only 5 spots remain",
+      soldOut: true,
       payInFullUrl: "https://book.stripe.com/28E00ka5B9mD9ZT6HKb7y05",
       payDepositUrl: "https://buy.stripe.com/00w6oI91xaqH3Bvc24b7y02",
     },
