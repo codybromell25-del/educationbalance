@@ -530,8 +530,8 @@ export const FAQS_DEFAULT_CONTENT: FaqsContent = {
       a: "Yes — payment plans are available on application. Get in touch and we'll work something out.",
     },
     {
-      q: "What happens if I miss a weekend?",
-      a: "The four weekends are designed to build on each other and we don't run catch-up sessions. If you miss one, you'll roll into the next cohort to make it up.",
+      q: "Do I need to attend each in-studio weekend?",
+      a: "Yes — attendance is non-negotiable. Each weekend is designed to build on the last, so missing one means missing training you can't get back elsewhere. Please plan your time off early to make sure you can attend every day.",
     },
     {
       q: "Is there support between weekends?",
