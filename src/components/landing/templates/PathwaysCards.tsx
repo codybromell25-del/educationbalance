@@ -63,7 +63,7 @@ function HoldingDepositBanner({
       />
       <div className="relative grid md:grid-cols-[1fr_auto] gap-8 md:gap-12 items-center px-7 py-9 md:px-12 md:py-12">
         <div>
-          <p className="text-brand-accent text-[11px] md:text-xs tracking-[0.3em] uppercase mb-3">
+          <p className="text-brand-sage-light text-[11px] md:text-xs tracking-[0.3em] uppercase mb-3">
             {deposit.eyebrow}
           </p>
           <h3 className="font-heading italic text-3xl md:text-4xl leading-tight mb-4">
@@ -82,7 +82,7 @@ function HoldingDepositBanner({
           </p>
           <a
             href={deposit.ctaUrl}
-            className="mt-5 inline-flex items-center justify-center px-8 py-3.5 bg-brand-accent text-brand-primary text-xs tracking-[0.25em] uppercase rounded-full hover:bg-brand-accent-light transition-colors font-medium whitespace-nowrap"
+            className="mt-5 inline-flex items-center justify-center px-8 py-3.5 bg-brand-sage text-white text-xs tracking-[0.25em] uppercase rounded-full hover:bg-brand-sage-dark transition-colors font-medium whitespace-nowrap"
           >
             {deposit.ctaLabel} →
           </a>
