@@ -105,6 +105,18 @@ export type PathwaysContent = {
   // Small deadline line rendered inside each pricing card, just above
   // the CTA buttons. One string here means all three cards stay in sync.
   bookingDeadline?: string;
+  // Optional dark banner rendered under the three pricing cards.
+  // Home for "next cohort holding deposit" and similar cross-pathway
+  // offers. Renders nothing when omitted.
+  holdingDeposit?: {
+    eyebrow: string;
+    title: string;
+    body: string;
+    amount: string; // e.g. "€150"
+    amountLabel: string; // e.g. "Holding deposit"
+    ctaLabel: string;
+    ctaUrl: string;
+  };
   pathways: Array<{
     code: string;
     title: string;
@@ -433,6 +445,15 @@ export const PATHWAYS_DEFAULT_CONTENT: PathwaysContent = {
   footnote:
     "A €500 deposit secures your place, with the remaining balance due ahead of your course start date. The pay-in-full saving applies to single payments only. Deposits are limited to the 12 places per cohort.",
   bookingDeadline: "Booking closes on 18th September",
+  holdingDeposit: {
+    eyebrow: "February cohort · holding deposit",
+    title: "Reserve your space for February.",
+    body: "The current cohort has sold out. Secure your place in the February intake with a fully-refundable holding deposit — one link covers Mat, Reformer or Comprehensive. We'll be in touch with full payment options and dates when booking opens.",
+    amount: "€150",
+    amountLabel: "Holding deposit",
+    ctaLabel: "Hold my space",
+    ctaUrl: "https://buy.stripe.com/eVq3cwgtZ2Yf0pj2rub7y06",
+  },
   pathways: [
     {
       code: "MAT",
