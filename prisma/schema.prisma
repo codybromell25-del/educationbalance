@@ -42,6 +42,27 @@ model User {
   hourLogs            HourLog[]            @relation("HourLogStudent")
   signedOffLogs       HourLog[]            @relation("HourLogSigner")
   passwordResetTokens PasswordResetToken[]
+  discussionPosts     DiscussionPost[]
+}
+
+/// Open discussion board. Top-level posts have parentId=null; one-level
+/// replies point their parentId at a top-level post. Soft-delete via
+/// deletedAt so the thread structure survives moderation.
+model DiscussionPost {
+  id        String           @id @default(cuid())
+  authorId  String
+  parentId  String?
+  body      String           @db.Text
+  deletedAt DateTime?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  author  User             @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parent  DiscussionPost?  @relation("Replies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies DiscussionPost[] @relation("Replies")
+
+  @@index([parentId])
+  @@index([createdAt])
 }
 
 model PasswordResetToken {
