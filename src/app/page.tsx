@@ -20,6 +20,7 @@ import TutorsFeaturedPlusRow from "@/components/landing/templates/TutorsFeatured
 import GalleryMosaic from "@/components/landing/templates/GalleryMosaic";
 import GalleryEqualGrid from "@/components/landing/templates/GalleryEqualGrid";
 import PathwaysCards from "@/components/landing/templates/PathwaysCards";
+import HoldingDepositBanner from "@/components/landing/HoldingDepositBanner";
 import PathwaysComparisonTable from "@/components/landing/templates/PathwaysComparisonTable";
 import { loadLandingData } from "@/lib/landing/loader";
 import type {
@@ -69,6 +70,14 @@ export default async function HomePage() {
         <HeroSplitScreen content={hero} imageUrl={heroImageUrl} />
       ) : (
         <HeroFullBleed content={hero} imageUrl={heroImageUrl} />
+      )}
+
+      {pathways.holdingDeposit && (
+        <section className="px-5 md:px-8 pt-10 md:pt-14 pb-2">
+          <div className="max-w-6xl mx-auto">
+            <HoldingDepositBanner deposit={pathways.holdingDeposit} />
+          </div>
+        </section>
       )}
 
       <BrandMoment />
