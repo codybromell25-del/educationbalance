@@ -60,27 +60,63 @@ export async function uploadFile(
  * otherwise treat it as a storage path and return a signed URL. Useful
  * for fields like Part.fileUrl that might hold either form during the
  * transition from "paste a public URL" to "upload to bucket".
+ *
+ * Pass `download` to force the browser to save the file to disk with
+ * that name instead of previewing it in the tab. Ignored when the
+ * input is an external http(s) URL (we can't rewrite headers on those).
  */
 export async function resolveFileUrl(
   pathOrUrl: string | null,
   expiresInSeconds = 3600,
+  download?: string | boolean,
 ): Promise<string | null> {
   if (!pathOrUrl) return null;
   if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
-  return getSignedUrl(pathOrUrl, expiresInSeconds);
+  return getSignedUrl(pathOrUrl, expiresInSeconds, download);
 }
 
-/** Returns a time-limited signed URL for a stored object. */
+/**
+ * Returns a time-limited signed URL for a stored object.
+ *
+ * `download` — set to a filename string ("student-handbook.pdf") to
+ * have Supabase send Content-Disposition: attachment with that
+ * filename, so a click writes straight to the student's Downloads
+ * folder instead of opening the PDF viewer in a new tab. `true` uses
+ * the object's original storage-key basename.
+ */
 export async function getSignedUrl(
   path: string,
   expiresInSeconds = 3600,
+  download?: string | boolean,
 ): Promise<string> {
   const storage = getStorageClient();
   const { data, error } = await storage
     .from(STORAGE_BUCKET)
-    .createSignedUrl(path, expiresInSeconds);
+    .createSignedUrl(
+      path,
+      expiresInSeconds,
+      download ? { download } : undefined,
+    );
   if (error || !data) throw new Error(`Signed URL failed: ${error?.message}`);
   return data.signedUrl;
+}
+
+/**
+ * Builds a browser-friendly download filename from a human title +
+ * the object's storage path. Slugifies the title and inherits the
+ * extension from the path.
+ *
+ *   downloadFilename("Student handbook", "parts/xyz/handbook.pdf")
+ *     => "student-handbook.pdf"
+ */
+export function downloadFilename(title: string, storagePath: string): string {
+  const ext = storagePath.match(/\.[a-z0-9]+$/i)?.[0] ?? "";
+  const slug = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+  return `${slug || "download"}${ext}`;
 }
 
 /** Best-effort delete. Swallows "not found" errors. */

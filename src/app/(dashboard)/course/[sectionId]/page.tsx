@@ -10,7 +10,7 @@ import PartDownload from "@/components/parts/PartDownload";
 import PartQuiz from "@/components/parts/PartQuiz";
 import PartSubmit from "@/components/parts/PartSubmit";
 import { getSectionAccess } from "@/lib/access";
-import { resolveFileUrl } from "@/lib/storage";
+import { resolveFileUrl, downloadFilename } from "@/lib/storage";
 
 function partAnchor(order: number) {
   return `part-${order}`;
@@ -147,17 +147,30 @@ export default async function SectionPage({
   const parts = section.parts;
   const totalParts = parts.length;
 
-  // Resolve DOWNLOAD parts' fileUrl (storage path) to a signed URL.
+  // Resolve DOWNLOAD parts' fileUrl (storage path) to a signed URL
+  // with `download` set so a click saves to disk with a friendly
+  // filename instead of previewing the PDF in the tab.
   const partFileUrls = new Map(
     await Promise.all(
       parts
         .filter((p) => p.type === "DOWNLOAD" && p.fileUrl)
-        .map(async (p) => [p.id, await resolveFileUrl(p.fileUrl)] as const),
+        .map(
+          async (p) =>
+            [
+              p.id,
+              await resolveFileUrl(
+                p.fileUrl,
+                3600,
+                downloadFilename(p.title, p.fileUrl!),
+              ),
+            ] as const,
+        ),
     ),
   );
 
-  // Resolve any submission file attachments to signed URLs so the student
-  // can re-download them on the page.
+  // Resolve any submission file attachments to signed URLs so the
+  // student can re-download their own uploaded work with a sensible
+  // filename ("<part-title>-submission.<ext>").
   const submissionFileUrls = new Map(
     await Promise.all(
       parts
@@ -166,7 +179,11 @@ export default async function SectionPage({
           async (p) =>
             [
               p.submissions[0].id,
-              await resolveFileUrl(p.submissions[0].fileUrl),
+              await resolveFileUrl(
+                p.submissions[0].fileUrl,
+                3600,
+                downloadFilename(`${p.title}-submission`, p.submissions[0].fileUrl!),
+              ),
             ] as const,
         ),
     ),
