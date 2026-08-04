@@ -218,7 +218,7 @@ export const HERO_DEFAULT_CONTENT: HeroContent = {
     "Seventy two hours in person, twenty eight online, fifty hours of self practice, sixty hours of supervised teaching and twenty hours of structured observation, supported by senior balance instructors throughout. Grounded in biomechanics, rooted in classic Pilates principles with a contemporary, modern element, so graduates leave IICT accredited and ready to apply for insurance and teach.",
   ctaPrimaryLabel: "Sign Up Now",
   ctaSecondaryLabel: "Express interest",
-  cohortDates: "Cohort 1 · Starts Autumn 2026",
+  cohortDates: "Cohort 2 · Starts February 2027",
 };
 
 export const COURSE_PILLARS_DEFAULT_CONTENT: CoursePillarsContent = {
@@ -438,22 +438,12 @@ export const WHAT_YOU_GET_DEFAULT_CONTENT: WhatYouGetContent = {
 };
 
 export const PATHWAYS_DEFAULT_CONTENT: PathwaysContent = {
-  eyebrow: "OCTOBER 2026 COHORT",
+  eyebrow: "FEBRUARY 2027 COHORT",
   title: "Choose your certification & payment plan",
   description:
-    "Pay in full and save, or spread the cost with a €500 deposit. Only 12 places per cohort — this is a launch price offer!",
+    "Pay in full and save, or spread the cost with a €150 deposit. Only 12 places per cohort — this is a launch price offer!",
   footnote:
-    "A €500 deposit secures your place, with the remaining balance due ahead of your course start date. The pay-in-full saving applies to single payments only. Deposits are limited to the 12 places per cohort.",
-  bookingDeadline: "Booking closes on 18th September",
-  holdingDeposit: {
-    eyebrow: "February cohort · holding deposit",
-    title: "Reserve your space for February.",
-    body: "The current cohort has sold out. Secure your place in the February intake with a fully-refundable holding deposit — one link covers Mat, Reformer or Comprehensive. We'll be in touch with full payment options and dates when booking opens.",
-    amount: "€150",
-    amountLabel: "Holding deposit",
-    ctaLabel: "Hold my space",
-    ctaUrl: "https://buy.stripe.com/eVq3cwgtZ2Yf0pj2rub7y06",
-  },
+    "A €150 deposit secures your place, with the remaining balance due across the instalment dates listed on each card. The pay-in-full saving applies to single payments only. Deposits are limited to 12 places per cohort.",
   pathways: [
     {
       code: "MAT",
@@ -462,11 +452,10 @@ export const PATHWAYS_DEFAULT_CONTENT: PathwaysContent = {
       priceOriginal: "€1,195",
       priceFull: "€1,095",
       saveLine: "Save €100 when you pay in full",
-      depositAmount: "€500",
-      installments: "2 instalments of €347.50",
-      totalSplit: "Due 1st October and November",
+      depositAmount: "€150",
+      installments: "2 instalments of €522.50",
+      totalSplit: "Due 1st February and March 2027",
       popular: false,
-      soldOut: true,
       payInFullUrl: "https://book.stripe.com/28E00ka5B9mD9ZT6HKb7y05",
       payDepositUrl: "https://buy.stripe.com/00w6oI91xaqH3Bvc24b7y02",
     },
@@ -477,11 +466,10 @@ export const PATHWAYS_DEFAULT_CONTENT: PathwaysContent = {
       priceOriginal: "€2,495",
       priceFull: "€2,345",
       saveLine: "Save €150 when you pay in full",
-      depositAmount: "€500",
-      installments: "4 instalments of €498.75",
-      totalSplit: "Due 1st October, November, December and January",
+      depositAmount: "€150",
+      installments: "4 instalments of €586.25",
+      totalSplit: "Due 1st February, March, April and May 2027",
       popular: true,
-      soldOut: true,
       payInFullUrl: "https://buy.stripe.com/dRm14oa5BdCT6NH3vyb7y03",
       payDepositUrl: "https://book.stripe.com/6oUeVeb9FdCT7RL1nqb7y01",
     },
@@ -492,11 +480,10 @@ export const PATHWAYS_DEFAULT_CONTENT: PathwaysContent = {
       priceOriginal: "€1,595",
       priceFull: "€1,495",
       saveLine: "Save €100 when you pay in full",
-      depositAmount: "€500",
-      installments: "3 instalments of €365",
-      totalSplit: "Due 1st November, December and January",
+      depositAmount: "€150",
+      installments: "3 instalments of €481.67",
+      totalSplit: "Due 1st March, April and May 2027",
       popular: false,
-      soldOut: true,
       payInFullUrl: "https://buy.stripe.com/8x28wQ1z50Q74Fzfegb7y04",
       payDepositUrl: "https://book.stripe.com/6oUeVeb9FdCT7RL1nqb7y01",
     },
@@ -504,18 +491,18 @@ export const PATHWAYS_DEFAULT_CONTENT: PathwaysContent = {
 };
 
 export const TIMELINE_DEFAULT_CONTENT: TimelineContent = {
-  eyebrow: "The timeline",
+  eyebrow: "February 2027 cohort",
   title: "Save the dates",
   items: [
-    { label: "Weekend 1", date: "9–11 Oct 2026" },
-    { label: "Weekend 2", date: "6–8 Nov 2026" },
-    { label: "Weekend 3", date: "4–6 Dec 2026" },
-    { label: "Open Studio Day 1", date: "Sat 9 Jan 2027" },
-    { label: "Weekend 4", date: "22–24 Jan 2027" },
-    { label: "Assessment Day — Option A", date: "Sat 30 Jan 2027" },
-    { label: "Open Studio Day 2", date: "Sat 6 Feb 2027" },
-    { label: "Open Studio Day 3", date: "Sat 27 Feb 2027" },
-    { label: "Assessment Day — Option B", date: "Sat 6 Mar 2027" },
+    { label: "Weekend 1 · Mat", date: "12–14 Feb 2027" },
+    { label: "Weekend 2 · Mat", date: "12–14 Mar 2027" },
+    { label: "Weekend 3 · Reformer", date: "16–18 Apr 2027" },
+    { label: "Open Studio Day 1", date: "Sat 24 Apr 2027" },
+    { label: "Weekend 4 · Reformer", date: "14–16 May 2027" },
+    { label: "Open Studio Day 2", date: "Sat 22 May 2027" },
+    { label: "Open Studio Day 3", date: "Sat 5 Jun 2027" },
+    { label: "Assessment Day — Option A", date: "Sat 19 Jun 2027" },
+    { label: "Assessment Day — Option B", date: "Sat 3 Jul 2027" },
   ],
   footnote: "Check against your diary before you apply. We don't run catch-up sessions.",
 };
