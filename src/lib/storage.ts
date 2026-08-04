@@ -22,7 +22,7 @@ function getStorageClient(): StorageClient {
   const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
     throw new Error(
-      "Supabase storage not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env.",
+      "Supabase storage not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in the environment (locally in .env, or in the Vercel project's Environment Variables settings for the live site) and redeploy.",
     );
   }
   return new StorageClient(`${SUPABASE_URL}/storage/v1`, {
