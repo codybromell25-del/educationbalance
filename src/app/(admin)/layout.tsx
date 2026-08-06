@@ -13,7 +13,9 @@ export default async function AdminLayout({
 }) {
   const session = await auth();
   if (!session?.user) redirect("/login");
-  if (session.user.role !== "ADMIN") redirect("/dashboard");
+  if (session.user.role !== "ADMIN" && session.user.role !== "ENQUIRIES")
+    redirect("/dashboard");
+  const isEnquiries = session.user.role === "ENQUIRIES";
 
   const [unansweredQuestions, pendingSubmissions, pendingHours, newApps] =
     await Promise.all([
@@ -50,47 +52,55 @@ export default async function AdminLayout({
               </svg>
             </summary>
             <nav className="absolute right-0 top-full mt-2 w-56 bg-white border border-brand-border rounded-xl shadow-lg py-2 z-50">
-              <Link href="/admin" className="block px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">Dashboard</Link>
-              <Link href="/admin/users" className="block px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">Users</Link>
-              <Link href="/admin/sections" className="block px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">Sections</Link>
-              <Link href="/admin/questions" className="flex items-center justify-between px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">
-                <span>Questions</span>
-                {unansweredQuestions > 0 && (
-                  <span className="bg-brand-sage text-white text-xs font-semibold rounded-full min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center">
-                    {unansweredQuestions}
-                  </span>
-                )}
-              </Link>
-              <Link href="/admin/submissions" className="flex items-center justify-between px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">
-                <span>Submissions</span>
-                {pendingSubmissions > 0 && (
-                  <span className="bg-brand-sage text-white text-xs font-semibold rounded-full min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center">
-                    {pendingSubmissions}
-                  </span>
-                )}
-              </Link>
-              <Link href="/admin/hours" className="flex items-center justify-between px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">
-                <span>Hours</span>
-                {pendingHours > 0 && (
-                  <span className="bg-brand-sage text-white text-xs font-semibold rounded-full min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center">
-                    {pendingHours}
-                  </span>
-                )}
-              </Link>
+              {!isEnquiries && (
+                <>
+                  <Link href="/admin" className="block px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">Dashboard</Link>
+                  <Link href="/admin/users" className="block px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">Users</Link>
+                  <Link href="/admin/sections" className="block px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">Sections</Link>
+                  <Link href="/admin/questions" className="flex items-center justify-between px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">
+                    <span>Questions</span>
+                    {unansweredQuestions > 0 && (
+                      <span className="bg-brand-sage text-white text-xs font-semibold rounded-full min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center">
+                        {unansweredQuestions}
+                      </span>
+                    )}
+                  </Link>
+                  <Link href="/admin/submissions" className="flex items-center justify-between px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">
+                    <span>Submissions</span>
+                    {pendingSubmissions > 0 && (
+                      <span className="bg-brand-sage text-white text-xs font-semibold rounded-full min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center">
+                        {pendingSubmissions}
+                      </span>
+                    )}
+                  </Link>
+                  <Link href="/admin/hours" className="flex items-center justify-between px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">
+                    <span>Hours</span>
+                    {pendingHours > 0 && (
+                      <span className="bg-brand-sage text-white text-xs font-semibold rounded-full min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center">
+                        {pendingHours}
+                      </span>
+                    )}
+                  </Link>
+                </>
+              )}
               <Link href="/admin/applications" className="flex items-center justify-between px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">
-                <span>Applications</span>
+                <span>{isEnquiries ? "Enquiries" : "Applications"}</span>
                 {newApps > 0 && (
                   <span className="bg-brand-sage text-white text-xs font-semibold rounded-full min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center">
                     {newApps}
                   </span>
                 )}
               </Link>
-              <Link href="/admin/landing" className="block px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">
-                Landing page
-              </Link>
-              <Link href="/discussion" className="block px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">
-                Discussion
-              </Link>
+              {!isEnquiries && (
+                <>
+                  <Link href="/admin/landing" className="block px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">
+                    Landing page
+                  </Link>
+                  <Link href="/discussion" className="block px-4 py-2 text-sm text-brand-primary hover:bg-brand-surface">
+                    Discussion
+                  </Link>
+                </>
+              )}
               <div className="border-t border-brand-border mt-2 pt-2 px-4 py-2">
                 <p className="text-xs text-brand-muted truncate mb-2">{session.user.name}</p>
                 <LogoutButton />
@@ -122,6 +132,8 @@ export default async function AdminLayout({
           </div>
 
           <nav className="flex-1 p-4 space-y-1">
+            {!isEnquiries && (
+            <>
             <Link
               href="/admin"
               className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-brand-primary hover:bg-brand-surface transition-colors"
@@ -251,6 +263,8 @@ export default async function AdminLayout({
                 </span>
               )}
             </Link>
+            </>
+            )}
             <Link
               href="/admin/applications"
               className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-brand-primary hover:bg-brand-surface transition-colors"
@@ -268,13 +282,15 @@ export default async function AdminLayout({
                   d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 0H9a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 009 21h9a2.25 2.25 0 002.25-2.25V8.25l-4.5-4.5z"
                 />
               </svg>
-              <span className="flex-1">Applications</span>
+              <span className="flex-1">{isEnquiries ? "Enquiries" : "Applications"}</span>
               {newApps > 0 && (
                 <span className="bg-brand-sage text-white text-xs font-semibold rounded-full min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center">
                   {newApps}
                 </span>
               )}
             </Link>
+            {!isEnquiries && (
+            <>
             <Link
               href="/admin/landing"
               className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-brand-primary hover:bg-brand-surface transition-colors"
@@ -313,6 +329,8 @@ export default async function AdminLayout({
               </svg>
               Discussion
             </Link>
+            </>
+            )}
           </nav>
 
           <div className="p-4 border-t border-brand-border">

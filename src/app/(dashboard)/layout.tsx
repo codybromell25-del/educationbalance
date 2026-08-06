@@ -13,6 +13,7 @@ export default async function DashboardLayout({
   const session = await auth();
   if (!session?.user) redirect("/login");
   if (session.user.role === "ADMIN") redirect("/admin");
+  if (session.user.role === "ENQUIRIES") redirect("/admin/applications");
 
   return (
     <SessionProvider>

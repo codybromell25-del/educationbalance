@@ -17,6 +17,8 @@ export default async function DiscussionLayout({
 }) {
   const session = await auth();
   if (!session?.user) redirect("/login");
+  // ENQUIRIES role only sees /admin/applications — bounce them there.
+  if (session.user.role === "ENQUIRIES") redirect("/admin/applications");
 
   const isAdmin = session.user.role === "ADMIN";
   const homeHref = isAdmin ? "/admin" : "/dashboard";
