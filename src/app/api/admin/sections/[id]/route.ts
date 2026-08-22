@@ -9,7 +9,8 @@ import { NextResponse } from "next/server";
  *
  * Body may contain any of:
  *   title, slug, description, content, unlockDate (ISO),
- *   requiresPriorCompletion
+ *   requiresPriorCompletion, visibleToMat, visibleToReformer,
+ *   unlockDates ({MAT|REFORMER|COMPREHENSIVE: ISO}), prerequisiteId
  */
 export async function PATCH(
   req: Request,
@@ -54,6 +55,56 @@ export async function PATCH(
   }
   if (typeof body.requiresPriorCompletion === "boolean") {
     data.requiresPriorCompletion = body.requiresPriorCompletion;
+  }
+
+  if (typeof body.visibleToMat === "boolean") {
+    data.visibleToMat = body.visibleToMat;
+  }
+  if (typeof body.visibleToReformer === "boolean") {
+    data.visibleToReformer = body.visibleToReformer;
+  }
+
+  if (body.unlockDates !== undefined) {
+    // Accept null to clear, or an object like {MAT: "…", REFORMER: "…", COMPREHENSIVE: "…"}
+    if (body.unlockDates === null) {
+      data.unlockDates = null;
+    } else if (typeof body.unlockDates === "object" && !Array.isArray(body.unlockDates)) {
+      const cleaned: Record<string, string> = {};
+      for (const key of ["MAT", "REFORMER", "COMPREHENSIVE"] as const) {
+        const raw = (body.unlockDates as Record<string, unknown>)[key];
+        if (typeof raw === "string" && raw.length > 0) {
+          const parsed = new Date(raw);
+          if (isNaN(parsed.getTime())) {
+            return NextResponse.json(
+              { error: `Invalid unlockDates.${key}` },
+              { status: 400 },
+            );
+          }
+          cleaned[key] = parsed.toISOString();
+        }
+      }
+      data.unlockDates = Object.keys(cleaned).length > 0 ? cleaned : null;
+    } else {
+      return NextResponse.json({ error: "Invalid unlockDates" }, { status: 400 });
+    }
+  }
+
+  if (body.prerequisiteId !== undefined) {
+    // Empty string / null both clear the pointer.
+    if (body.prerequisiteId === null || body.prerequisiteId === "") {
+      data.prerequisiteId = null;
+    } else if (typeof body.prerequisiteId === "string") {
+      // Guard against self-reference.
+      if (body.prerequisiteId === id) {
+        return NextResponse.json(
+          { error: "A unit cannot be its own prerequisite" },
+          { status: 400 },
+        );
+      }
+      data.prerequisiteId = body.prerequisiteId;
+    } else {
+      return NextResponse.json({ error: "Invalid prerequisiteId" }, { status: 400 });
+    }
   }
 
   try {

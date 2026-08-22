@@ -36,15 +36,50 @@ const TYPE_BADGE_COLOR: Record<PartType, string> = {
 export default function PartsManager({
   sectionId,
   initialParts,
+  otherSections = [],
 }: {
   sectionId: string;
   initialParts: PartRow[];
+  otherSections?: Array<{ id: string; title: string; order: number }>;
 }) {
   const router = useRouter();
   const [parts, setParts] = useState(initialParts);
   const [showAdd, setShowAdd] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  /**
+   * Move a part to another unit. Server places it at the bottom of
+   * the target unit's parts list and compacts our unit's order.
+   */
+  async function handleMoveToUnit(partId: string, targetSectionId: string) {
+    const target = otherSections.find((s) => s.id === targetSectionId);
+    if (!target) return;
+    if (
+      !confirm(
+        `Move this part into "${target.title}"? It'll land at the bottom of that unit's parts list.`,
+      )
+    )
+      return;
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/admin/parts/${partId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sectionId: targetSectionId }),
+      });
+      if (!res.ok) throw new Error((await res.json()).error ?? "Failed");
+      // Drop it from local state — it's not in this unit any more.
+      setParts((curr) =>
+        curr.filter((p) => p.id !== partId).map((p, i) => ({ ...p, order: i + 1 })),
+      );
+      refresh();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Failed to move part");
+    } finally {
+      setBusy(false);
+    }
+  }
 
   async function refresh() {
     router.refresh();
@@ -258,6 +293,25 @@ export default function PartsManager({
                     >
                       Edit
                     </button>
+                    {otherSections.length > 0 && (
+                      <select
+                        value=""
+                        onChange={(e) => {
+                          const target = e.target.value;
+                          if (target) handleMoveToUnit(part.id, target);
+                        }}
+                        disabled={busy}
+                        className="px-2 py-1.5 text-xs text-brand-primary border border-brand-border rounded-full bg-white hover:bg-brand-surface focus:outline-none focus:border-brand-sage max-w-[9rem]"
+                        title="Move to another unit"
+                      >
+                        <option value="">Move to…</option>
+                        {otherSections.map((s) => (
+                          <option key={s.id} value={s.id}>
+                            {s.order}. {s.title}
+                          </option>
+                        ))}
+                      </select>
+                    )}
                     <button
                       type="button"
                       onClick={() => handleDelete(part.id)}

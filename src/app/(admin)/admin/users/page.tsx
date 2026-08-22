@@ -43,6 +43,9 @@ export default async function AdminUsersPage() {
                 Email
               </th>
               <th className="text-left px-6 py-3 text-xs font-medium text-brand-muted tracking-wider uppercase">
+                Pathway
+              </th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-brand-muted tracking-wider uppercase">
                 Progress
               </th>
               <th className="text-left px-6 py-3 text-xs font-medium text-brand-muted tracking-wider uppercase">
@@ -72,6 +75,19 @@ export default async function AdminUsersPage() {
                 </td>
                 <td className="px-6 py-4 text-sm text-brand-muted">
                   {user.email}
+                </td>
+                <td className="px-6 py-4 text-sm">
+                  {user.pathway ? (
+                    <span className="inline-block px-2 py-0.5 rounded-full bg-brand-sage/10 text-brand-sage text-xs font-medium tracking-wide">
+                      {user.pathway === "COMPREHENSIVE"
+                        ? "Comp"
+                        : user.pathway === "MAT"
+                          ? "Mat"
+                          : "Reformer"}
+                    </span>
+                  ) : (
+                    <span className="text-xs text-brand-muted italic">—</span>
+                  )}
                 </td>
                 <td className="px-6 py-4 text-sm text-brand-muted">
                   <span className="inline-flex items-center gap-2">
@@ -106,6 +122,8 @@ export default async function AdminUsersPage() {
                       id: user.id,
                       name: user.name,
                       email: user.email,
+                      role: user.role,
+                      pathway: user.pathway,
                     }}
                   />
                 </td>
@@ -114,7 +132,7 @@ export default async function AdminUsersPage() {
             {users.length === 0 && (
               <tr>
                 <td
-                  colSpan={6}
+                  colSpan={7}
                   className="px-6 py-12 text-center text-brand-muted"
                 >
                   No users yet. Create the first one above.
@@ -171,7 +189,13 @@ export default async function AdminUsersPage() {
               </span>
             </div>
             <UserRowActions
-              user={{ id: user.id, name: user.name, email: user.email }}
+              user={{
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                pathway: user.pathway,
+              }}
             />
           </div>
         ))}

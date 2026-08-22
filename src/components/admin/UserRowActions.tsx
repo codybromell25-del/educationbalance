@@ -6,24 +6,36 @@ import { useState } from "react";
 export default function UserRowActions({
   user,
 }: {
-  user: { id: string; name: string; email: string };
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    role?: string;
+    pathway?: string | null;
+  };
 }) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
+  const [pathway, setPathway] = useState<string>(user.pathway ?? "");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Only students carry a pathway; staff (ADMIN, ENQUIRIES) don't.
+  const isStudent = user.role === "USER";
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     setError(null);
     try {
+      const body: Record<string, unknown> = { name, email };
+      if (isStudent) body.pathway = pathway || null;
       const res = await fetch(`/api/admin/users/${user.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email }),
+        body: JSON.stringify(body),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -113,6 +125,20 @@ export default function UserRowActions({
           placeholder="Email"
           required
         />
+        {isStudent && (
+          <select
+            value={pathway}
+            onChange={(e) => setPathway(e.target.value)}
+            disabled={busy}
+            className="px-3 py-1.5 text-sm border border-brand-border rounded-lg bg-white"
+            title="Pathway"
+          >
+            <option value="">No pathway</option>
+            <option value="COMPREHENSIVE">Comprehensive</option>
+            <option value="MAT">Mat only</option>
+            <option value="REFORMER">Reformer only</option>
+          </select>
+        )}
         <button
           type="submit"
           disabled={busy}
@@ -126,6 +152,7 @@ export default function UserRowActions({
             setEditing(false);
             setName(user.name);
             setEmail(user.email);
+            setPathway(user.pathway ?? "");
             setError(null);
           }}
           disabled={busy}

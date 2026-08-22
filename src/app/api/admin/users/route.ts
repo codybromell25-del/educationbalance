@@ -11,11 +11,21 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { name, email, password } = await req.json();
+  const { name, email, password, pathway } = await req.json();
 
   if (!name || !email || !password) {
     return NextResponse.json(
       { error: "Name, email, and password are required" },
+      { status: 400 }
+    );
+  }
+
+  // Pathway is required for student accounts so per-pathway visibility
+  // + unlock dates can be applied. Accept one of the three enum values.
+  const VALID_PATHWAYS = ["MAT", "REFORMER", "COMPREHENSIVE"] as const;
+  if (!pathway || !VALID_PATHWAYS.includes(pathway)) {
+    return NextResponse.json(
+      { error: "Pathway is required (MAT, REFORMER, or COMPREHENSIVE)" },
       { status: 400 }
     );
   }
@@ -31,7 +41,7 @@ export async function POST(req: Request) {
   const passwordHash = await bcryptjs.hash(password, 12);
 
   const user = await prisma.user.create({
-    data: { name, email, passwordHash, role: "USER" },
+    data: { name, email, passwordHash, role: "USER", pathway },
   });
 
   // Send welcome email with login credentials — fire and forget

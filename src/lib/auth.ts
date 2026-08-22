@@ -33,6 +33,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           name: user.name,
           email: user.email,
           role: user.role,
+          pathway: user.pathway,
         };
       },
     }),
@@ -42,6 +43,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.role = user.role;
         token.id = user.id;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        token.pathway = (user as any).pathway ?? null;
       }
       return token;
     },
@@ -49,6 +52,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (session.user) {
         session.user.role = token.role as string;
         session.user.id = token.id as string;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (session.user as any).pathway = (token.pathway as string | null) ?? null;
       }
       return session;
     },

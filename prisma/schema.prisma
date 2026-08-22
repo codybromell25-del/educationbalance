@@ -14,6 +14,12 @@ enum Role {
   ENQUIRIES
 }
 
+enum Pathway {
+  MAT
+  REFORMER
+  COMPREHENSIVE
+}
+
 enum PartType {
   TEXT
   VIDEO
@@ -34,6 +40,7 @@ model User {
   email               String               @unique
   passwordHash        String
   role                Role                 @default(USER)
+  pathway             Pathway?             // students only — MAT, REFORMER or COMPREHENSIVE; null for staff
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
   progress            Progress[]
@@ -120,8 +127,27 @@ model Section {
   description             String
   content                 String     @db.Text
   order                   Int        @unique
+  // Legacy single unlock date. Kept for back-compat and used as a
+  // fallback when unlockDates JSON does not have an entry for the
+  // student's pathway.
   unlockDate              DateTime
+  // Per-pathway unlock dates. Shape: {"MAT": "2027-02-11", "REFORMER": "2027-04-16", "COMPREHENSIVE": "2027-02-11"}.
+  // Any missing key falls back to unlockDate.
+  unlockDates             Json?
+  // Visibility per pathway. Comprehensive students always see every
+  // section — no field needed. When false, students on that pathway
+  // don't see the section at all in their course listing.
+  visibleToMat            Boolean    @default(true)
+  visibleToReformer       Boolean    @default(true)
+  // Legacy "must complete previous section" flag (still applied when
+  // there's no explicit prerequisiteId set).
   requiresPriorCompletion Boolean    @default(true)
+  // Optional pointer to a specific prerequisite section — takes
+  // precedence over requiresPriorCompletion when set. Used for
+  // "Special Populations opens only when Cueing is complete".
+  prerequisiteId          String?
+  prerequisite            Section?   @relation("SectionPrerequisite", fields: [prerequisiteId], references: [id], onDelete: SetNull)
+  prerequisiteFor         Section[]  @relation("SectionPrerequisite")
   createdAt               DateTime   @default(now())
   updatedAt               DateTime   @updatedAt
   progress                Progress[]

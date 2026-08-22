@@ -9,8 +9,9 @@ import PartVideo from "@/components/parts/PartVideo";
 import PartDownload from "@/components/parts/PartDownload";
 import PartQuiz from "@/components/parts/PartQuiz";
 import PartSubmit from "@/components/parts/PartSubmit";
-import { getSectionAccess } from "@/lib/access";
+import { getSectionAccess, isVisibleTo, unlockDateFor } from "@/lib/access";
 import { resolveFileUrl, downloadFilename } from "@/lib/storage";
+import type { Pathway } from "@prisma/client";
 
 function partAnchor(order: number) {
   return `part-${order}`;
@@ -63,6 +64,20 @@ export default async function SectionPage({
 
   const now = new Date();
 
+  // Look up the student's pathway so per-pathway visibility, unlock
+  // date, and prerequisite gating all resolve correctly.
+  const currentUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { pathway: true },
+  });
+  const pathway: Pathway | null = currentUser?.pathway ?? null;
+
+  // A student on a pathway that doesn't include this unit should be
+  // sent back to their dashboard — no "locked" page, no leak.
+  if (!isVisibleTo(section, pathway)) {
+    redirect("/dashboard");
+  }
+
   // Fetch the previous section (if any) so we can apply the prereq gate
   const previousSection =
     section.order > 1
@@ -74,19 +89,44 @@ export default async function SectionPage({
         })
       : null;
 
-  const access = getSectionAccess(section, previousSection, now);
+  // If this section uses an explicit prerequisite pointer, look up
+  // whether the student has completed that specific section.
+  let prerequisiteCompleted: boolean | null = null;
+  if (section.prerequisiteId) {
+    const prereqProgress = await prisma.progress.findUnique({
+      where: {
+        userId_sectionId: {
+          userId: session.user.id,
+          sectionId: section.prerequisiteId,
+        },
+      },
+      select: { completed: true },
+    });
+    prerequisiteCompleted = prereqProgress?.completed === true;
+  }
+
+  const access = getSectionAccess(
+    section,
+    previousSection,
+    pathway,
+    prerequisiteCompleted,
+    now,
+  );
 
   if (!access.accessible) {
     const lockMessage =
       access.reason === "locked-by-prerequisite"
-        ? `Complete "${access.blockingPreviousTitle}" before starting this section.`
-        : `This section unlocks on ${new Date(
-            section.unlockDate,
-          ).toLocaleDateString("en-IE", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })}.`;
+        ? access.blockingPreviousTitle
+          ? `Complete "${access.blockingPreviousTitle}" before starting this unit.`
+          : `Complete the prerequisite unit before starting this one.`
+        : `This unit unlocks on ${unlockDateFor(section, pathway).toLocaleDateString(
+            "en-IE",
+            {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            },
+          )}.`;
 
     return (
       <div className="max-w-3xl mx-auto px-6 py-24 text-center">
@@ -119,16 +159,22 @@ export default async function SectionPage({
     );
   }
 
-  const allSections = await prisma.section.findMany({
+  // Only pull sections the current pathway can actually see — that
+  // way prev/next navigation skips units this student's pathway locks.
+  const allSectionsRaw = await prisma.section.findMany({
     orderBy: { order: "asc" },
     select: {
       slug: true,
       title: true,
       order: true,
       unlockDate: true,
+      unlockDates: true,
       requiresPriorCompletion: true,
+      visibleToMat: true,
+      visibleToReformer: true,
     },
   });
+  const allSections = allSectionsRaw.filter((s) => isVisibleTo(s, pathway));
   const currentIndex = allSections.findIndex((s) => s.slug === section.slug);
   const prevSection = currentIndex > 0 ? allSections[currentIndex - 1] : null;
   const nextSection =
@@ -138,11 +184,12 @@ export default async function SectionPage({
 
   const isCompleted = section.progress[0]?.completed ?? false;
 
-  // Next section is reachable only if its date has passed AND either it
-  // doesn't require prior completion or the current section is completed.
+  // Next section is reachable only if its pathway-appropriate date has
+  // passed AND either it doesn't require prior completion or the
+  // current section is completed.
   const nextSectionAccessible =
     !!nextSection &&
-    new Date(nextSection.unlockDate) <= now &&
+    unlockDateFor(nextSection, pathway) <= now &&
     (!nextSection.requiresPriorCompletion || isCompleted);
   const parts = section.parts;
   const totalParts = parts.length;

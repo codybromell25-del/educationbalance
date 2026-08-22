@@ -25,6 +25,14 @@ export default async function AdminSectionPage({
 
   if (!section) notFound();
 
+  // Every other unit — feeds the prerequisite dropdown + the
+  // "move part to another unit" control in PartsManager.
+  const otherSections = await prisma.section.findMany({
+    where: { id: { not: section.id } },
+    orderBy: { order: "asc" },
+    select: { id: true, title: true, order: true },
+  });
+
   return (
     <div className="p-5 md:p-8">
       <div className="mb-6">
@@ -32,14 +40,14 @@ export default async function AdminSectionPage({
           href="/admin/sections"
           className="text-sm text-brand-muted hover:text-brand-primary"
         >
-          ← All sections
+          ← All units
         </Link>
       </div>
 
       <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
         <div>
           <p className="text-xs text-brand-sage tracking-[0.3em] uppercase mb-2">
-            Section {section.order}
+            Unit {section.order}
           </p>
           <h1 className="text-3xl font-light tracking-tight text-brand-primary">
             {section.title}
@@ -69,12 +77,22 @@ export default async function AdminSectionPage({
             content: section.content,
             unlockDate: section.unlockDate.toISOString(),
             requiresPriorCompletion: section.requiresPriorCompletion,
+            visibleToMat: section.visibleToMat,
+            visibleToReformer: section.visibleToReformer,
+            unlockDates: section.unlockDates as {
+              MAT?: string | null;
+              REFORMER?: string | null;
+              COMPREHENSIVE?: string | null;
+            } | null,
+            prerequisiteId: section.prerequisiteId,
           }}
+          otherSections={otherSections}
         />
       </div>
 
       <PartsManager
         sectionId={section.id}
+        otherSections={otherSections}
         initialParts={section.parts.map((p) => ({
           id: p.id,
           order: p.order,

@@ -9,6 +9,7 @@ export default function CreateUserForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [pathway, setPathway] = useState("COMPREHENSIVE");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -20,7 +21,7 @@ export default function CreateUserForm() {
     const res = await fetch("/api/admin/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({ name, email, password, pathway }),
     });
 
     if (!res.ok) {
@@ -33,6 +34,7 @@ export default function CreateUserForm() {
     setName("");
     setEmail("");
     setPassword("");
+    setPathway("COMPREHENSIVE");
     setOpen(false);
     setLoading(false);
     router.refresh();
@@ -87,6 +89,21 @@ export default function CreateUserForm() {
             className="w-full px-4 py-2.5 rounded-lg border border-brand-border bg-background text-sm"
             placeholder="Temporary password"
           />
+        </div>
+        <div className="min-w-[180px]">
+          <label className="block text-xs text-brand-muted mb-1">
+            Pathway
+          </label>
+          <select
+            value={pathway}
+            onChange={(e) => setPathway(e.target.value)}
+            required
+            className="w-full px-4 py-2.5 rounded-lg border border-brand-border bg-background text-sm"
+          >
+            <option value="COMPREHENSIVE">Comprehensive</option>
+            <option value="MAT">Mat only</option>
+            <option value="REFORMER">Reformer only</option>
+          </select>
         </div>
         <div className="flex gap-2">
           <button

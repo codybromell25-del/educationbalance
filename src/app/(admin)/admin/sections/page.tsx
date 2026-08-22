@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import SectionRowActions from "@/components/admin/SectionRowActions";
+import CreateSectionForm from "@/components/admin/CreateSectionForm";
 
 export default async function AdminSectionsPage() {
   const sections = await prisma.section.findMany({
@@ -12,14 +13,20 @@ export default async function AdminSectionsPage() {
 
   return (
     <div className="p-5 md:p-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-light tracking-tight text-brand-primary">
-          Course Sections
-        </h1>
-        <p className="text-brand-muted mt-2">
-          Click into a section to manage its parts (videos, downloads, quizzes
-          and submissions). Use ↑ / ↓ to reorder.
-        </p>
+      <div className="mb-8 flex items-start justify-between flex-wrap gap-4">
+        <div>
+          <h1 className="text-3xl font-light tracking-tight text-brand-primary">
+            Course Units
+          </h1>
+          <p className="text-brand-muted mt-2">
+            Click into a unit to manage its parts (videos, downloads, quizzes
+            and submissions). Use ↑ / ↓ to reorder. Add a new unit any time.
+          </p>
+        </div>
+      </div>
+
+      <div className="mb-6">
+        <CreateSectionForm />
       </div>
 
       <div className="space-y-3">
@@ -74,7 +81,7 @@ export default async function AdminSectionsPage() {
 
         {sections.length === 0 && (
           <div className="text-center py-16 text-brand-muted bg-white rounded-2xl border border-brand-border">
-            <p>No sections yet. Run the seed scripts to create them.</p>
+            <p>No units yet. Click <strong>Add a new unit</strong> above to create the first one.</p>
           </div>
         )}
       </div>

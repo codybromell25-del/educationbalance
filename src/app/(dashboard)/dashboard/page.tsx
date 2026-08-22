@@ -3,13 +3,22 @@ import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { getSectionAccess } from "@/lib/access";
+import { getSectionAccess, isVisibleTo, unlockDateFor } from "@/lib/access";
+import type { Pathway } from "@prisma/client";
 
 export default async function DashboardPage() {
   const session = await auth();
   if (!session?.user) redirect("/login");
 
-  const sections = await prisma.section.findMany({
+  // Look up the student's pathway from the DB (session may be stale
+  // if the admin just changed it, and pathway drives what units render).
+  const currentUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { pathway: true },
+  });
+  const pathway: Pathway | null = currentUser?.pathway ?? null;
+
+  const allSections = await prisma.section.findMany({
     orderBy: { order: "asc" },
     include: {
       progress: {
@@ -38,6 +47,11 @@ export default async function DashboardPage() {
     },
   });
 
+  // Filter to only sections visible to this student's pathway. Per
+  // the PDF, hidden units never appear at all — they're not shown as
+  // "locked", they're simply absent from the course.
+  const sections = allSections.filter((s) => isVisibleTo(s, pathway));
+
   // Per-part completion: a part is "done" when the student passed its
   // quiz / made a submission. For TEXT/VIDEO/DOWNLOAD parts there's no
   // event to count, so we credit them once the section itself is marked
@@ -64,11 +78,36 @@ export default async function DashboardPage() {
   const now = new Date();
   const firstName = session.user.name.split(" ")[0];
 
-  // Pre-compute access for every section (date AND prerequisite)
+  // For sections that use an explicit prerequisiteId, look up whether
+  // that specific prerequisite is completed by this student. Only one
+  // extra query needed regardless of how many sections point at one.
+  const prereqIds = sections
+    .map((s) => s.prerequisiteId)
+    .filter((id): id is string => !!id);
+  const prereqProgress =
+    prereqIds.length > 0
+      ? await prisma.progress.findMany({
+          where: {
+            userId: session.user.id,
+            sectionId: { in: prereqIds },
+            completed: true,
+          },
+          select: { sectionId: true },
+        })
+      : [];
+  const completedPrereqIds = new Set(prereqProgress.map((p) => p.sectionId));
+
+  // Pre-compute access for every section (pathway, date AND prerequisite)
   const accessBySectionId = new Map(
     sections.map((s, i) => [
       s.id,
-      getSectionAccess(s, i > 0 ? sections[i - 1] : null, now),
+      getSectionAccess(
+        s,
+        i > 0 ? sections[i - 1] : null,
+        pathway,
+        s.prerequisiteId ? completedPrereqIds.has(s.prerequisiteId) : null,
+        now,
+      ),
     ]),
   );
 
@@ -222,14 +261,17 @@ export default async function DashboardPage() {
 
               const lockMessage = !isUnlocked
                 ? access.reason === "locked-by-prerequisite"
-                  ? `Complete "${access.blockingPreviousTitle}" first`
-                  : `Unlocks ${new Date(
-                      section.unlockDate,
-                    ).toLocaleDateString("en-IE", {
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
-                    })}`
+                  ? access.blockingPreviousTitle
+                    ? `Complete "${access.blockingPreviousTitle}" first`
+                    : `Complete the prerequisite unit first`
+                  : `Unlocks ${unlockDateFor(section, pathway).toLocaleDateString(
+                      "en-IE",
+                      {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      },
+                    )}`
                 : null;
 
               return (

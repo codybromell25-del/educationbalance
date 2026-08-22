@@ -31,6 +31,15 @@ export async function PATCH(
     }
     data.email = email;
   }
+  if (body.pathway !== undefined) {
+    if (body.pathway === null || body.pathway === "") {
+      data.pathway = null;
+    } else if (["MAT", "REFORMER", "COMPREHENSIVE"].includes(body.pathway)) {
+      data.pathway = body.pathway;
+    } else {
+      return NextResponse.json({ error: "Invalid pathway" }, { status: 400 });
+    }
+  }
 
   try {
     const updated = await prisma.user.update({ where: { id }, data });
