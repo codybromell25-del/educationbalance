@@ -392,6 +392,12 @@ export const TUTORS_DEFAULT_CONTENT: TutorsContent = {
       role: "Educator & Instructor",
       bio: "",
     },
+    {
+      slotKey: "tutor-zoe",
+      name: "Zoe Borda",
+      role: "Educator & Instructor",
+      bio: "",
+    },
   ],
 };
 
@@ -593,6 +599,7 @@ export const TUTORS_ASSET_SLOTS: AssetSlot[] = [
   { key: "tutor-cathy", label: "Cathy O'Grady portrait", fallback: "" },
   { key: "tutor-sarah", label: "Sarah McCormack portrait", fallback: "" },
   { key: "tutor-sorcha", label: "Sorcha Hayward portrait", fallback: "" },
+  { key: "tutor-zoe", label: "Zoe Borda portrait", fallback: "" },
 ];
 
 export const GALLERY_ASSET_SLOTS: AssetSlot[] = [

@@ -44,12 +44,6 @@ export default async function DashboardLayout({
                 Course
               </Link>
               <Link
-                href="/hours"
-                className="text-sm text-brand-primary hover:text-brand-sage transition-colors"
-              >
-                Hours
-              </Link>
-              <Link
                 href="/discussion"
                 className="text-sm text-brand-primary hover:text-brand-sage transition-colors"
               >

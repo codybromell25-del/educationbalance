@@ -4,18 +4,6 @@ import { prisma } from "@/lib/db";
 import { resolveFileUrl } from "@/lib/storage";
 import UserRowActions from "@/components/admin/UserRowActions";
 
-const HOUR_CATEGORY_LABEL: Record<string, string> = {
-  OBSERVATION: "Observation",
-  TEACHING: "Teaching",
-  SELF_PRACTICE: "Self-practice",
-};
-
-const HOUR_CATEGORY_BADGE: Record<string, string> = {
-  OBSERVATION: "bg-brand-sage/10 text-brand-sage",
-  TEACHING: "bg-brand-accent/10 text-brand-accent",
-  SELF_PRACTICE: "bg-brand-primary/10 text-brand-primary",
-};
-
 export default async function AdminUserDetailPage({
   params,
 }: {
@@ -30,6 +18,7 @@ export default async function AdminUserDetailPage({
       name: true,
       email: true,
       role: true,
+      pathway: true,
       createdAt: true,
     },
   });
@@ -40,7 +29,6 @@ export default async function AdminUserDetailPage({
     progressRows,
     quizAttempts,
     submissions,
-    hourLogs,
     questions,
   ] = await Promise.all([
     prisma.section.findMany({
@@ -93,13 +81,6 @@ export default async function AdminUserDetailPage({
             section: { select: { title: true, order: true } },
           },
         },
-      },
-    }),
-    prisma.hourLog.findMany({
-      where: { userId },
-      orderBy: { date: "desc" },
-      include: {
-        signedOffBy: { select: { name: true } },
       },
     }),
     prisma.question.findMany({
@@ -185,30 +166,6 @@ export default async function AdminUserDetailPage({
   );
   const submissionsReviewed = submissions.filter((s) => s.reviewed).length;
 
-  // --- Hour logs aggregation ---
-  const hourFileUrls = new Map(
-    await Promise.all(
-      hourLogs
-        .filter((l) => l.fileUrl)
-        .map(async (l) => [l.id, await resolveFileUrl(l.fileUrl)] as const),
-    ),
-  );
-  const hourTotals = hourLogs.reduce(
-    (acc, l) => {
-      acc.total += l.durationMinutes;
-      acc[l.category] = (acc[l.category] ?? 0) + l.durationMinutes;
-      if (l.signedOffAt) acc.signedOff += l.durationMinutes;
-      return acc;
-    },
-    {
-      total: 0,
-      signedOff: 0,
-      OBSERVATION: 0,
-      TEACHING: 0,
-      SELF_PRACTICE: 0,
-    } as Record<string, number>,
-  );
-
   return (
     <div className="p-5 md:p-8">
       <div className="mb-6">
@@ -237,12 +194,18 @@ export default async function AdminUserDetailPage({
           </p>
         </div>
         <UserRowActions
-          user={{ id: user.id, name: user.name, email: user.email }}
+          user={{
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            pathway: user.pathway,
+          }}
         />
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-10">
         <StatCard
           value={`${overallPercent}%`}
           label="Course complete"
@@ -259,11 +222,6 @@ export default async function AdminUserDetailPage({
           value={`${submissions.length}`}
           label="Submissions"
           sub={`${submissionsReviewed} reviewed`}
-        />
-        <StatCard
-          value={formatHours(hourTotals.total)}
-          label="Hours logged"
-          sub={`${formatHours(hourTotals.signedOff)} signed off`}
         />
       </div>
 
@@ -478,95 +436,6 @@ export default async function AdminUserDetailPage({
         )}
       </Section>
 
-      {/* Hours */}
-      <Section title={`Practice hours (${hourLogs.length})`}>
-        {hourLogs.length === 0 ? (
-          <Empty>No hours logged yet.</Empty>
-        ) : (
-          <>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
-              <MiniStat
-                label="Total"
-                value={formatHours(hourTotals.total)}
-              />
-              <MiniStat
-                label="Signed off"
-                value={formatHours(hourTotals.signedOff)}
-              />
-              <MiniStat
-                label="Observation"
-                value={formatHours(hourTotals.OBSERVATION ?? 0)}
-              />
-              <MiniStat
-                label="Teaching"
-                value={formatHours(hourTotals.TEACHING ?? 0)}
-              />
-            </div>
-            <ul className="space-y-3">
-              {hourLogs.map((l) => {
-                const fileUrl = hourFileUrls.get(l.id) ?? null;
-                const signed = !!l.signedOffAt;
-                return (
-                  <li
-                    key={l.id}
-                    className={`bg-white rounded-xl border p-4 ${signed ? "border-brand-success/30" : "border-brand-border"}`}
-                  >
-                    <div className="flex items-center justify-between gap-3 flex-wrap mb-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span
-                          className={`text-xs tracking-wider uppercase rounded-full px-2 py-0.5 ${HOUR_CATEGORY_BADGE[l.category]}`}
-                        >
-                          {HOUR_CATEGORY_LABEL[l.category]}
-                        </span>
-                        <span className="text-sm text-brand-primary font-medium">
-                          {formatHours(l.durationMinutes)}
-                        </span>
-                        <span className="text-sm text-brand-muted">
-                          {l.date.toLocaleDateString("en-IE", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        </span>
-                      </div>
-                      {signed && (
-                        <span className="text-xs text-brand-success">
-                          ✓ Signed off
-                          {l.signedOffBy ? ` by ${l.signedOffBy.name}` : ""}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-sm text-brand-primary/80 whitespace-pre-wrap mt-1">
-                      {l.description}
-                    </p>
-                    {fileUrl && (
-                      <a
-                        href={fileUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 mt-2 text-sm text-brand-sage hover:text-brand-sage-dark"
-                      >
-                        📎 Open evidence
-                      </a>
-                    )}
-                    {l.feedback && (
-                      <div className="mt-2 pt-2 border-t border-brand-border">
-                        <p className="text-xs tracking-wider uppercase text-brand-sage mb-0.5">
-                          Feedback
-                        </p>
-                        <p className="text-sm text-brand-primary/80 whitespace-pre-wrap">
-                          {l.feedback}
-                        </p>
-                      </div>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          </>
-        )}
-      </Section>
-
       {/* Q&A */}
       <Section title={`Questions asked (${questions.length})`}>
         {questions.length === 0 ? (
@@ -653,28 +522,10 @@ function StatCard({
   );
 }
 
-function MiniStat({ value, label }: { value: string; label: string }) {
-  return (
-    <div className="bg-white rounded-xl border border-brand-border p-3 text-center">
-      <p className="text-lg font-light text-brand-primary">{value}</p>
-      <p className="text-xs text-brand-muted tracking-wider uppercase mt-0.5">
-        {label}
-      </p>
-    </div>
-  );
-}
-
 function Empty({ children }: { children: React.ReactNode }) {
   return (
     <p className="text-center py-8 text-brand-muted bg-white rounded-xl border border-brand-border text-sm">
       {children}
     </p>
   );
-}
-
-function formatHours(minutes: number): string {
-  if (minutes < 60) return `${minutes}m`;
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  return m === 0 ? `${h}h` : `${h}h ${m}m`;
 }
