@@ -387,29 +387,176 @@ function WhatYouGet({ content }: { content: WhatYouGetContent }) {
 }
 
 // ------------------------------------------------------------------
+// Timeline · grouped-view render.
+// Items are classified into three buckets — weekends, open studio
+// days, and assessment day — by pattern-matching on their label. This
+// keeps the CMS shape unchanged: Kelly still edits a flat list of
+// {label, date} in /admin/landing; we group visually at render time.
+//
+// Weekend rows also get a Mat / Reformer pathway pill parsed from the
+// " · Mat" or " · Reformer" suffix on the label. The suffix is
+// stripped from the visible label to avoid duplicating that info.
+// ------------------------------------------------------------------
+type TimelineItem = TimelineContent["items"][number];
+type PathwayTag = "MAT" | "REFORMER" | null;
+type GroupKey = "weekends" | "studio" | "assessment" | "other";
+type EnrichedItem = {
+  raw: TimelineItem;
+  displayLabel: string;
+  pathway: PathwayTag;
+  group: GroupKey;
+};
+
+function classifyTimelineItem(item: TimelineItem): EnrichedItem {
+  const label = item.label.trim();
+  const lower = label.toLowerCase();
+
+  // Assessment day — usually "Assessment Day — Option A"
+  if (lower.startsWith("assessment")) {
+    return { raw: item, displayLabel: label, pathway: null, group: "assessment" };
+  }
+  // Open studio — usually "Open Studio Day 1"
+  if (lower.startsWith("open studio") || lower.includes("studio day")) {
+    return { raw: item, displayLabel: label, pathway: null, group: "studio" };
+  }
+  // Weekend — "Weekend 1 · Mat" or "Weekend 3 · Reformer"
+  if (lower.startsWith("weekend")) {
+    const matPathway = /·\s*mat\b/i.test(label);
+    const refPathway = /·\s*reformer\b/i.test(label);
+    // Strip trailing " · Mat" / " · Reformer" so the pill isn't duplicated
+    const displayLabel = label.replace(/\s*·\s*(mat|reformer)\s*$/i, "").trim();
+    return {
+      raw: item,
+      displayLabel,
+      pathway: matPathway ? "MAT" : refPathway ? "REFORMER" : null,
+      group: "weekends",
+    };
+  }
+  return { raw: item, displayLabel: label, pathway: null, group: "other" };
+}
+
+const GROUP_META: Record<
+  GroupKey,
+  { title: string; hint: string; order: number }
+> = {
+  weekends: {
+    title: "In-studio weekends",
+    hint: "Attendance is non-negotiable. Each weekend builds on the last — we don't run catch-up sessions.",
+    order: 0,
+  },
+  studio: {
+    title: "Open studio days",
+    hint: "Drop-in reformer practice at balance, supervised by our instructors. Use the time however you need it.",
+    order: 1,
+  },
+  assessment: {
+    title: "Assessment day — pick one",
+    hint: "Sit your reformer practical on either of these dates. You only need to attend one.",
+    order: 2,
+  },
+  other: {
+    title: "Also on the calendar",
+    hint: "",
+    order: 3,
+  },
+};
+
 function Timeline({ content }: { content: TimelineContent }) {
+  // Classify then bucket by group, preserving chronological order
+  // within each bucket by relying on the original items order.
+  const enriched = content.items.map(classifyTimelineItem);
+  const buckets = new Map<GroupKey, EnrichedItem[]>();
+  for (const item of enriched) {
+    if (!buckets.has(item.group)) buckets.set(item.group, []);
+    buckets.get(item.group)!.push(item);
+  }
+  const groups = [...buckets.entries()].sort(
+    ([a], [b]) => GROUP_META[a].order - GROUP_META[b].order,
+  );
+
+  // Small summary strap — derived from the actual item counts so it
+  // stays honest if Kelly ever adds or removes rows in the CMS.
+  const weekendCount = buckets.get("weekends")?.length ?? 0;
+  const studioCount = buckets.get("studio")?.length ?? 0;
+  const assessCount = buckets.get("assessment")?.length ?? 0;
+  const summaryBits: string[] = [];
+  if (weekendCount)
+    summaryBits.push(
+      `${weekendCount} in-studio ${weekendCount === 1 ? "weekend" : "weekends"}`,
+    );
+  if (studioCount)
+    summaryBits.push(
+      `${studioCount} open studio ${studioCount === 1 ? "day" : "days"}`,
+    );
+  if (assessCount)
+    summaryBits.push(
+      assessCount === 1
+        ? "1 assessment date"
+        : `a choice of ${assessCount} assessment dates`,
+    );
+  const summary = summaryBits.length ? summaryBits.join(", ") + "." : null;
+
   return (
     <section className="py-20 md:py-28 bg-brand-surface">
       <div className="max-w-3xl mx-auto px-5 md:px-6">
         <SectionHeader eyebrow={content.eyebrow} title={content.title} />
-        <ul className="mt-12 space-y-2">
-          {content.items.map((item, i) => (
-            <li
-              key={i}
-              className="flex items-center justify-between gap-4 px-5 py-4 rounded-xl border border-brand-border bg-white"
-            >
-              <div className="flex items-center gap-4 min-w-0">
-                <div className="w-7 h-7 rounded-full bg-brand-sage/10 text-brand-sage border border-brand-sage/30 flex items-center justify-center shrink-0 text-xs font-medium">
-                  {i + 1}
+        {summary && (
+          <p className="mt-5 text-center text-brand-primary/75 leading-relaxed max-w-xl mx-auto">
+            {summary}
+          </p>
+        )}
+
+        <div className="mt-12 space-y-10">
+          {groups.map(([groupKey, items]) => {
+            const meta = GROUP_META[groupKey];
+            return (
+              <div key={groupKey}>
+                <div className="mb-4">
+                  <h3 className="text-xs tracking-[0.2em] uppercase text-brand-sage font-medium">
+                    {meta.title}
+                  </h3>
+                  {meta.hint && (
+                    <p className="text-sm text-brand-muted mt-1.5 leading-snug">
+                      {meta.hint}
+                    </p>
+                  )}
                 </div>
-                <span className="text-brand-primary font-medium truncate">{item.label}</span>
+                <ul className="space-y-2">
+                  {items.map((it, i) => (
+                    <li
+                      key={i}
+                      className="flex items-center justify-between gap-4 px-5 py-4 rounded-xl border border-brand-border bg-white"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        {it.pathway === "MAT" && (
+                          <span className="inline-block px-2 py-0.5 rounded-full bg-brand-sage/10 text-brand-sage text-[10px] tracking-[0.15em] uppercase font-semibold shrink-0">
+                            Mat only
+                          </span>
+                        )}
+                        {it.pathway === "REFORMER" && (
+                          <span className="inline-block px-2 py-0.5 rounded-full bg-brand-accent/15 text-brand-accent-dark text-[10px] tracking-[0.15em] uppercase font-semibold shrink-0">
+                            Reformer only
+                          </span>
+                        )}
+                        <span className="text-brand-primary font-medium truncate">
+                          {it.displayLabel}
+                        </span>
+                      </div>
+                      <span className="text-sm text-brand-muted shrink-0 tabular-nums">
+                        {it.raw.date}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <span className="text-sm text-brand-muted shrink-0">{item.date}</span>
-            </li>
-          ))}
-        </ul>
+            );
+          })}
+        </div>
+
         {content.footnote && (
-          <p className="mt-6 text-center text-xs text-brand-muted">{content.footnote}</p>
+          <p className="mt-10 text-center text-sm text-brand-muted italic">
+            {content.footnote}
+          </p>
         )}
       </div>
     </section>
