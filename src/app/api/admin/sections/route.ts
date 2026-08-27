@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 /**
- * Create a new Section (a.k.a. Unit). Kelly uses this to add new
+ * Create a new Section (a.k.a. Unit). Catherine uses this to add new
  * course units from the admin editor without needing developer help.
  *
  * Body:

@@ -390,7 +390,7 @@ function WhatYouGet({ content }: { content: WhatYouGetContent }) {
 // Timeline · grouped-view render.
 // Items are classified into three buckets — weekends, open studio
 // days, and assessment day — by pattern-matching on their label. This
-// keeps the CMS shape unchanged: Kelly still edits a flat list of
+// keeps the CMS shape unchanged: Catherine still edits a flat list of
 // {label, date} in /admin/landing; we group visually at render time.
 //
 // Weekend rows also get a Mat / Reformer pathway pill parsed from the
@@ -475,7 +475,7 @@ function Timeline({ content }: { content: TimelineContent }) {
   );
 
   // Small summary strap — derived from the actual item counts so it
-  // stays honest if Kelly ever adds or removes rows in the CMS.
+  // stays honest if Catherine ever adds or removes rows in the CMS.
   const weekendCount = buckets.get("weekends")?.length ?? 0;
   const studioCount = buckets.get("studio")?.length ?? 0;
   const assessCount = buckets.get("assessment")?.length ?? 0;

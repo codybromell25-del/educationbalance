@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 /**
- * Admin "Add a new unit" form. Kelly clicks the toggle, fills in the
+ * Admin "Add a new unit" form. Catherine clicks the toggle, fills in the
  * required fields, and a new empty unit gets created at the bottom of
  * the list. She can then click into it and manage parts / pathway
  * rules / dates in the standard section editor.

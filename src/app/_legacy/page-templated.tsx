@@ -1,7 +1,7 @@
 // Public landing page for the balance studios Pilates instructor course.
 //
 // NOTE: copy below uses sensible defaults / placeholders. Anywhere you
-// see the literal string "CONFIRM" in text, that's a spot Kelly needs
+// see the literal string "CONFIRM" in text, that's a spot Catherine needs
 // to fill in (dates, pricing, tutor bios). Search for "CONFIRM" to
 // find them all quickly.
 //
@@ -432,7 +432,7 @@ function SocialProof() {
           You&rsquo;re learning from a working studio &mdash; not just a course.
         </h2>
         <div className="grid sm:grid-cols-3 gap-6 mt-14 max-w-3xl mx-auto">
-          {/* CONFIRM stats once Kelly signs off the exact numbers */}
+          {/* CONFIRM stats once Catherine signs off the exact numbers */}
           <Stat value="10+" label="Years in business" />
           <Stat value="40+" label="Classes per week" />
           <Stat value="5★" label="Client reviews" />
@@ -459,7 +459,7 @@ function Stat({ value, label }: { value: string; label: string }) {
 // Timeline
 // ------------------------------------------------------------------
 function Timeline() {
-  // CONFIRM all dates with Kelly before launch
+  // CONFIRM all dates with Catherine before launch
   const items = [
     { label: "Applications open", date: "CONFIRM" },
     { label: "Weekend 1 — Foundations", date: "CONFIRM weekend date" },

@@ -34,7 +34,7 @@ export default function TutorsFeaturedPlusRow({
           Meet the instructors.
         </h2>
 
-        {/* Featured — Kelly on top over everyone else */}
+        {/* Featured — Kelly O'Neill on top over everyone else */}
         <div className="flex flex-col items-center mb-14 md:mb-16">
           <Avatar src={featuredImg} label={featured.name} large />
           <p className="mt-6 text-2xl md:text-3xl font-heading italic text-brand-primary">
