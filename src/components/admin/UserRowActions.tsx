@@ -5,6 +5,7 @@ import { useState } from "react";
 
 export default function UserRowActions({
   user,
+  cohorts,
 }: {
   user: {
     id: string;
@@ -12,17 +13,25 @@ export default function UserRowActions({
     email: string;
     role?: string;
     pathway?: string | null;
+    cohortId?: string | null;
   };
+  cohorts?: Array<{
+    id: string;
+    name: string;
+    isActive: boolean;
+    isArchived: boolean;
+  }>;
 }) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
   const [pathway, setPathway] = useState<string>(user.pathway ?? "");
+  const [cohortId, setCohortId] = useState<string>(user.cohortId ?? "");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Only students carry a pathway; staff (ADMIN, ENQUIRIES) don't.
+  // Only students carry a pathway/cohort; staff (ADMIN, ENQUIRIES) don't.
   const isStudent = user.role === "USER";
 
   async function handleSave(e: React.FormEvent) {
@@ -31,7 +40,10 @@ export default function UserRowActions({
     setError(null);
     try {
       const body: Record<string, unknown> = { name, email };
-      if (isStudent) body.pathway = pathway || null;
+      if (isStudent) {
+        body.pathway = pathway || null;
+        body.cohortId = cohortId || null;
+      }
       const res = await fetch(`/api/admin/users/${user.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -139,6 +151,22 @@ export default function UserRowActions({
             <option value="REFORMER">Reformer only</option>
           </select>
         )}
+        {isStudent && cohorts && cohorts.length > 0 && (
+          <select
+            value={cohortId}
+            onChange={(e) => setCohortId(e.target.value)}
+            disabled={busy}
+            className="px-3 py-1.5 text-sm border border-brand-border rounded-lg bg-white"
+            title="Cohort"
+          >
+            <option value="">No cohort</option>
+            {cohorts.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        )}
         <button
           type="submit"
           disabled={busy}
@@ -153,6 +181,7 @@ export default function UserRowActions({
             setName(user.name);
             setEmail(user.email);
             setPathway(user.pathway ?? "");
+            setCohortId(user.cohortId ?? "");
             setError(null);
           }}
           disabled={busy}

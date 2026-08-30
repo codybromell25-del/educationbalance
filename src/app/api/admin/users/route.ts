@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { name, email, password, pathway } = await req.json();
+  const { name, email, password, pathway, cohortId } = await req.json();
 
   if (!name || !email || !password) {
     return NextResponse.json(
@@ -30,6 +30,21 @@ export async function POST(req: Request) {
     );
   }
 
+  // Cohort is optional in the API for backwards compatibility, but the
+  // admin UI supplies one — defaulting to the currently active cohort.
+  // Validate it exists if provided.
+  let resolvedCohortId: string | null = null;
+  if (cohortId && typeof cohortId === "string") {
+    const cohort = await prisma.cohort.findUnique({ where: { id: cohortId } });
+    if (!cohort) {
+      return NextResponse.json(
+        { error: "Cohort not found" },
+        { status: 400 },
+      );
+    }
+    resolvedCohortId = cohort.id;
+  }
+
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
     return NextResponse.json(
@@ -41,7 +56,14 @@ export async function POST(req: Request) {
   const passwordHash = await bcryptjs.hash(password, 12);
 
   const user = await prisma.user.create({
-    data: { name, email, passwordHash, role: "USER", pathway },
+    data: {
+      name,
+      email,
+      passwordHash,
+      role: "USER",
+      pathway,
+      cohortId: resolvedCohortId,
+    },
   });
 
   // Send welcome email with login credentials — fire and forget

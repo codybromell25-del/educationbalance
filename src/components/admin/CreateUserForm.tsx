@@ -3,13 +3,27 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function CreateUserForm() {
+export type CohortOption = {
+  id: string;
+  name: string;
+  isActive: boolean;
+  isArchived: boolean;
+};
+
+export default function CreateUserForm({
+  cohorts,
+  defaultCohortId,
+}: {
+  cohorts: CohortOption[];
+  defaultCohortId: string | null;
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pathway, setPathway] = useState("COMPREHENSIVE");
+  const [cohortId, setCohortId] = useState<string>(defaultCohortId ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -21,7 +35,13 @@ export default function CreateUserForm() {
     const res = await fetch("/api/admin/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password, pathway }),
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+        pathway,
+        cohortId: cohortId || null,
+      }),
     });
 
     if (!res.ok) {
@@ -35,6 +55,7 @@ export default function CreateUserForm() {
     setEmail("");
     setPassword("");
     setPathway("COMPREHENSIVE");
+    setCohortId(defaultCohortId ?? "");
     setOpen(false);
     setLoading(false);
     router.refresh();
@@ -103,6 +124,22 @@ export default function CreateUserForm() {
             <option value="COMPREHENSIVE">Comprehensive</option>
             <option value="MAT">Mat only</option>
             <option value="REFORMER">Reformer only</option>
+          </select>
+        </div>
+        <div className="min-w-[200px]">
+          <label className="block text-xs text-brand-muted mb-1">Cohort</label>
+          <select
+            value={cohortId}
+            onChange={(e) => setCohortId(e.target.value)}
+            className="w-full px-4 py-2.5 rounded-lg border border-brand-border bg-background text-sm"
+          >
+            <option value="">No cohort</option>
+            {cohorts.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+                {c.isArchived ? " (archived)" : c.isActive ? "" : " (inactive)"}
+              </option>
+            ))}
           </select>
         </div>
         <div className="flex gap-2">

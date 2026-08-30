@@ -3,17 +3,55 @@ import { prisma } from "@/lib/db";
 import CreateUserForm from "@/components/admin/CreateUserForm";
 import UserRowActions from "@/components/admin/UserRowActions";
 
-export default async function AdminUsersPage() {
+/**
+ * Users list — one row per enrolled student. Optionally filtered by cohort
+ * via a ?cohort=<slug> URL param. Defaults to showing every student across
+ * every cohort so nothing existing gets hidden by the new cohort feature;
+ * Catherine picks a cohort from the dropdown to narrow.
+ */
+export default async function AdminUsersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ cohort?: string }>;
+}) {
+  const sp = await searchParams;
+  const cohortSlug = sp.cohort && sp.cohort !== "all" ? sp.cohort : null;
+
+  const [cohorts, resolvedCohort] = await Promise.all([
+    prisma.cohort.findMany({
+      orderBy: [{ isArchived: "asc" }, { startDate: "desc" }],
+    }),
+    cohortSlug
+      ? prisma.cohort.findUnique({ where: { slug: cohortSlug } })
+      : Promise.resolve(null),
+  ]);
+
   const users = await prisma.user.findMany({
-    where: { role: "USER" },
+    where: {
+      role: "USER",
+      ...(resolvedCohort ? { cohortId: resolvedCohort.id } : {}),
+    },
     orderBy: { createdAt: "desc" },
     include: {
       progress: { where: { completed: true } },
+      cohort: { select: { id: true, name: true, slug: true, isArchived: true } },
       _count: { select: { questions: true } },
     },
   });
 
   const totalSections = await prisma.section.count();
+
+  // Pick a sensible default cohort for the "create" form — the newest
+  // active, non-archived cohort. Falls back to null (No cohort).
+  const activeCohorts = cohorts.filter((c) => c.isActive && !c.isArchived);
+  const defaultCohortId = activeCohorts[0]?.id ?? null;
+
+  const cohortOptions = cohorts.map((c) => ({
+    id: c.id,
+    name: c.name,
+    isActive: c.isActive,
+    isArchived: c.isArchived,
+  }));
 
   return (
     <div className="p-5 md:p-8">
@@ -24,12 +62,61 @@ export default async function AdminUsersPage() {
           </h1>
           <p className="text-brand-muted mt-2">
             Manage course participants and create new accounts.
+            {resolvedCohort && (
+              <>
+                {" "}
+                Filtered by cohort:{" "}
+                <span className="text-brand-primary font-medium">
+                  {resolvedCohort.name}
+                </span>
+                .{" "}
+                <Link
+                  href="/admin/users"
+                  className="text-brand-sage hover:underline"
+                >
+                  Clear filter
+                </Link>
+              </>
+            )}
           </p>
         </div>
       </div>
 
+      {/* Cohort filter form -------------------------------------------- */}
+      {cohorts.length > 0 && (
+        <form method="get" className="mb-6 flex flex-wrap items-end gap-3">
+          <div>
+            <label className="block text-xs text-brand-muted mb-1">
+              Show cohort
+            </label>
+            <select
+              name="cohort"
+              defaultValue={cohortSlug ?? "all"}
+              className="px-4 py-2 rounded-lg border border-brand-border bg-white text-sm min-w-[220px]"
+            >
+              <option value="all">All cohorts</option>
+              {cohorts.map((c) => (
+                <option key={c.id} value={c.slug}>
+                  {c.name}
+                  {c.isArchived ? " (archived)" : ""}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button
+            type="submit"
+            className="px-4 py-2 rounded-full bg-brand-primary text-white text-sm hover:bg-brand-primary/90"
+          >
+            Apply
+          </button>
+        </form>
+      )}
+
       {/* Create user form */}
-      <CreateUserForm />
+      <CreateUserForm
+        cohorts={cohortOptions}
+        defaultCohortId={defaultCohortId}
+      />
 
       {/* Users table — desktop */}
       <div className="hidden md:block bg-white rounded-xl border border-brand-border overflow-hidden mt-8">
@@ -44,6 +131,9 @@ export default async function AdminUsersPage() {
               </th>
               <th className="text-left px-6 py-3 text-xs font-medium text-brand-muted tracking-wider uppercase">
                 Pathway
+              </th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-brand-muted tracking-wider uppercase">
+                Cohort
               </th>
               <th className="text-left px-6 py-3 text-xs font-medium text-brand-muted tracking-wider uppercase">
                 Progress
@@ -89,6 +179,24 @@ export default async function AdminUsersPage() {
                     <span className="text-xs text-brand-muted italic">—</span>
                   )}
                 </td>
+                <td className="px-6 py-4 text-sm">
+                  {user.cohort ? (
+                    <span
+                      className={
+                        "text-xs " +
+                        (user.cohort.isArchived
+                          ? "text-brand-muted italic"
+                          : "text-brand-primary")
+                      }
+                    >
+                      {user.cohort.name}
+                    </span>
+                  ) : (
+                    <span className="text-xs text-brand-muted italic">
+                      No cohort
+                    </span>
+                  )}
+                </td>
                 <td className="px-6 py-4 text-sm text-brand-muted">
                   <span className="inline-flex items-center gap-2">
                     <span className="w-16 h-1.5 bg-brand-surface rounded-full overflow-hidden">
@@ -124,7 +232,9 @@ export default async function AdminUsersPage() {
                       email: user.email,
                       role: user.role,
                       pathway: user.pathway,
+                      cohortId: user.cohortId,
                     }}
+                    cohorts={cohortOptions}
                   />
                 </td>
               </tr>
@@ -132,10 +242,12 @@ export default async function AdminUsersPage() {
             {users.length === 0 && (
               <tr>
                 <td
-                  colSpan={7}
+                  colSpan={8}
                   className="px-6 py-12 text-center text-brand-muted"
                 >
-                  No users yet. Create the first one above.
+                  {resolvedCohort
+                    ? "No students in this cohort yet."
+                    : "No users yet. Create the first one above."}
                 </td>
               </tr>
             )}
@@ -159,6 +271,12 @@ export default async function AdminUsersPage() {
                   {user.name}
                 </Link>
                 <p className="text-sm text-brand-muted truncate">{user.email}</p>
+                {user.cohort && (
+                  <p className="text-xs text-brand-muted mt-1">
+                    {user.cohort.name}
+                    {user.cohort.isArchived && " (archived)"}
+                  </p>
+                )}
               </div>
             </div>
             <div className="flex items-center gap-2 text-xs text-brand-muted mb-3">
@@ -195,13 +313,17 @@ export default async function AdminUsersPage() {
                 email: user.email,
                 role: user.role,
                 pathway: user.pathway,
+                cohortId: user.cohortId,
               }}
+              cohorts={cohortOptions}
             />
           </div>
         ))}
         {users.length === 0 && (
           <p className="text-center py-12 text-brand-muted bg-white rounded-xl border border-brand-border">
-            No users yet. Create the first one above.
+            {resolvedCohort
+              ? "No students in this cohort yet."
+              : "No users yet. Create the first one above."}
           </p>
         )}
       </div>

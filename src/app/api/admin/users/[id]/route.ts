@@ -40,6 +40,21 @@ export async function PATCH(
       return NextResponse.json({ error: "Invalid pathway" }, { status: 400 });
     }
   }
+  if (body.cohortId !== undefined) {
+    if (body.cohortId === null || body.cohortId === "") {
+      data.cohortId = null;
+    } else if (typeof body.cohortId === "string") {
+      const cohort = await prisma.cohort.findUnique({
+        where: { id: body.cohortId },
+      });
+      if (!cohort) {
+        return NextResponse.json({ error: "Cohort not found" }, { status: 400 });
+      }
+      data.cohortId = cohort.id;
+    } else {
+      return NextResponse.json({ error: "Invalid cohortId" }, { status: 400 });
+    }
+  }
 
   try {
     const updated = await prisma.user.update({ where: { id }, data });

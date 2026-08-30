@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db";
 import Link from "next/link";
-import type { Pathway } from "@prisma/client";
+import type { Pathway, Prisma } from "@prisma/client";
 
 // ---------------------------------------------------------------------------
 // Assessment Results
@@ -20,9 +20,57 @@ const DATE_OPTS: Intl.DateTimeFormatOptions = {
   year: "numeric",
 };
 
-export default async function AdminAssessmentResultsPage() {
-  const [quizAttempts, submissions] = await Promise.all([
+export default async function AdminAssessmentResultsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    cohort?: string;
+    pathway?: string;
+    search?: string;
+    focus?: string;
+  }>;
+}) {
+  const sp = await searchParams;
+
+  // Resolve cohort slug → record so we can filter by the FK id.
+  const cohortRecord =
+    sp.cohort && sp.cohort !== "all"
+      ? await prisma.cohort.findUnique({ where: { slug: sp.cohort } })
+      : null;
+
+  const pathwayFilter =
+    sp.pathway && ["MAT", "REFORMER", "COMPREHENSIVE"].includes(sp.pathway)
+      ? (sp.pathway as Pathway)
+      : null;
+
+  const searchTerm = sp.search?.trim() ?? "";
+  const needsAttentionOnly = sp.focus === "needs-attention";
+
+  // Shared user-level filters applied to both the quiz and submission
+  // queries via a nested `user` where clause.
+  const userWhere: Prisma.UserWhereInput = {};
+  if (cohortRecord) userWhere.cohortId = cohortRecord.id;
+  if (pathwayFilter) userWhere.pathway = pathwayFilter;
+  if (searchTerm) {
+    userWhere.OR = [
+      { name: { contains: searchTerm, mode: "insensitive" } },
+      { email: { contains: searchTerm, mode: "insensitive" } },
+    ];
+  }
+  const hasUserFilters = Object.keys(userWhere).length > 0;
+
+  const whereQuiz: Prisma.QuizAttemptWhereInput = {
+    ...(hasUserFilters && { user: userWhere }),
+    ...(needsAttentionOnly && { passed: false }),
+  };
+  const whereSubmission: Prisma.SubmissionWhereInput = {
+    ...(hasUserFilters && { user: userWhere }),
+    ...(needsAttentionOnly && { reviewed: false }),
+  };
+
+  const [quizAttempts, submissions, cohorts] = await Promise.all([
     prisma.quizAttempt.findMany({
+      where: whereQuiz,
       orderBy: { completedAt: "desc" },
       include: {
         user: {
@@ -42,6 +90,7 @@ export default async function AdminAssessmentResultsPage() {
       },
     }),
     prisma.submission.findMany({
+      where: whereSubmission,
       orderBy: [{ reviewed: "asc" }, { submittedAt: "desc" }],
       include: {
         user: {
@@ -55,7 +104,18 @@ export default async function AdminAssessmentResultsPage() {
         },
       },
     }),
+    prisma.cohort.findMany({
+      orderBy: [{ isArchived: "asc" }, { startDate: "desc" }],
+    }),
   ]);
+
+  // Are any filters currently applied? (Used to show a "clear filters"
+  // link and to word the summary strap appropriately.)
+  const filtersActive =
+    Boolean(cohortRecord) ||
+    Boolean(pathwayFilter) ||
+    Boolean(searchTerm) ||
+    needsAttentionOnly;
 
   // Aggregate stats for the header cards
   const activeStudentIds = new Set([
@@ -81,8 +141,94 @@ export default async function AdminAssessmentResultsPage() {
           Every quiz attempt and written submission from students. Most
           recent first. Click any student's name to open their full
           portfolio.
+          {filtersActive && (
+            <>
+              {" "}
+              <Link
+                href="/admin/assessment-results"
+                className="text-brand-sage hover:underline"
+              >
+                Clear filters
+              </Link>
+              .
+            </>
+          )}
         </p>
       </div>
+
+      {/* Filter form ---------------------------------------------- */}
+      <form
+        method="get"
+        className="mb-8 bg-white rounded-xl border border-brand-border p-5 flex flex-wrap items-end gap-3"
+      >
+        <div>
+          <label className="block text-xs text-brand-muted mb-1">Cohort</label>
+          <select
+            name="cohort"
+            defaultValue={sp.cohort ?? "all"}
+            className="px-4 py-2 rounded-lg border border-brand-border bg-white text-sm min-w-[200px]"
+          >
+            <option value="all">All cohorts</option>
+            {cohorts.map((c) => (
+              <option key={c.id} value={c.slug}>
+                {c.name}
+                {c.isArchived ? " (archived)" : ""}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block text-xs text-brand-muted mb-1">
+            Pathway
+          </label>
+          <select
+            name="pathway"
+            defaultValue={sp.pathway ?? "all"}
+            className="px-4 py-2 rounded-lg border border-brand-border bg-white text-sm min-w-[160px]"
+          >
+            <option value="all">All pathways</option>
+            <option value="MAT">Mat</option>
+            <option value="REFORMER">Reformer</option>
+            <option value="COMPREHENSIVE">Comprehensive</option>
+          </select>
+        </div>
+        <div className="flex-1 min-w-[180px]">
+          <label className="block text-xs text-brand-muted mb-1">
+            Search student
+          </label>
+          <input
+            type="text"
+            name="search"
+            defaultValue={sp.search ?? ""}
+            placeholder="Name or email"
+            className="w-full px-4 py-2 rounded-lg border border-brand-border bg-white text-sm"
+          />
+        </div>
+        <label className="inline-flex items-center gap-2 text-sm text-brand-primary select-none px-3 py-2 rounded-lg border border-brand-border bg-brand-surface/50 cursor-pointer">
+          <input
+            type="checkbox"
+            name="focus"
+            value="needs-attention"
+            defaultChecked={needsAttentionOnly}
+            className="accent-brand-sage"
+          />
+          Needs attention only
+        </label>
+        <button
+          type="submit"
+          className="px-4 py-2 rounded-full bg-brand-primary text-white text-sm hover:bg-brand-primary/90"
+        >
+          Apply
+        </button>
+        {filtersActive && (
+          <Link
+            href="/admin/assessment-results"
+            className="px-3 py-2 text-sm text-brand-muted hover:text-brand-primary"
+          >
+            Clear
+          </Link>
+        )}
+      </form>
 
       {/* Summary stat cards -------------------------------------- */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-10">
