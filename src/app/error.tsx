@@ -22,7 +22,7 @@ export default function RootError({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 bg-brand-surface">
+    <div className="font-app min-h-screen flex items-center justify-center px-6 bg-brand-surface">
       <div className="max-w-md text-center">
         <p className="text-xs tracking-[0.2em] uppercase text-brand-sage mb-4">
           Something went wrong

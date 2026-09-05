@@ -52,6 +52,32 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
 }
 
+/* ── App typography (everything behind or around the login) ──────────
+ * Scoped to a `.font-app` wrapper on the auth, student, admin and
+ * discussion layouts so the public landing page keeps Playfair + Aileron.
+ *
+ * Body / default text : Raleway, sans-serif
+ * Headings            : Libre Baskerville, serif — italic by default
+ *
+ * Works by overriding the two theme variables that the global `body`
+ * and `h1–h6` rules above already read, so no per-component changes are
+ * needed. The wrapper sets font-family explicitly because the `body`
+ * rule is evaluated above the wrapper and won't pick up the override.
+ */
+.font-app {
+  --font-body: var(--font-raleway), "Raleway", system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-libre), "Libre Baskerville", Georgia, "Times New Roman", serif;
+  font-family: var(--font-body);
+}
+.font-app h1,
+.font-app h2,
+.font-app h3,
+.font-app h4,
+.font-app h5,
+.font-app h6 {
+  font-style: italic;
+}
+
 ::selection {
   background-color: var(--brand-sage-light);
   color: var(--brand-primary);
