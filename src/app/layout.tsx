@@ -1,24 +1,12 @@
 import type { Metadata } from "next";
-import {
-  Playfair_Display,
-  Raleway,
-  Libre_Baskerville,
-} from "next/font/google";
+import { Raleway, Libre_Baskerville } from "next/font/google";
 import "./globals.css";
 
-// Public landing page typography (unchanged): Playfair headings, Aileron
-// body (Aileron is loaded via the cdnfonts <link> below).
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-});
-
-// App typography — applied only inside `.font-app` wrappers (auth,
-// student, admin, discussion). Loaded here so the variables exist on
-// <html>, but nothing outside `.font-app` references them, so the
-// landing page is unaffected. See the `.font-app` block in globals.css.
+// Site-wide typography, self-hosted at build via next/font (no runtime
+// request to Google or any third-party font CDN). The CSS variables land
+// on <html>; globals.css maps them to --font-body / --font-heading.
+//   Body     : Raleway
+//   Headings : Libre Baskerville, italic by default
 const raleway = Raleway({
   variable: "--font-raleway",
   subsets: ["latin"],
@@ -64,14 +52,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${playfair.variable} ${raleway.variable} ${libreBaskerville.variable} h-full antialiased scroll-smooth`}
+      className={`${raleway.variable} ${libreBaskerville.variable} h-full antialiased scroll-smooth`}
     >
-      <head>
-        <link
-          href="https://fonts.cdnfonts.com/css/aileron"
-          rel="stylesheet"
-        />
-      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
