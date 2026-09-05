@@ -23,6 +23,7 @@ const TYPE_LABEL: Record<PartType, string> = {
   DOWNLOAD: "Download",
   QUIZ: "Quiz",
   SUBMIT: "Submission",
+  EMBED: "Embed",
 };
 
 const TYPE_BADGE_COLOR: Record<PartType, string> = {
@@ -31,6 +32,7 @@ const TYPE_BADGE_COLOR: Record<PartType, string> = {
   DOWNLOAD: "bg-brand-accent/10 text-brand-accent",
   QUIZ: "bg-brand-primary/10 text-brand-primary",
   SUBMIT: "bg-brand-sage/20 text-brand-sage",
+  EMBED: "bg-brand-accent/15 text-brand-accent-dark",
 };
 
 export default function PartsManager({
@@ -352,6 +354,10 @@ function summaryOf(part: PartRow): string {
       return part.fileUrl ? "File uploaded" : "No file uploaded";
     case "QUIZ":
       return `${part.quizQuestionCount ?? 0} questions`;
+    case "EMBED":
+      return part.body
+        ? `Interactive · ${part.body.length.toLocaleString()} characters of HTML`
+        : "No HTML yet";
   }
 }
 
@@ -432,7 +438,8 @@ function PartForm({
       return;
     }
     const payload: PartFormPayload = { title: title.trim(), type };
-    if (type === "TEXT" || type === "SUBMIT") payload.body = body || null;
+    if (type === "TEXT" || type === "SUBMIT" || type === "EMBED")
+      payload.body = body || null;
     if (type === "VIDEO") payload.videoUrl = videoUrl || null;
     if (type === "DOWNLOAD") payload.fileUrl = fileUrl || null;
     onSubmit(payload);
@@ -479,6 +486,7 @@ function PartForm({
           <option value="DOWNLOAD">Download — PDF or other file</option>
           <option value="QUIZ">Quiz — MCQ with passing score</option>
           <option value="SUBMIT">Submission — student response</option>
+          <option value="EMBED">Embed — interactive HTML (runs sandboxed)</option>
         </select>
         {typeLocked && (
           <p className="text-xs text-brand-muted mt-1">
@@ -504,6 +512,44 @@ function PartForm({
             }
             disabled={busy}
           />
+        </div>
+      )}
+
+      {type === "EMBED" && (
+        <div>
+          <label className="block text-xs tracking-wider uppercase text-brand-muted mb-1.5">
+            HTML, CSS and JavaScript
+          </label>
+          <textarea
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            rows={16}
+            className="w-full px-3 py-2 border border-brand-border rounded-lg bg-white text-brand-primary font-mono text-sm focus:outline-none focus:border-brand-sage"
+            placeholder={"<style> … </style>\n<div id=\"game\"> … </div>\n<script>\n  // when the exercise finishes:\n  balance.report({ score: 80, passed: true });\n</script>"}
+            disabled={busy}
+            spellCheck={false}
+          />
+          <div className="mt-2 rounded-lg border border-brand-border bg-white p-3 text-xs text-brand-muted space-y-1.5">
+            <p>
+              Runs in a <strong className="text-brand-primary">secure sandbox</strong>:
+              scripts work, your CSS can&rsquo;t leak into the rest of the page, and
+              the code can&rsquo;t reach the platform or other students. Height fits
+              the content automatically.
+            </p>
+            <p>
+              To record a result for the student (shows in Assessment Results and
+              their portfolio), call this when the exercise finishes:
+            </p>
+            <pre className="bg-brand-surface rounded px-2 py-1.5 text-[11px] text-brand-primary overflow-x-auto">
+{`balance.report({ score: 80, passed: true });   // scored
+balance.report({ passed: true });              // pass/fail only
+balance.report({});                            // just "completed"`}
+            </pre>
+            <p>
+              Images: upload to <strong className="text-brand-primary">Media</strong> in
+              the sidebar and paste the link.
+            </p>
+          </div>
         </div>
       )}
 

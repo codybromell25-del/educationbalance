@@ -26,6 +26,7 @@ enum PartType {
   DOWNLOAD
   QUIZ
   SUBMIT
+  EMBED // author-built interactive HTML, rendered in a sandboxed iframe
 }
 
 enum HourCategory {
@@ -53,6 +54,7 @@ model User {
   signedOffLogs       HourLog[]            @relation("HourLogSigner")
   passwordResetTokens PasswordResetToken[]
   discussionPosts     DiscussionPost[]
+  embedAttempts       EmbedAttempt[]
 
   @@index([cohortId])
 }
@@ -194,8 +196,9 @@ model Part {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   section     Section      @relation(fields: [sectionId], references: [id], onDelete: Cascade)
-  quiz        Quiz?
-  submissions Submission[]
+  quiz          Quiz?
+  submissions   Submission[]
+  embedAttempts EmbedAttempt[]
 
   @@unique([sectionId, order])
 }
@@ -243,6 +246,25 @@ model QuizAttempt {
   completedAt DateTime @default(now())
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+}
+
+/// One recorded outcome from an EMBED part — an author-built interactive
+/// exercise (matching game, hotspot check, etc.) that reports back to the
+/// platform via postMessage. `score` / `passed` are optional so an
+/// unscored "I finished it" exercise can still record completion.
+model EmbedAttempt {
+  id          String   @id @default(cuid())
+  userId      String
+  partId      String
+  score       Int?
+  passed      Boolean?
+  payload     Json?
+  completedAt DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  part        Part     @relation(fields: [partId], references: [id], onDelete: Cascade)
+
+  @@index([userId, partId])
+  @@index([completedAt])
 }
 
 model Submission {

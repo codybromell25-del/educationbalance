@@ -42,6 +42,17 @@ export default async function DashboardPage() {
             select: { id: true },
             take: 1,
           },
+          // An EMBED part counts as done once the student has any attempt
+          // that isn't an explicit fail — i.e. passed=true, or passed=null
+          // for unscored "completed" reports.
+          embedAttempts: {
+            where: {
+              userId: session.user.id,
+              OR: [{ passed: true }, { passed: null }],
+            },
+            select: { id: true },
+            take: 1,
+          },
         },
       },
     },
@@ -63,6 +74,7 @@ export default async function DashboardPage() {
       const completedParts = s.parts.filter((p) => {
         if (p.type === "QUIZ") return (p.quiz?.attempts.length ?? 0) > 0;
         if (p.type === "SUBMIT") return p.submissions.length > 0;
+        if (p.type === "EMBED") return p.embedAttempts.length > 0;
         return sectionDone;
       }).length;
       return [s.id, { totalParts, completedParts }];

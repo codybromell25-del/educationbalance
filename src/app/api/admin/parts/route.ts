@@ -9,12 +9,14 @@ const VALID_TYPES: PartType[] = [
   PartType.DOWNLOAD,
   PartType.QUIZ,
   PartType.SUBMIT,
+  PartType.EMBED,
 ];
 
 /**
  * Creates a new Part at the next available order in a section.
  * Body: { sectionId, title, type, body?, videoUrl?, fileUrl? }
  * If type === "QUIZ", also creates an empty Quiz row.
+ * EMBED parts store their HTML/CSS/JS in `body` (rendered sandboxed).
  */
 export async function POST(req: Request) {
   const session = await auth();

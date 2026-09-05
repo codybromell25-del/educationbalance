@@ -6,6 +6,7 @@ const TYPE_LABEL: Record<string, string> = {
   DOWNLOAD: "Download",
   QUIZ: "Quiz",
   SUBMIT: "Submit",
+  EMBED: "Interactive",
 };
 
 export default function PartShell({

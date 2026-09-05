@@ -39,6 +39,7 @@ export default async function AdminUserDetailPage({
     quizAttempts,
     submissions,
     questions,
+    embedAttempts,
   ] = await Promise.all([
     prisma.section.findMany({
       orderBy: { order: "asc" },
@@ -97,7 +98,26 @@ export default async function AdminUserDetailPage({
       orderBy: { createdAt: "desc" },
       include: { section: { select: { title: true, order: true } } },
     }),
+    prisma.embedAttempt.findMany({
+      where: { userId },
+      orderBy: { completedAt: "desc" },
+      include: {
+        part: {
+          select: {
+            id: true,
+            title: true,
+            section: { select: { title: true, order: true } },
+          },
+        },
+      },
+    }),
   ]);
+
+  // Parts (EMBED) this student has completed — any attempt that isn't an
+  // explicit fail. Used for the per-unit part-progress bars below.
+  const embedDonePartIds = new Set(
+    embedAttempts.filter((a) => a.passed !== false).map((a) => a.partId),
+  );
 
   // --- Course progress per section ---
   const progressBySection = new Map(progressRows.map((p) => [p.sectionId, p]));
@@ -244,9 +264,10 @@ export default async function AdminUserDetailPage({
             const sectionCompleted = !!sectionProgress?.completed;
             const totalParts = section.parts.length;
             // A part counts as "done" if it's a QUIZ with a passing attempt,
-            // a SUBMIT with any submission, or any other type once the
-            // section itself is marked complete (TEXT/VIDEO/DOWNLOAD have no
-            // intrinsic completion event).
+            // a SUBMIT with any submission, an EMBED with a non-failing
+            // attempt, or any other type once the section itself is marked
+            // complete (TEXT/VIDEO/DOWNLOAD have no intrinsic completion
+            // event).
             const partsDone = section.parts.filter((p) => {
               if (p.type === "QUIZ" && p.quiz) {
                 return quizAttempts.some(
@@ -255,6 +276,9 @@ export default async function AdminUserDetailPage({
               }
               if (p.type === "SUBMIT") {
                 return submissions.some((s) => s.partId === p.id);
+              }
+              if (p.type === "EMBED") {
+                return embedDonePartIds.has(p.id);
               }
               return sectionCompleted;
             }).length;
@@ -363,6 +387,75 @@ export default async function AdminUserDetailPage({
                         ) : (
                           <span className="text-xs tracking-wider uppercase text-brand-muted">
                             Not yet
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </Section>
+
+      {/* Interactive exercises (EMBED parts) */}
+      <Section title={`Interactive exercises (${embedAttempts.length})`}>
+        {embedAttempts.length === 0 ? (
+          <Empty>No interactive exercises attempted yet.</Empty>
+        ) : (
+          <div className="bg-white rounded-xl border border-brand-border overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-brand-surface/50">
+                  <tr>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-brand-muted tracking-wider uppercase">
+                      Exercise
+                    </th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-brand-muted tracking-wider uppercase">
+                      When
+                    </th>
+                    <th className="text-right px-4 py-3 text-xs font-medium text-brand-muted tracking-wider uppercase">
+                      Score
+                    </th>
+                    <th className="text-right px-4 py-3 text-xs font-medium text-brand-muted tracking-wider uppercase">
+                      Result
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-brand-border">
+                  {embedAttempts.map((a) => (
+                    <tr key={a.id}>
+                      <td className="px-4 py-3">
+                        <p className="text-brand-primary font-medium">
+                          {a.part.title}
+                        </p>
+                        <p className="text-xs text-brand-muted">
+                          Unit {a.part.section.order}: {a.part.section.title}
+                        </p>
+                      </td>
+                      <td className="px-4 py-3 text-brand-muted whitespace-nowrap">
+                        {a.completedAt.toLocaleDateString("en-IE", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </td>
+                      <td className="px-4 py-3 text-right font-mono text-brand-primary">
+                        {a.score !== null ? `${a.score}%` : "—"}
+                      </td>
+                      <td className="px-4 py-3 text-right whitespace-nowrap">
+                        {a.passed === true ? (
+                          <span className="text-xs tracking-wider uppercase text-brand-success">
+                            ✓ Passed
+                          </span>
+                        ) : a.passed === false ? (
+                          <span className="text-xs tracking-wider uppercase text-brand-muted">
+                            Not passed
+                          </span>
+                        ) : (
+                          <span className="text-xs tracking-wider uppercase text-brand-sage">
+                            Completed
                           </span>
                         )}
                       </td>

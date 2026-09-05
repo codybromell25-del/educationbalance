@@ -9,6 +9,7 @@ import PartVideo from "@/components/parts/PartVideo";
 import PartDownload from "@/components/parts/PartDownload";
 import PartQuiz from "@/components/parts/PartQuiz";
 import PartSubmit from "@/components/parts/PartSubmit";
+import PartEmbed from "@/components/parts/PartEmbed";
 import { getSectionAccess, isVisibleTo, unlockDateFor } from "@/lib/access";
 import { resolveFileUrl, downloadFilename } from "@/lib/storage";
 import type { Pathway } from "@prisma/client";
@@ -53,6 +54,11 @@ export default async function SectionPage({
           submissions: {
             where: { userId: session.user.id },
             orderBy: { submittedAt: "desc" },
+            take: 1,
+          },
+          embedAttempts: {
+            where: { userId: session.user.id },
+            orderBy: { completedAt: "desc" },
             take: 1,
           },
         },
@@ -384,6 +390,22 @@ export default async function SectionPage({
                         }
                       />
                     </>
+                  )}
+                  {part.type === "EMBED" && (
+                    <PartEmbed
+                      partId={part.id}
+                      html={part.body ?? ""}
+                      lastResult={
+                        part.embedAttempts[0]
+                          ? {
+                              score: part.embedAttempts[0].score,
+                              passed: part.embedAttempts[0].passed,
+                              completedAt:
+                                part.embedAttempts[0].completedAt.toISOString(),
+                            }
+                          : null
+                      }
+                    />
                   )}
                 </PartShell>
               );

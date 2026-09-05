@@ -67,8 +67,12 @@ export default async function AdminAssessmentResultsPage({
     ...(hasUserFilters && { user: userWhere }),
     ...(needsAttentionOnly && { reviewed: false }),
   };
+  const whereEmbed: Prisma.EmbedAttemptWhereInput = {
+    ...(hasUserFilters && { user: userWhere }),
+    ...(needsAttentionOnly && { passed: false }),
+  };
 
-  const [quizAttempts, submissions, cohorts] = await Promise.all([
+  const [quizAttempts, submissions, embedAttempts, cohorts] = await Promise.all([
     prisma.quizAttempt.findMany({
       where: whereQuiz,
       orderBy: { completedAt: "desc" },
@@ -104,6 +108,21 @@ export default async function AdminAssessmentResultsPage({
         },
       },
     }),
+    prisma.embedAttempt.findMany({
+      where: whereEmbed,
+      orderBy: { completedAt: "desc" },
+      include: {
+        user: {
+          select: { id: true, name: true, email: true, pathway: true },
+        },
+        part: {
+          select: {
+            title: true,
+            section: { select: { title: true, order: true } },
+          },
+        },
+      },
+    }),
     prisma.cohort.findMany({
       orderBy: [{ isArchived: "asc" }, { startDate: "desc" }],
     }),
@@ -121,6 +140,7 @@ export default async function AdminAssessmentResultsPage({
   const activeStudentIds = new Set([
     ...quizAttempts.map((a) => a.userId),
     ...submissions.map((s) => s.userId),
+    ...embedAttempts.map((a) => a.userId),
   ]);
   const totalAttempts = quizAttempts.length;
   const passedAttempts = quizAttempts.filter((a) => a.passed).length;
@@ -303,6 +323,73 @@ export default async function AdminAssessmentResultsPage({
                       </Td>
                       <Td align="right">
                         <ResultPill passed={a.passed} />
+                      </Td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* Interactive exercises table ------------------------------ */}
+      <section className="mb-12">
+        <h2 className="text-sm tracking-wider uppercase text-brand-sage mb-4">
+          Interactive exercises ({embedAttempts.length})
+        </h2>
+        {embedAttempts.length === 0 ? (
+          <Empty>No interactive exercise results yet.</Empty>
+        ) : (
+          <div className="bg-white rounded-xl border border-brand-border overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-brand-surface/70 text-xs tracking-wider uppercase text-brand-muted">
+                  <tr>
+                    <Th>Date</Th>
+                    <Th>Student</Th>
+                    <Th>Exercise</Th>
+                    <Th align="right">Score</Th>
+                    <Th align="right">Result</Th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-brand-border">
+                  {embedAttempts.map((a) => (
+                    <tr key={a.id} className="hover:bg-brand-surface/40">
+                      <Td muted>
+                        {new Date(a.completedAt).toLocaleDateString(
+                          "en-IE",
+                          DATE_OPTS,
+                        )}
+                      </Td>
+                      <Td>
+                        <StudentCell
+                          id={a.user.id}
+                          name={a.user.name}
+                          email={a.user.email}
+                          pathway={a.user.pathway}
+                        />
+                      </Td>
+                      <Td muted>
+                        <span className="text-brand-primary/85">
+                          {a.part.section.title}
+                        </span>{" "}
+                        <span className="text-brand-muted">·</span>{" "}
+                        {a.part.title}
+                      </Td>
+                      <Td align="right" mono>
+                        {a.score !== null ? `${a.score}%` : "—"}
+                      </Td>
+                      <Td align="right">
+                        {a.passed === true ? (
+                          <ResultPill passed />
+                        ) : a.passed === false ? (
+                          <ResultPill passed={false} />
+                        ) : (
+                          <span className="inline-block px-2 py-0.5 rounded-full bg-brand-sage/10 text-brand-sage text-xs tracking-wide">
+                            Completed
+                          </span>
+                        )}
                       </Td>
                     </tr>
                   ))}
