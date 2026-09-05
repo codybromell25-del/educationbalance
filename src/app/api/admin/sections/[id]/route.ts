@@ -101,6 +101,41 @@ export async function PATCH(
           { status: 400 },
         );
       }
+      // Verify the target exists and walk ITS prerequisite chain. If the
+      // chain ever leads back to this unit, saving would create a loop
+      // (A needs B, B needs A) that locks both units forever for every
+      // student. Bounded by `seen` so a pre-existing cycle elsewhere
+      // can't spin us.
+      let cursor: string | null = body.prerequisiteId;
+      const seen = new Set<string>();
+      while (cursor) {
+        if (cursor === id) {
+          return NextResponse.json(
+            {
+              error:
+                "That unit already depends on this one (directly or through other units). Choosing it would create a loop and lock both units for every student.",
+            },
+            { status: 400 },
+          );
+        }
+        if (seen.has(cursor)) break;
+        seen.add(cursor);
+        const node: { prerequisiteId: string | null } | null =
+          await prisma.section.findUnique({
+            where: { id: cursor },
+            select: { prerequisiteId: true },
+          });
+        if (!node) {
+          if (cursor === body.prerequisiteId) {
+            return NextResponse.json(
+              { error: "Prerequisite unit not found" },
+              { status: 400 },
+            );
+          }
+          break;
+        }
+        cursor = node.prerequisiteId;
+      }
       data.prerequisiteId = body.prerequisiteId;
     } else {
       return NextResponse.json({ error: "Invalid prerequisiteId" }, { status: 400 });

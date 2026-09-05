@@ -145,14 +145,17 @@ export default function LoginPage() {
             </form>
           </div>
 
+          {/*
+            Self-signup link intentionally hidden. Cohort accounts are created
+            by balance Education in /admin/users (which sets pathway + cohort).
+            The public /signup flow still exists but creates accounts with no
+            pathway or cohort and stores the chosen password in Stripe
+            metadata — to be reworked before it's re-linked. Restore with:
+              <Link href="/signup">Sign up</Link>
+          */}
           <p className="text-center text-sm text-brand-muted mt-8">
-            Don&apos;t have an account?{" "}
-            <Link
-              href="/signup"
-              className="text-brand-sage hover:text-brand-sage-dark transition-colors"
-            >
-              Sign up
-            </Link>
+            Accounts are set up by balance Education. If you&apos;ve enrolled
+            and haven&apos;t received your login, get in touch.
           </p>
         </div>
       </div>

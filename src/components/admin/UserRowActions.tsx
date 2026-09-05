@@ -42,7 +42,11 @@ export default function UserRowActions({
       const body: Record<string, unknown> = { name, email };
       if (isStudent) {
         body.pathway = pathway || null;
-        body.cohortId = cohortId || null;
+        // Only send cohortId when the cohort select was actually rendered
+        // (parent passed `cohorts`). Otherwise a page that doesn't know
+        // about cohorts — e.g. the student detail page — would silently
+        // null the student's cohort on every name/email edit.
+        if (cohorts && cohorts.length > 0) body.cohortId = cohortId || null;
       }
       const res = await fetch(`/api/admin/users/${user.id}`, {
         method: "PATCH",

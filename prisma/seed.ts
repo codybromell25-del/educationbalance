@@ -1,5 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 import bcryptjs from "bcryptjs";
+import { requireDestructiveSeedOptIn } from "./_guard";
+
+// This script upserts sections 1–6 by `order`, overwriting title, slug,
+// description, content and unlockDate on whatever units currently hold
+// those positions. Blocked unless explicitly opted in — see _guard.ts.
+requireDestructiveSeedOptIn("seed.ts");
 
 const prisma = new PrismaClient();
 

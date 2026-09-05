@@ -12,6 +12,13 @@ import { useState } from "react";
  * Slug is auto-generated from the title as she types unless she has
  * already typed something into the slug field herself.
  */
+/** One year from today, as YYYY-MM-DD (UTC). */
+function defaultDraftUnlockDate(): string {
+  const d = new Date();
+  d.setUTCFullYear(d.getUTCFullYear() + 1);
+  return d.toISOString().slice(0, 10);
+}
+
 export default function CreateSectionForm() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -19,9 +26,11 @@ export default function CreateSectionForm() {
   const [slug, setSlug] = useState("");
   const [slugTouched, setSlugTouched] = useState(false);
   const [description, setDescription] = useState("");
-  const [unlockDate, setUnlockDate] = useState(
-    new Date().toISOString().slice(0, 10),
-  );
+  // Default a NEW unit's unlock date one year out so it behaves as a
+  // draft: it appears on student dashboards as "Unlocks <date>" but can't
+  // be opened or marked complete while it's still full of placeholders.
+  // Catherine brings the date forward when the content is ready.
+  const [unlockDate, setUnlockDate] = useState(defaultDraftUnlockDate());
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,7 +52,7 @@ export default function CreateSectionForm() {
     setSlug("");
     setSlugTouched(false);
     setDescription("");
-    setUnlockDate(new Date().toISOString().slice(0, 10));
+    setUnlockDate(defaultDraftUnlockDate());
     setError(null);
   }
 
@@ -169,6 +178,11 @@ export default function CreateSectionForm() {
           disabled={busy}
           className="px-3 py-2 border border-brand-border rounded-lg bg-white text-brand-primary focus:outline-none focus:border-brand-sage"
         />
+        <p className="text-xs text-brand-muted mt-1.5">
+          Defaults to a year away so the unit stays a <strong>draft</strong>:
+          students see it as &ldquo;Unlocks &lt;date&gt;&rdquo; but can&apos;t
+          open it. Bring the date forward when the content is ready.
+        </p>
       </div>
 
       {error && <p className="text-sm text-brand-error">{error}</p>}

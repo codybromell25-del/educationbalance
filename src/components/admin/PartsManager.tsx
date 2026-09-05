@@ -94,14 +94,15 @@ export default function PartsManager({
         body: JSON.stringify({ ...payload, sectionId }),
       });
       if (!res.ok) throw new Error((await res.json()).error ?? "Failed");
-      const { part } = await res.json();
-      // The POST response doesn't include the newly-created Quiz's id;
-      // a router.refresh() below pulls it in for QUIZ parts.
+      const { part, quizId } = await res.json();
+      // The POST response includes the new Quiz's id for QUIZ parts, so
+      // the "Manage quiz" link appears straight away (router.refresh()
+      // alone doesn't reset useState, so we can't rely on it).
       setParts((curr) => [
         ...curr,
         {
           ...part,
-          quizId: null,
+          quizId: quizId ?? null,
           quizQuestionCount: part.type === "QUIZ" ? 0 : null,
         },
       ]);
@@ -563,8 +564,10 @@ function PartForm({
 
       {type === "QUIZ" && (
         <p className="text-sm text-brand-muted">
-          A blank quiz will be created. Use the quiz builder (coming soon) to
-          add questions.
+          A blank quiz will be created. After saving, click{" "}
+          <span className="font-medium text-brand-primary">Manage quiz</span>{" "}
+          on this part to add questions, set the pass mark, and limit
+          attempts.
         </p>
       )}
 

@@ -1,4 +1,8 @@
 import { PrismaClient, PartType } from "@prisma/client";
+import { requireDestructiveSeedOptIn } from "./_guard";
+
+// Deletes every part in the target unit before re-seeding placeholders.
+requireDestructiveSeedOptIn("seed-anatomy-parts.ts");
 
 const prisma = new PrismaClient();
 

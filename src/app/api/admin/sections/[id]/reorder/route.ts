@@ -3,10 +3,13 @@ import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 /**
- * Swap a section with its up/down neighbour. Swaps BOTH the order and
- * the unlockDate so the calendar stays consistent — if the admin says
- * 'this section should come earlier' they almost certainly mean its
- * unlock date should also come earlier.
+ * Swap a section with its up/down neighbour. Swaps ONLY `order`.
+ *
+ * It used to swap `unlockDate` too, on the theory that "move earlier"
+ * implies "unlock earlier". In practice that scrambled dates: the
+ * per-pathway `unlockDates` JSON was NOT swapped, so after a reorder a
+ * unit could carry its own Mat/Reformer dates but its neighbour's
+ * fallback date. Dates now stay with the unit they were set on.
  *
  * Uses a 3-step transaction (via temporary order = -1) because
  * (order @unique) prevents a direct set.
@@ -29,7 +32,7 @@ export async function POST(
 
   const section = await prisma.section.findUnique({
     where: { id },
-    select: { id: true, order: true, unlockDate: true },
+    select: { id: true, order: true },
   });
   if (!section) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -39,7 +42,7 @@ export async function POST(
     direction === "up" ? section.order - 1 : section.order + 1;
   const neighbour = await prisma.section.findUnique({
     where: { order: neighbourOrder },
-    select: { id: true, order: true, unlockDate: true },
+    select: { id: true, order: true },
   });
   if (!neighbour) {
     return NextResponse.json({ error: "Already at end" }, { status: 400 });
@@ -51,15 +54,15 @@ export async function POST(
       where: { id: section.id },
       data: { order: -1 },
     }),
-    // Move the neighbour into this one's old slot, with this one's date
+    // Move the neighbour into this one's old slot
     prisma.section.update({
       where: { id: neighbour.id },
-      data: { order: section.order, unlockDate: section.unlockDate },
+      data: { order: section.order },
     }),
-    // Place this one in the neighbour's old slot, with the neighbour's date
+    // Place this one in the neighbour's old slot
     prisma.section.update({
       where: { id: section.id },
-      data: { order: neighbour.order, unlockDate: neighbour.unlockDate },
+      data: { order: neighbour.order },
     }),
   ]);
 

@@ -88,22 +88,30 @@ export async function PATCH(
     }
   }
 
-  const updated = await prisma.part.update({ where: { id }, data });
-
-  // Compact source unit's order values after a move so there's no hole.
+  let updated;
   if (sourceSectionId) {
+    // Move + compact the source unit in ONE transaction, two-pass
+    // (negative then 1..n) so the (sectionId, order) unique constraint
+    // can't collide mid-renumber. The old Promise.all ran the updates
+    // concurrently and could 500 after the move had already committed,
+    // leaving a hole that broke ↑/↓ for the whole unit.
     const remaining = await prisma.part.findMany({
-      where: { sectionId: sourceSectionId },
+      where: { sectionId: sourceSectionId, id: { not: id } },
       orderBy: { order: "asc" },
-      select: { id: true, order: true },
+      select: { id: true },
     });
-    await Promise.all(
-      remaining.map((p, i) =>
-        p.order === i + 1
-          ? Promise.resolve()
-          : prisma.part.update({ where: { id: p.id }, data: { order: i + 1 } }),
+    const [moved] = await prisma.$transaction([
+      prisma.part.update({ where: { id }, data }),
+      ...remaining.map((p, i) =>
+        prisma.part.update({ where: { id: p.id }, data: { order: -(i + 1) } }),
       ),
-    );
+      ...remaining.map((p, i) =>
+        prisma.part.update({ where: { id: p.id }, data: { order: i + 1 } }),
+      ),
+    ]);
+    updated = moved;
+  } else {
+    updated = await prisma.part.update({ where: { id }, data });
   }
 
   return NextResponse.json({ part: updated });
@@ -132,21 +140,23 @@ export async function DELETE(
     await deleteFile(part.fileUrl).catch(() => {});
   }
 
-  await prisma.part.delete({ where: { id } });
-
-  // Compact the remaining parts' order values so there are no holes
+  // Delete + compact in ONE transaction, two-pass (negative then 1..n)
+  // so the (sectionId, order) unique constraint can't collide. See the
+  // PATCH handler above for why the old Promise.all approach was unsafe.
   const remaining = await prisma.part.findMany({
-    where: { sectionId: part.sectionId },
+    where: { sectionId: part.sectionId, id: { not: id } },
     orderBy: { order: "asc" },
-    select: { id: true, order: true },
+    select: { id: true },
   });
-  await Promise.all(
-    remaining.map((p, i) =>
-      p.order === i + 1
-        ? Promise.resolve()
-        : prisma.part.update({ where: { id: p.id }, data: { order: i + 1 } }),
+  await prisma.$transaction([
+    prisma.part.delete({ where: { id } }),
+    ...remaining.map((p, i) =>
+      prisma.part.update({ where: { id: p.id }, data: { order: -(i + 1) } }),
     ),
-  );
+    ...remaining.map((p, i) =>
+      prisma.part.update({ where: { id: p.id }, data: { order: i + 1 } }),
+    ),
+  ]);
 
   return NextResponse.json({ success: true });
 }

@@ -1,4 +1,8 @@
 @import "tailwindcss";
+/* Rich-text styling for unit content rendered with `prose` classes.
+   Without this plugin Tailwind v4's preflight strips every heading
+   size, list bullet and paragraph margin from authored HTML. */
+@plugin "@tailwindcss/typography";
 
 :root {
   --background: #f2ede8;

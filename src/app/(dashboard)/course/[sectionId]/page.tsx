@@ -78,11 +78,23 @@ export default async function SectionPage({
     redirect("/dashboard");
   }
 
-  // Fetch the previous section (if any) so we can apply the prereq gate
+  // Fetch the previous *visible* section (if any) so we can apply the
+  // prereq gate. This must respect pathway visibility — the dashboard
+  // computes "previous" from the pathway-filtered list, and if we used
+  // raw `order - 1` here a Mat student whose preceding unit is
+  // Reformer-only would be locked behind a unit they can never see or
+  // complete. Mirrors isVisibleTo() as a Prisma where clause.
+  const visibilityWhere =
+    pathway === "MAT"
+      ? { visibleToMat: true }
+      : pathway === "REFORMER"
+        ? { visibleToReformer: true }
+        : {};
   const previousSection =
     section.order > 1
-      ? await prisma.section.findUnique({
-          where: { order: section.order - 1 },
+      ? await prisma.section.findFirst({
+          where: { order: { lt: section.order }, ...visibilityWhere },
+          orderBy: { order: "desc" },
           include: {
             progress: { where: { userId: session.user.id } },
           },

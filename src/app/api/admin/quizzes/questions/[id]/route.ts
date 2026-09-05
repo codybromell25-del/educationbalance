@@ -91,24 +91,28 @@ export async function DELETE(
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  await prisma.quizQuestion.delete({ where: { id } });
-
-  // Compact remaining order values
+  // Delete + compact in ONE transaction, two-pass (negative then 1..n)
+  // so the (quizId, order) unique constraint can't collide mid-renumber.
   const remaining = await prisma.quizQuestion.findMany({
-    where: { quizId: question.quizId },
+    where: { quizId: question.quizId, id: { not: id } },
     orderBy: { order: "asc" },
-    select: { id: true, order: true },
+    select: { id: true },
   });
-  await Promise.all(
-    remaining.map((q, i) =>
-      q.order === i + 1
-        ? Promise.resolve()
-        : prisma.quizQuestion.update({
-            where: { id: q.id },
-            data: { order: i + 1 },
-          }),
+  await prisma.$transaction([
+    prisma.quizQuestion.delete({ where: { id } }),
+    ...remaining.map((q, i) =>
+      prisma.quizQuestion.update({
+        where: { id: q.id },
+        data: { order: -(i + 1) },
+      }),
     ),
-  );
+    ...remaining.map((q, i) =>
+      prisma.quizQuestion.update({
+        where: { id: q.id },
+        data: { order: i + 1 },
+      }),
+    ),
+  ]);
 
   return NextResponse.json({ success: true });
 }

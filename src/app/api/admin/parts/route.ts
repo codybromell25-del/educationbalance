@@ -53,23 +53,31 @@ export async function POST(req: Request) {
   });
   const nextOrder = (maxOrder._max.order ?? 0) + 1;
 
-  const created = await prisma.part.create({
-    data: {
-      sectionId,
-      order: nextOrder,
-      title,
-      type,
-      body: partBody ?? null,
-      videoUrl: videoUrl ?? null,
-      fileUrl: fileUrl ?? null,
-    },
+  // Create the part and (for QUIZ parts) its Quiz row atomically, so a
+  // failure between the two can't leave a QUIZ part with no Quiz — which
+  // renders nothing for students and can never be opened in the builder.
+  // Return the quiz id so the client can show "Manage quiz" immediately.
+  const { part: created, quizId } = await prisma.$transaction(async (tx) => {
+    const part = await tx.part.create({
+      data: {
+        sectionId,
+        order: nextOrder,
+        title,
+        type,
+        body: partBody ?? null,
+        videoUrl: videoUrl ?? null,
+        fileUrl: fileUrl ?? null,
+      },
+    });
+    let quizId: string | null = null;
+    if (type === PartType.QUIZ) {
+      const quiz = await tx.quiz.create({
+        data: { partId: part.id, passingScore: 70 },
+      });
+      quizId = quiz.id;
+    }
+    return { part, quizId };
   });
 
-  if (type === PartType.QUIZ) {
-    await prisma.quiz.create({
-      data: { partId: created.id, passingScore: 70 },
-    });
-  }
-
-  return NextResponse.json({ part: created });
+  return NextResponse.json({ part: created, quizId });
 }

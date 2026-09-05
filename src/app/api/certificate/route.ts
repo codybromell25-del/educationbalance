@@ -1,16 +1,20 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { renderCertificate } from "@/lib/certificate";
+import { isVisibleTo } from "@/lib/access";
 import { NextResponse } from "next/server";
 
 /**
  * Download the current user's completion certificate as a PDF.
  *
- * Eligibility: every Section in the course must have a completed
- * Progress row for the student. The certificate's "completed date" is
- * the latest of those completion timestamps.
+ * Eligibility: every Section *visible to the student's pathway* must
+ * have a completed Progress row. This matches the dashboard's own
+ * "certificate ready" banner, which counts pathway-visible units only —
+ * previously this route counted ALL sections, so Mat/Reformer students
+ * saw the banner and then got a raw JSON 403 on click.
  *
- * Admins can pass ?userId=X to download any student's certificate.
+ * The certificate's "completed date" is the latest of those completion
+ * timestamps. Admins can pass ?userId=X to download any student's.
  */
 export async function GET(req: Request) {
   const session = await auth();
@@ -25,12 +29,23 @@ export async function GET(req: Request) {
       ? requestedUserId
       : session.user.id;
 
-  const [user, totalSections, progressRows] = await Promise.all([
+  // If a browser navigated here directly (the dashboard link is a plain
+  // <a>), bounce back to the dashboard on failure instead of rendering
+  // a JSON blob in the tab.
+  const wantsHtml = req.headers.get("accept")?.includes("text/html") ?? false;
+  const fail = (message: string, status: number) =>
+    wantsHtml
+      ? NextResponse.redirect(new URL("/dashboard", req.url))
+      : NextResponse.json({ error: message }, { status });
+
+  const [user, allSections, progressRows] = await Promise.all([
     prisma.user.findUnique({
       where: { id: targetUserId },
-      select: { id: true, name: true },
+      select: { id: true, name: true, pathway: true },
     }),
-    prisma.section.count(),
+    prisma.section.findMany({
+      select: { id: true, visibleToMat: true, visibleToReformer: true },
+    }),
     prisma.progress.findMany({
       where: { userId: targetUserId, completed: true },
       select: { sectionId: true, completedAt: true },
@@ -38,26 +53,27 @@ export async function GET(req: Request) {
   ]);
 
   if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+    return fail("User not found", 404);
   }
 
-  if (totalSections === 0) {
-    return NextResponse.json(
-      { error: "No course sections exist yet." },
-      { status: 400 },
+  const visibleIds = new Set(
+    allSections.filter((s) => isVisibleTo(s, user.pathway)).map((s) => s.id),
+  );
+
+  if (visibleIds.size === 0) {
+    return fail("No course sections exist yet.", 400);
+  }
+
+  const completedVisible = progressRows.filter((p) => visibleIds.has(p.sectionId));
+
+  if (completedVisible.length < visibleIds.size) {
+    return fail(
+      `Not all sections complete yet (${completedVisible.length}/${visibleIds.size}).`,
+      403,
     );
   }
 
-  if (progressRows.length < totalSections) {
-    return NextResponse.json(
-      {
-        error: `Not all sections complete yet (${progressRows.length}/${totalSections}).`,
-      },
-      { status: 403 },
-    );
-  }
-
-  const latestCompletion = progressRows
+  const latestCompletion = completedVisible
     .map((p) => p.completedAt ?? new Date(0))
     .reduce((latest, d) => (d > latest ? d : latest), new Date(0));
 

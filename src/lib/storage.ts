@@ -72,7 +72,19 @@ export async function resolveFileUrl(
 ): Promise<string | null> {
   if (!pathOrUrl) return null;
   if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
-  return getSignedUrl(pathOrUrl, expiresInSeconds, download);
+  // Never let one bad path (deleted object, missing SUPABASE_* env var,
+  // network blip) take down a whole page. Every caller already handles
+  // `null` — PartDownload shows "Download coming soon", admin pages skip
+  // the link, the landing loader falls back to the bundled image.
+  try {
+    return await getSignedUrl(pathOrUrl, expiresInSeconds, download);
+  } catch (e) {
+    console.error(
+      `[storage] resolveFileUrl failed for "${pathOrUrl}":`,
+      e instanceof Error ? e.message : e,
+    );
+    return null;
+  }
 }
 
 /**

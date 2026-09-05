@@ -19,10 +19,19 @@ export default async function AdminUserDetailPage({
       email: true,
       role: true,
       pathway: true,
+      cohortId: true,
       createdAt: true,
     },
   });
   if (!user) notFound();
+
+  // Cohort options for the inline edit form. Without passing these (and
+  // the user's current cohortId) the edit form had no cohort select and
+  // silently nulled the student's cohort on every name/email save.
+  const cohorts = await prisma.cohort.findMany({
+    orderBy: [{ isArchived: "asc" }, { startDate: "desc" }],
+    select: { id: true, name: true, isActive: true, isArchived: true },
+  });
 
   const [
     sections,
@@ -200,7 +209,9 @@ export default async function AdminUserDetailPage({
             email: user.email,
             role: user.role,
             pathway: user.pathway,
+            cohortId: user.cohortId,
           }}
+          cohorts={cohorts}
         />
       </div>
 

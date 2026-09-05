@@ -49,8 +49,12 @@ export default function SectionEditForm({
   const [slug, setSlug] = useState(initial.slug);
   const [description, setDescription] = useState(initial.description);
   const [content, setContent] = useState(initial.content);
+  // Date-only (YYYY-MM-DD), stored as UTC midnight — same convention as
+  // the per-pathway dates below. The old datetime-local input round-
+  // tripped through local time and shifted the stored instant back one
+  // hour on every save during Irish summer time.
   const [unlockDate, setUnlockDate] = useState(
-    initial.unlockDate.slice(0, 16),
+    isoToDateInput(initial.unlockDate),
   );
   const [requiresPriorCompletion, setRequiresPriorCompletion] = useState(
     initial.requiresPriorCompletion,
@@ -310,14 +314,16 @@ export default function SectionEditForm({
             Default unlock date (fallback)
           </label>
           <input
-            type="datetime-local"
+            type="date"
             value={unlockDate}
             onChange={(e) => setUnlockDate(e.target.value)}
+            required
             disabled={busy}
             className="w-full px-3 py-2 border border-brand-border rounded-lg bg-white text-brand-primary focus:outline-none focus:border-brand-sage"
           />
           <p className="text-xs text-brand-muted mt-1">
-            Used when a pathway above has no date set.
+            Used when a pathway above has no date set. Unlocks at midnight
+            on this date.
           </p>
         </div>
         <div>
