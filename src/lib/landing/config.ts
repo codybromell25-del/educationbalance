@@ -207,15 +207,15 @@ export const SINGLE_TEMPLATE = [{ id: "default", label: "Default" }] as const;
 // ----- Defaults -----
 
 export const HERO_DEFAULT_CONTENT: HeroContent = {
-  tagline: "IICT ACCREDITED · 230 HOURS",
+  tagline: "IICT APPROVED · 230 HOURS",
   headlineLines: [
     "Trained",
     "to teach.",
-    "Accredited to",
+    "Qualified to",
     "practise.",
   ],
   description:
-    "Seventy two hours in person, twenty eight online, fifty hours of self practice, sixty hours of supervised teaching and twenty hours of structured observation, supported by senior balance instructors throughout. Grounded in biomechanics, rooted in classic Pilates principles with a contemporary, modern element, so graduates leave IICT accredited and ready to apply for insurance and teach.",
+    "Seventy two hours in person, twenty eight online, fifty hours of self practice, sixty hours of supervised teaching and twenty hours of structured observation, supported by senior balance instructors throughout. Grounded in biomechanics, rooted in classic Pilates principles with a contemporary, modern element, so graduates leave with an IICT approved qualification, ready to apply for insurance and teach.",
   ctaPrimaryLabel: "Sign Up Now",
   ctaSecondaryLabel: "Express interest",
   cohortDates: "Cohort 2 · Starts February 2027",
@@ -230,8 +230,8 @@ export const COURSE_PILLARS_DEFAULT_CONTENT: CoursePillarsContent = {
   pillars: [
     {
       slotKey: "pillar-1",
-      title: "An accredited qualification, not a weekend course",
-      desc: "Choose Mat, Reformer, or Comprehensive. Each pathway is IICT accredited, meeting the standard required to apply for insurance and teach professionally.",
+      title: "An IICT approved qualification, not a weekend course",
+      desc: "Choose Mat, Reformer, or Comprehensive. Each pathway is IICT approved, meeting the standard required to apply for insurance and teach professionally.",
       paragraphs: [
         "The balance teacher training course respects the changes taking place in the industry and makes room for modern thinking and updated ideas, while staying firmly rooted in the classical foundations of Pilates. You will leave understanding Pilates, the body, why the industry has changed, and how to manage that change as a confident, capable instructor.",
         "Pilates is more than repertoire. It is an understanding and respect for how the body responds, and why. From there, we build toward becoming a competent and capable instructor. Understanding and instructing are two different skill sets, and this course teaches both.",
@@ -283,7 +283,7 @@ export const WHO_FOR_DEFAULT_CONTENT: WhoForContent = {
     "You're a yoga or fitness pro looking to add Pilates with real depth",
     "You learn best with a mix of hands-on, theory and self-practice",
     "You want a small cohort with real tutor time, not a 200-person Zoom course",
-    "You want a qualification that's accredited and insurance ready from day one",
+    "You want a qualification that's IICT approved and insurance ready from day one",
   ],
 };
 
@@ -291,7 +291,7 @@ export const WHAT_YOU_LEARN_DEFAULT_CONTENT: WhatYouLearnContent = {
   eyebrow: "What you'll learn",
   title: "By the time you finish, you'll be able to —",
   bullets: [
-    "Graduate IICT accredited, recognised for insurance in over thirty countries",
+    "Graduate with an IICT approved qualification, recognised for insurance in over thirty countries",
     "Run a sustainable teaching practice that suits your life",
     "Cue clients with clarity, calm and confidence",
     "Read a body across the room and adapt the session in real time",
