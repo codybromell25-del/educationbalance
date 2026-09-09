@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import SectionRowActions from "@/components/admin/SectionRowActions";
 import CreateSectionForm from "@/components/admin/CreateSectionForm";
+import PreviewAsStudent from "@/components/admin/PreviewAsStudent";
 
 export default async function AdminSectionsPage() {
   const sections = await prisma.section.findMany({
@@ -21,6 +22,13 @@ export default async function AdminSectionsPage() {
           <p className="text-brand-muted mt-2">
             Click into a unit to manage its parts (videos, downloads, quizzes
             and submissions). Use ↑ / ↓ to reorder. Add a new unit any time.
+          </p>
+        </div>
+        <div className="bg-white rounded-xl border border-brand-border px-4 py-3">
+          <PreviewAsStudent href="/dashboard" label="Preview dashboard as" />
+          <p className="text-xs text-brand-muted mt-1.5">
+            Opens the student view in a new tab. Locked units open for you
+            only — nothing changes for students.
           </p>
         </div>
       </div>

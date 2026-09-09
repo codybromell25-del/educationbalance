@@ -17,9 +17,12 @@ type ExistingSubmission = {
 export default function PartSubmit({
   partId,
   existing,
+  previewMode = false,
 }: {
   partId: string;
   existing: ExistingSubmission | null;
+  /** Admin "preview as student": show the form, upload/record nothing. */
+  previewMode?: boolean;
 }) {
   const router = useRouter();
   const [content, setContent] = useState("");
@@ -58,6 +61,7 @@ export default function PartSubmit({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (previewMode) return;
     if (!content.trim() && !filePath) {
       setError("Write a response or attach a file.");
       return;
@@ -219,8 +223,9 @@ export default function PartSubmit({
             type="file"
             onChange={handleFile}
             accept=".pdf,.docx,.mp4,.mov,.webm,.png,.jpg,.jpeg"
-            disabled={uploading || loading}
-            className="block w-full text-sm text-brand-primary file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-brand-sage file:text-white file:cursor-pointer file:hover:bg-brand-sage-dark"
+            disabled={uploading || loading || previewMode}
+            title={previewMode ? "Disabled in preview" : undefined}
+            className="block w-full text-sm text-brand-primary file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-brand-sage file:text-white file:cursor-pointer file:hover:bg-brand-sage-dark disabled:opacity-50"
           />
         )}
         {uploading && (
@@ -233,10 +238,17 @@ export default function PartSubmit({
       <div className="flex items-center justify-end">
         <button
           type="submit"
-          disabled={loading || uploading || (!content.trim() && !filePath)}
+          disabled={
+            loading || uploading || previewMode || (!content.trim() && !filePath)
+          }
+          title={previewMode ? "Disabled in preview — nothing is recorded" : undefined}
           className="px-6 py-2.5 bg-brand-primary text-white text-sm tracking-wider uppercase rounded-full hover:bg-brand-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? "Submitting..." : "Submit response"}
+          {loading
+            ? "Submitting..."
+            : previewMode
+              ? "Preview — not recorded"
+              : "Submit response"}
         </button>
       </div>
     </form>

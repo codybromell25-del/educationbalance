@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import SessionProvider from "@/components/SessionProvider";
 import LogoutButton from "@/components/LogoutButton";
+import PreviewBar from "@/components/PreviewBar";
+import { getPreviewPathway } from "@/lib/preview";
 
 export default async function DashboardLayout({
   children,
@@ -12,8 +14,13 @@ export default async function DashboardLayout({
 }) {
   const session = await auth();
   if (!session?.user) redirect("/login");
-  if (session.user.role === "ADMIN") redirect("/admin");
   if (session.user.role === "ENQUIRIES") redirect("/admin/applications");
+  // Admins are bounced to /admin as before — unless they've switched on
+  // "preview as student", in which case they see the student area
+  // rendered for the previewed pathway. Students hit neither branch.
+  const previewPathway =
+    session.user.role === "ADMIN" ? await getPreviewPathway() : null;
+  if (session.user.role === "ADMIN" && !previewPathway) redirect("/admin");
 
   return (
     <SessionProvider>
@@ -56,6 +63,8 @@ export default async function DashboardLayout({
             </div>
           </div>
         </nav>
+
+        {previewPathway && <PreviewBar pathway={previewPathway} />}
 
         {/* Main content */}
         <main className="flex-1">{children}</main>

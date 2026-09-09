@@ -41,10 +41,13 @@ export default function PartEmbed({
   partId,
   html,
   lastResult,
+  previewMode = false,
 }: {
   partId: string;
   html: string;
   lastResult: LastResult | null;
+  /** Admin "preview as student": run the exercise, record nothing. */
+  previewMode?: boolean;
 }) {
   const router = useRouter();
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -53,6 +56,7 @@ export default function PartEmbed({
   const [result, setResult] = useState<LastResult | null>(lastResult);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [previewNote, setPreviewNote] = useState<string | null>(null);
 
   useEffect(() => {
     async function record(data: {
@@ -115,13 +119,25 @@ export default function PartEmbed({
           passed?: unknown;
           payload?: unknown;
         };
+        if (previewMode) {
+          // Show what the exercise reported so the author can check it,
+          // but never write an attempt against the admin's account.
+          const bits = [
+            typeof score === "number" ? `score ${score}%` : null,
+            passed === true ? "passed" : passed === false ? "not passed" : null,
+          ].filter(Boolean);
+          setPreviewNote(
+            `Preview — exercise reported ${bits.length ? bits.join(", ") : "completed"}. Not recorded.`,
+          );
+          return;
+        }
         void record({ score, passed, payload });
       }
     }
 
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
-  }, [partId, router]);
+  }, [partId, router, previewMode]);
 
   if (!html.trim()) {
     return (
@@ -131,7 +147,9 @@ export default function PartEmbed({
     );
   }
 
-  const status = saving
+  const status = previewNote
+    ? previewNote
+    : saving
     ? "Saving your result…"
     : result
       ? [

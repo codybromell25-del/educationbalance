@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import PartsManager from "@/components/admin/PartsManager";
 import SectionEditForm from "@/components/admin/SectionEditForm";
+import PreviewAsStudent from "@/components/admin/PreviewAsStudent";
 
 export default async function AdminSectionPage({
   params,
@@ -63,6 +64,13 @@ export default async function AdminSectionPage({
             {section.requiresPriorCompletion
               ? " · requires prior completion"
               : ""}
+          </p>
+        </div>
+        <div className="bg-white rounded-xl border border-brand-border px-4 py-3">
+          <PreviewAsStudent href={`/course/${section.slug}`} />
+          <p className="text-xs text-brand-muted mt-1.5">
+            Opens this unit in a new tab exactly as that student sees it —
+            even if it&rsquo;s still locked for them. Nothing is recorded.
           </p>
         </div>
       </div>

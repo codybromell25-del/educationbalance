@@ -6,14 +6,18 @@ import { useRouter } from "next/navigation";
 export default function MarkCompleteButton({
   sectionId,
   isCompleted,
+  previewMode = false,
 }: {
   sectionId: string;
   isCompleted: boolean;
+  /** Admin "preview as student": show the button, record nothing. */
+  previewMode?: boolean;
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   async function handleToggle() {
+    if (previewMode) return;
     setLoading(true);
     await fetch("/api/progress", {
       method: "POST",
@@ -27,8 +31,9 @@ export default function MarkCompleteButton({
   return (
     <button
       onClick={handleToggle}
-      disabled={loading}
-      className={`px-6 py-2.5 text-sm tracking-wider uppercase rounded-full transition-colors disabled:opacity-50 shrink-0 ${
+      disabled={loading || previewMode}
+      title={previewMode ? "Disabled in preview — nothing is recorded" : undefined}
+      className={`px-6 py-2.5 text-sm tracking-wider uppercase rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0 ${
         isCompleted
           ? "bg-brand-success/10 text-brand-success border border-brand-success/20 hover:bg-brand-success/20"
           : "bg-brand-primary text-white hover:bg-brand-primary/90"

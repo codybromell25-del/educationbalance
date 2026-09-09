@@ -25,11 +25,14 @@ export default function PartQuiz({
   questions,
   passingScore,
   lastResult,
+  previewMode = false,
 }: {
   quizId: string;
   questions: Question[];
   passingScore: number;
   lastResult: LastResult | null;
+  /** Admin "preview as student": show the quiz, record nothing. */
+  previewMode?: boolean;
 }) {
   const router = useRouter();
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -49,6 +52,7 @@ export default function PartQuiz({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (previewMode) return;
     if (Object.keys(answers).length !== questions.length) return;
     setLoading(true);
     setError(null);
@@ -107,7 +111,9 @@ export default function PartQuiz({
           </p>
           <button
             onClick={retake}
-            className="px-6 py-2.5 bg-brand-primary text-white text-sm tracking-wider uppercase rounded-full hover:bg-brand-primary/90 transition-colors"
+            disabled={previewMode}
+            title={previewMode ? "Disabled in preview" : undefined}
+            className="px-6 py-2.5 bg-brand-primary text-white text-sm tracking-wider uppercase rounded-full hover:bg-brand-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {result.passed ? "Retake" : "Try again"}
           </button>
@@ -211,10 +217,15 @@ export default function PartQuiz({
         </p>
         <button
           type="submit"
-          disabled={loading || !allAnswered}
+          disabled={loading || !allAnswered || previewMode}
+          title={previewMode ? "Disabled in preview — nothing is recorded" : undefined}
           className="px-6 py-2.5 bg-brand-primary text-white text-sm tracking-wider uppercase rounded-full hover:bg-brand-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? "Submitting..." : "Submit answers"}
+          {loading
+            ? "Submitting..."
+            : previewMode
+              ? "Preview — not recorded"
+              : "Submit answers"}
         </button>
       </div>
     </form>

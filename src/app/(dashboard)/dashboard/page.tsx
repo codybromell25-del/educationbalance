@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { getSectionAccess, isVisibleTo, unlockDateFor } from "@/lib/access";
+import { getPreviewPathway } from "@/lib/preview";
 import type { Pathway } from "@prisma/client";
 
 export default async function DashboardPage() {
@@ -16,7 +17,14 @@ export default async function DashboardPage() {
     where: { id: session.user.id },
     select: { pathway: true },
   });
-  const pathway: Pathway | null = currentUser?.pathway ?? null;
+  // Admin preview: render as a student on the previewed pathway. The
+  // layout has already verified role + cookie; for students this is null.
+  const previewPathway =
+    session.user.role === "ADMIN" ? await getPreviewPathway() : null;
+  const isPreview = previewPathway !== null;
+  const pathway: Pathway | null = isPreview
+    ? previewPathway
+    : (currentUser?.pathway ?? null);
 
   const allSections = await prisma.section.findMany({
     orderBy: { order: "asc" },
@@ -383,6 +391,17 @@ export default async function DashboardPage() {
                         }`}
                       >
                         {isCompleted ? "Review" : "Start"}
+                      </Link>
+                    )}
+                    {/* Admin preview: a student sees no button on a locked
+                        unit (faithful, above). The admin gets a way in. */}
+                    {!isUnlocked && isPreview && (
+                      <Link
+                        href={`/course/${section.slug}`}
+                        className="px-5 py-2 text-sm tracking-wider uppercase rounded-full border border-brand-accent/60 bg-brand-accent/15 text-brand-accent-dark hover:bg-brand-accent/25 transition-colors shrink-0"
+                        title="Locked for students — opens for you in preview"
+                      >
+                        Preview
                       </Link>
                     )}
                   </div>

@@ -11,6 +11,7 @@ import PartQuiz from "@/components/parts/PartQuiz";
 import PartSubmit from "@/components/parts/PartSubmit";
 import PartEmbed from "@/components/parts/PartEmbed";
 import { getSectionAccess, isVisibleTo, unlockDateFor } from "@/lib/access";
+import { getPreviewPathway, PATHWAY_LABEL } from "@/lib/preview";
 import { resolveFileUrl, downloadFilename } from "@/lib/storage";
 import type { Pathway } from "@prisma/client";
 
@@ -76,7 +77,15 @@ export default async function SectionPage({
     where: { id: session.user.id },
     select: { pathway: true },
   });
-  const pathway: Pathway | null = currentUser?.pathway ?? null;
+  // Admin preview: render as a student on the previewed pathway. Visibility
+  // is still enforced faithfully (a Mat preview can't see Reformer-only
+  // units); only the date/prerequisite LOCK is bypassed, further down.
+  const previewPathway =
+    session.user.role === "ADMIN" ? await getPreviewPathway() : null;
+  const isPreview = previewPathway !== null;
+  const pathway: Pathway | null = isPreview
+    ? previewPathway
+    : (currentUser?.pathway ?? null);
 
   // A student on a pathway that doesn't include this unit should be
   // sent back to their dashboard — no "locked" page, no leak.
@@ -131,21 +140,26 @@ export default async function SectionPage({
     now,
   );
 
-  if (!access.accessible) {
-    const lockMessage =
-      access.reason === "locked-by-prerequisite"
-        ? access.blockingPreviousTitle
-          ? `Complete "${access.blockingPreviousTitle}" before starting this unit.`
-          : `Complete the prerequisite unit before starting this one.`
-        : `This unit unlocks on ${unlockDateFor(section, pathway).toLocaleDateString(
-            "en-IE",
-            {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            },
-          )}.`;
+  // Why a student would be locked out, if they would be. Hoisted so the
+  // admin preview can show it as a notice while still rendering the unit.
+  const lockMessage: string | null = access.accessible
+    ? null
+    : access.reason === "locked-by-prerequisite"
+      ? access.blockingPreviousTitle
+        ? `Complete "${access.blockingPreviousTitle}" before starting this unit.`
+        : `Complete the prerequisite unit before starting this one.`
+      : `This unit unlocks on ${unlockDateFor(section, pathway).toLocaleDateString(
+          "en-IE",
+          {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          },
+        )}.`;
 
+  // Real students get the locked page. An admin in preview falls through
+  // and sees the unit, with the lock reason shown as a notice.
+  if (lockMessage && !isPreview) {
     return (
       <div className="max-w-3xl mx-auto px-6 py-24 text-center">
         <div className="w-20 h-20 rounded-full bg-brand-surface flex items-center justify-center mx-auto mb-8">
@@ -305,6 +319,19 @@ export default async function SectionPage({
         )}
 
         <div className="min-w-0 space-y-6">
+          {isPreview && lockMessage && (
+            <div className="rounded-xl border border-brand-accent/40 bg-brand-accent/10 px-5 py-3 text-sm text-brand-primary flex items-start gap-3">
+              <span className="shrink-0 text-brand-accent-dark" aria-hidden>
+                🔒
+              </span>
+              <p>
+                <strong>Locked for students.</strong> A{" "}
+                {PATHWAY_LABEL[pathway ?? "COMPREHENSIVE"]} student would see:
+                &ldquo;{lockMessage}&rdquo; You&rsquo;re seeing it because
+                you&rsquo;re in preview.
+              </p>
+            </div>
+          )}
           {totalParts === 0 ? (
             <div
               className="prose prose-neutral max-w-none bg-white rounded-2xl border border-brand-border p-8 md:p-12 leading-relaxed text-brand-primary/90"
@@ -341,6 +368,7 @@ export default async function SectionPage({
                   )}
                   {part.type === "QUIZ" && part.quiz && (
                     <PartQuiz
+                      previewMode={isPreview}
                       quizId={part.quiz.id}
                       passingScore={part.quiz.passingScore}
                       questions={part.quiz.questions.map((q) => ({
@@ -370,6 +398,7 @@ export default async function SectionPage({
                         />
                       )}
                       <PartSubmit
+                        previewMode={isPreview}
                         partId={part.id}
                         existing={
                           part.submissions[0]
@@ -393,6 +422,7 @@ export default async function SectionPage({
                   )}
                   {part.type === "EMBED" && (
                     <PartEmbed
+                      previewMode={isPreview}
                       partId={part.id}
                       html={part.body ?? ""}
                       lastResult={
@@ -428,6 +458,7 @@ export default async function SectionPage({
               <MarkCompleteButton
                 sectionId={section.id}
                 isCompleted={isCompleted}
+                previewMode={isPreview}
               />
             </div>
           </div>
