@@ -72,12 +72,18 @@ export function getSectionAccess(
   pathway: Pathway | null = null,
   prerequisiteCompleted: boolean | null = null,
   now: Date = new Date(),
+  /**
+   * Self-paced students (User.selfPaced): skip rule 2 entirely. Rules 1
+   * and 3 still apply, so units open one after another as the previous
+   * one is completed, with no calendar involved.
+   */
+  ignoreUnlockDates = false,
 ): AccessResult {
   if (!isVisibleTo(section, pathway)) {
     return { accessible: false, reason: "hidden-by-pathway" };
   }
 
-  if (unlockDateFor(section, pathway) > now) {
+  if (!ignoreUnlockDates && unlockDateFor(section, pathway) > now) {
     return { accessible: false, reason: "locked-by-date" };
   }
 

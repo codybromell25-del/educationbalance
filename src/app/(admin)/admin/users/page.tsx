@@ -178,6 +178,14 @@ export default async function AdminUsersPage({
                   ) : (
                     <span className="text-xs text-brand-muted italic">—</span>
                   )}
+                  {user.selfPaced && (
+                    <span
+                      className="inline-block ml-1.5 px-2 py-0.5 rounded-full bg-brand-accent/15 text-brand-accent-dark text-[10px] tracking-wider uppercase font-semibold align-middle"
+                      title="Ignores unlock dates — each unit opens as soon as the previous one is completed"
+                    >
+                      Self-paced
+                    </span>
+                  )}
                 </td>
                 <td className="px-6 py-4 text-sm">
                   {user.cohort ? (
@@ -233,6 +241,7 @@ export default async function AdminUsersPage({
                       role: user.role,
                       pathway: user.pathway,
                       cohortId: user.cohortId,
+                      selfPaced: user.selfPaced,
                     }}
                     cohorts={cohortOptions}
                   />
@@ -314,6 +323,7 @@ export default async function AdminUsersPage({
                 role: user.role,
                 pathway: user.pathway,
                 cohortId: user.cohortId,
+                selfPaced: user.selfPaced,
               }}
               cohorts={cohortOptions}
             />

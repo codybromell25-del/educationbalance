@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { name, email, password, pathway, cohortId } = await req.json();
+  const { name, email, password, pathway, cohortId, selfPaced } = await req.json();
 
   if (!name || !email || !password) {
     return NextResponse.json(
@@ -63,6 +63,8 @@ export async function POST(req: Request) {
       role: "USER",
       pathway,
       cohortId: resolvedCohortId,
+      // Self-paced: ignore unit unlock dates (prerequisite chain still applies).
+      selfPaced: selfPaced === true,
     },
   });
 

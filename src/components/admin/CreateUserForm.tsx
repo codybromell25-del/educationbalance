@@ -24,6 +24,7 @@ export default function CreateUserForm({
   const [password, setPassword] = useState("");
   const [pathway, setPathway] = useState("COMPREHENSIVE");
   const [cohortId, setCohortId] = useState<string>(defaultCohortId ?? "");
+  const [selfPaced, setSelfPaced] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -41,6 +42,7 @@ export default function CreateUserForm({
         password,
         pathway,
         cohortId: cohortId || null,
+        selfPaced,
       }),
     });
 
@@ -56,6 +58,7 @@ export default function CreateUserForm({
     setPassword("");
     setPathway("COMPREHENSIVE");
     setCohortId(defaultCohortId ?? "");
+    setSelfPaced(false);
     setOpen(false);
     setLoading(false);
     router.refresh();
@@ -142,6 +145,21 @@ export default function CreateUserForm({
             ))}
           </select>
         </div>
+        <label className="flex items-center gap-2 text-sm text-brand-primary select-none px-3 py-2.5 rounded-lg border border-brand-border bg-brand-surface/50 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={selfPaced}
+            onChange={(e) => setSelfPaced(e.target.checked)}
+            className="accent-brand-sage"
+          />
+          <span>
+            Self-paced
+            <span className="block text-xs text-brand-muted font-normal">
+              Ignores unlock dates — each unit opens as soon as the previous
+              one is completed
+            </span>
+          </span>
+        </label>
         <div className="flex gap-2">
           <button
             type="submit"

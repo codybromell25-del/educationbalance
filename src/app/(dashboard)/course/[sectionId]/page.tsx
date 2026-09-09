@@ -75,7 +75,7 @@ export default async function SectionPage({
   // date, and prerequisite gating all resolve correctly.
   const currentUser = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { pathway: true },
+    select: { pathway: true, selfPaced: true },
   });
   // Admin preview: render as a student on the previewed pathway. Visibility
   // is still enforced faithfully (a Mat preview can't see Reformer-only
@@ -86,6 +86,9 @@ export default async function SectionPage({
   const pathway: Pathway | null = isPreview
     ? previewPathway
     : (currentUser?.pathway ?? null);
+  // Self-paced students ignore unlock dates (prerequisite chain still
+  // applies). Preview always shows the normal, dated student experience.
+  const selfPaced = !isPreview && (currentUser?.selfPaced ?? false);
 
   // A student on a pathway that doesn't include this unit should be
   // sent back to their dashboard — no "locked" page, no leak.
@@ -138,6 +141,7 @@ export default async function SectionPage({
     pathway,
     prerequisiteCompleted,
     now,
+    selfPaced,
   );
 
   // Why a student would be locked out, if they would be. Hoisted so the
@@ -221,7 +225,7 @@ export default async function SectionPage({
   // current section is completed.
   const nextSectionAccessible =
     !!nextSection &&
-    unlockDateFor(nextSection, pathway) <= now &&
+    (selfPaced || unlockDateFor(nextSection, pathway) <= now) &&
     (!nextSection.requiresPriorCompletion || isCompleted);
   const parts = section.parts;
   const totalParts = parts.length;

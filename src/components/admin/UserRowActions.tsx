@@ -14,6 +14,7 @@ export default function UserRowActions({
     role?: string;
     pathway?: string | null;
     cohortId?: string | null;
+    selfPaced?: boolean;
   };
   cohorts?: Array<{
     id: string;
@@ -28,6 +29,7 @@ export default function UserRowActions({
   const [email, setEmail] = useState(user.email);
   const [pathway, setPathway] = useState<string>(user.pathway ?? "");
   const [cohortId, setCohortId] = useState<string>(user.cohortId ?? "");
+  const [selfPaced, setSelfPaced] = useState<boolean>(user.selfPaced ?? false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -47,6 +49,7 @@ export default function UserRowActions({
         // about cohorts — e.g. the student detail page — would silently
         // null the student's cohort on every name/email edit.
         if (cohorts && cohorts.length > 0) body.cohortId = cohortId || null;
+        body.selfPaced = selfPaced;
       }
       const res = await fetch(`/api/admin/users/${user.id}`, {
         method: "PATCH",
@@ -171,6 +174,21 @@ export default function UserRowActions({
             ))}
           </select>
         )}
+        {isStudent && (
+          <label
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-brand-border rounded-lg bg-white cursor-pointer select-none"
+            title="Ignores unlock dates — each unit opens as soon as the previous one is completed"
+          >
+            <input
+              type="checkbox"
+              checked={selfPaced}
+              onChange={(e) => setSelfPaced(e.target.checked)}
+              disabled={busy}
+              className="accent-brand-sage"
+            />
+            Self-paced
+          </label>
+        )}
         <button
           type="submit"
           disabled={busy}
@@ -186,6 +204,7 @@ export default function UserRowActions({
             setEmail(user.email);
             setPathway(user.pathway ?? "");
             setCohortId(user.cohortId ?? "");
+            setSelfPaced(user.selfPaced ?? false);
             setError(null);
           }}
           disabled={busy}

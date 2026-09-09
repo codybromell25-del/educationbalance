@@ -43,6 +43,7 @@ model User {
   role                Role                 @default(USER)
   pathway             Pathway?             // students only — MAT, REFORMER or COMPREHENSIVE; null for staff
   cohortId            String?              // students belong to a cohort; null for staff
+  selfPaced           Boolean              @default(false) // ignore unlock DATES; prerequisite chain + pathway visibility still apply
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
   cohort              Cohort?              @relation(fields: [cohortId], references: [id], onDelete: SetNull)

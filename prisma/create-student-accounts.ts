@@ -41,7 +41,7 @@ function generatePassword(len = 10): string {
 const normEmail = (e: string) => e.normalize("NFKC").trim().toLowerCase();
 const normName = (n: string) => n.normalize("NFKC").replace(/[‘’]/g, "'").trim();
 
-type In = { name: string; email: string; pathway: string };
+type In = { name: string; email: string; pathway: string; selfPaced?: boolean };
 type Out = In & { status: "created" | "exists" | "error"; password?: string; error?: string };
 
 const prisma = new PrismaClient();
@@ -70,7 +70,15 @@ async function main() {
       const password = generatePassword();
       const passwordHash = await bcryptjs.hash(password, 12);
       await prisma.user.create({
-        data: { name, email, passwordHash, role: "USER", pathway: pathway as Pathway, cohortId: cohort.id },
+        data: {
+          name,
+          email,
+          passwordHash,
+          role: "USER",
+          pathway: pathway as Pathway,
+          cohortId: cohort.id,
+          selfPaced: s.selfPaced === true, // optional per row; ignores unlock dates
+        },
       });
       results.push({ name, email, pathway, status: "created", password });
       console.log(`  ✓ created  ${name} <${email}>  ${pathway}`);

@@ -15,7 +15,7 @@ export default async function DashboardPage() {
   // if the admin just changed it, and pathway drives what units render).
   const currentUser = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { pathway: true },
+    select: { pathway: true, selfPaced: true },
   });
   // Admin preview: render as a student on the previewed pathway. The
   // layout has already verified role + cookie; for students this is null.
@@ -25,6 +25,9 @@ export default async function DashboardPage() {
   const pathway: Pathway | null = isPreview
     ? previewPathway
     : (currentUser?.pathway ?? null);
+  // Self-paced students ignore unlock dates (prerequisite chain still
+  // applies). Preview always shows the normal, dated student experience.
+  const selfPaced = !isPreview && (currentUser?.selfPaced ?? false);
 
   const allSections = await prisma.section.findMany({
     orderBy: { order: "asc" },
@@ -127,6 +130,7 @@ export default async function DashboardPage() {
         pathway,
         s.prerequisiteId ? completedPrereqIds.has(s.prerequisiteId) : null,
         now,
+        selfPaced,
       ),
     ]),
   );

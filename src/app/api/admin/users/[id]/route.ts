@@ -55,6 +55,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Invalid cohortId" }, { status: 400 });
     }
   }
+  if (typeof body.selfPaced === "boolean") data.selfPaced = body.selfPaced;
 
   try {
     const updated = await prisma.user.update({ where: { id }, data });
