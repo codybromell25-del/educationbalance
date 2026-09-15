@@ -16,7 +16,7 @@ export default function GalleryEqualGrid({
             The studio
           </p>
           <h2 className="text-3xl md:text-4xl font-light text-brand-primary leading-tight">
-            Where you&rsquo;ll train
+            Where you will learn
           </h2>
           <p className="text-brand-primary/70 max-w-2xl mx-auto mt-4">
             {content.intro}

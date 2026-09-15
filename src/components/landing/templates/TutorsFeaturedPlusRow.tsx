@@ -30,9 +30,17 @@ export default function TutorsFeaturedPlusRow({
         <span className="inline-block px-4 py-1 rounded-full bg-brand-sage/10 text-brand-sage text-xs tracking-[0.3em] uppercase mb-6">
           The team
         </span>
-        <h2 className="font-heading italic text-4xl md:text-5xl text-brand-primary mb-14 md:mb-16 leading-tight">
+        <h2 className="font-heading italic text-4xl md:text-5xl text-brand-primary mb-4 leading-tight">
           Meet the instructors.
         </h2>
+        <p className="text-lg md:text-xl text-brand-primary mb-3">
+          Learn from educators who actually teach.
+        </p>
+        <p className="text-brand-muted max-w-2xl mx-auto mb-14 md:mb-16 leading-relaxed">
+          Our education team works with clients and classes in real studio
+          environments, bringing current teaching experience directly into the
+          course.
+        </p>
 
         {/* Featured — Kelly O'Neill on top over everyone else */}
         <div className="flex flex-col items-center mb-14 md:mb-16">

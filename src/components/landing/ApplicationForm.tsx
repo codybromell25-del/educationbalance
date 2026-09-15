@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 
+// Values stay A/B/C/UNSURE (stored on Application.pathway, read by the
+// admin applications page); only the labels changed per the brief.
 const PATHWAYS = [
-  { value: "A", label: "Pathway A — Full comprehensive (mat + reformer)" },
-  { value: "B", label: "Pathway B — Mat only" },
-  { value: "C", label: "Pathway C — Reformer only (need existing mat qual)" },
+  { value: "A", label: "Comprehensive Mat + Reformer" },
+  { value: "B", label: "Mat" },
+  { value: "C", label: "Reformer" },
   { value: "UNSURE", label: "Not sure yet — happy to talk it through" },
 ];
 
@@ -134,7 +136,7 @@ export default function ApplicationForm() {
         disabled={busy}
         className="w-full px-8 py-3.5 bg-brand-primary text-white text-xs tracking-[0.25em] uppercase rounded-full hover:bg-brand-primary/90 transition-colors disabled:opacity-50"
       >
-        {busy ? "Sending…" : "Send application"}
+        {busy ? "Sending…" : "Express interest"}
       </button>
 
       <p className="text-xs text-brand-muted text-center">
