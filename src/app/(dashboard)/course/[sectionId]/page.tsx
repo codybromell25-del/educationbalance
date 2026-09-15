@@ -28,60 +28,83 @@ export default async function SectionPage({
   const session = await auth();
   if (!session?.user) redirect("/login");
 
-  const section = await prisma.section.findUnique({
-    where: { slug: sectionId },
-    include: {
-      progress: { where: { userId: session.user.id } },
-      questions: {
-        where: { userId: session.user.id },
-        orderBy: { createdAt: "desc" },
-      },
-      parts: {
-        orderBy: { order: "asc" },
+  // Everything that only needs the session is fetched in ONE round trip:
+  // the unit, the student's pathway/self-paced flag, the admin preview
+  // cookie, and the sibling list for prev/next. These used to be four
+  // sequential awaits — with the database in another region each one
+  // cost a full network round trip before the next could start.
+  const userId = session.user.id;
+  const [section, currentUser, previewPathway, allSectionsRaw] =
+    await Promise.all([
+      prisma.section.findUnique({
+        where: { slug: sectionId },
         include: {
-          quiz: {
+          progress: { where: { userId } },
+          questions: {
+            where: { userId },
+            orderBy: { createdAt: "desc" },
+          },
+          parts: {
+            orderBy: { order: "asc" },
             include: {
-              questions: {
-                orderBy: { order: "asc" },
-                include: { choices: { orderBy: { order: "asc" } } },
+              quiz: {
+                include: {
+                  questions: {
+                    orderBy: { order: "asc" },
+                    include: { choices: { orderBy: { order: "asc" } } },
+                  },
+                  attempts: {
+                    where: { userId },
+                    orderBy: { completedAt: "desc" },
+                    take: 1,
+                  },
+                },
               },
-              attempts: {
-                where: { userId: session.user.id },
+              submissions: {
+                where: { userId },
+                orderBy: { submittedAt: "desc" },
+                take: 1,
+              },
+              embedAttempts: {
+                where: { userId },
                 orderBy: { completedAt: "desc" },
                 take: 1,
               },
             },
           },
-          submissions: {
-            where: { userId: session.user.id },
-            orderBy: { submittedAt: "desc" },
-            take: 1,
-          },
-          embedAttempts: {
-            where: { userId: session.user.id },
-            orderBy: { completedAt: "desc" },
-            take: 1,
-          },
         },
-      },
-    },
-  });
+      }),
+      // Student's pathway so per-pathway visibility, unlock date, and
+      // prerequisite gating all resolve correctly.
+      prisma.user.findUnique({
+        where: { id: userId },
+        select: { pathway: true, selfPaced: true },
+      }),
+      // Admin preview: render as a student on the previewed pathway.
+      // Visibility is still enforced faithfully (a Mat preview can't see
+      // Reformer-only units); only the date/prerequisite LOCK is bypassed.
+      session.user.role === "ADMIN"
+        ? getPreviewPathway()
+        : Promise.resolve<Pathway | null>(null),
+      // Sibling list for prev/next navigation (pathway-filtered below).
+      prisma.section.findMany({
+        orderBy: { order: "asc" },
+        select: {
+          slug: true,
+          title: true,
+          order: true,
+          unlockDate: true,
+          unlockDates: true,
+          requiresPriorCompletion: true,
+          visibleToMat: true,
+          visibleToReformer: true,
+        },
+      }),
+    ]);
 
   if (!section) notFound();
 
   const now = new Date();
-
-  // Look up the student's pathway so per-pathway visibility, unlock
-  // date, and prerequisite gating all resolve correctly.
-  const currentUser = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { pathway: true, selfPaced: true },
-  });
-  // Admin preview: render as a student on the previewed pathway. Visibility
-  // is still enforced faithfully (a Mat preview can't see Reformer-only
-  // units); only the date/prerequisite LOCK is bypassed, further down.
-  const previewPathway =
-    session.user.role === "ADMIN" ? await getPreviewPathway() : null;
   const isPreview = previewPathway !== null;
   const pathway: Pathway | null = isPreview
     ? previewPathway
@@ -108,32 +131,34 @@ export default async function SectionPage({
       : pathway === "REFORMER"
         ? { visibleToReformer: true }
         : {};
-  const previousSection =
+  // Second (and last) round trip: the previous visible unit and, if this
+  // unit has an explicit prerequisite pointer, the student's progress on
+  // it. Independent of each other, so they run together.
+  const [previousSection, prereqProgress] = await Promise.all([
     section.order > 1
-      ? await prisma.section.findFirst({
+      ? prisma.section.findFirst({
           where: { order: { lt: section.order }, ...visibilityWhere },
           orderBy: { order: "desc" },
           include: {
-            progress: { where: { userId: session.user.id } },
+            progress: { where: { userId } },
           },
         })
-      : null;
-
-  // If this section uses an explicit prerequisite pointer, look up
-  // whether the student has completed that specific section.
-  let prerequisiteCompleted: boolean | null = null;
-  if (section.prerequisiteId) {
-    const prereqProgress = await prisma.progress.findUnique({
-      where: {
-        userId_sectionId: {
-          userId: session.user.id,
-          sectionId: section.prerequisiteId,
-        },
-      },
-      select: { completed: true },
-    });
-    prerequisiteCompleted = prereqProgress?.completed === true;
-  }
+      : Promise.resolve(null),
+    section.prerequisiteId
+      ? prisma.progress.findUnique({
+          where: {
+            userId_sectionId: {
+              userId,
+              sectionId: section.prerequisiteId,
+            },
+          },
+          select: { completed: true },
+        })
+      : Promise.resolve(null),
+  ]);
+  const prerequisiteCompleted: boolean | null = section.prerequisiteId
+    ? prereqProgress?.completed === true
+    : null;
 
   const access = getSectionAccess(
     section,
@@ -195,21 +220,9 @@ export default async function SectionPage({
     );
   }
 
-  // Only pull sections the current pathway can actually see — that
-  // way prev/next navigation skips units this student's pathway locks.
-  const allSectionsRaw = await prisma.section.findMany({
-    orderBy: { order: "asc" },
-    select: {
-      slug: true,
-      title: true,
-      order: true,
-      unlockDate: true,
-      unlockDates: true,
-      requiresPriorCompletion: true,
-      visibleToMat: true,
-      visibleToReformer: true,
-    },
-  });
+  // Only sections the current pathway can actually see — that way
+  // prev/next navigation skips units this student's pathway locks.
+  // (allSectionsRaw was fetched in the first round trip above.)
   const allSections = allSectionsRaw.filter((s) => isVisibleTo(s, pathway));
   const currentIndex = allSections.findIndex((s) => s.slug === section.slug);
   const prevSection = currentIndex > 0 ? allSections[currentIndex - 1] : null;

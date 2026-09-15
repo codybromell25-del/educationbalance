@@ -11,16 +11,63 @@ export default async function DashboardPage() {
   const session = await auth();
   if (!session?.user) redirect("/login");
 
-  // Look up the student's pathway from the DB (session may be stale
-  // if the admin just changed it, and pathway drives what units render).
-  const currentUser = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { pathway: true, selfPaced: true },
-  });
-  // Admin preview: render as a student on the previewed pathway. The
-  // layout has already verified role + cookie; for students this is null.
-  const previewPathway =
-    session.user.role === "ADMIN" ? await getPreviewPathway() : null;
+  // The student record, the admin preview cookie, and the full section
+  // list are independent — fetch them in ONE round trip. (They were two
+  // sequential awaits; with the database in another region each one cost
+  // a full network round trip before the next could start.)
+  const userId = session.user.id;
+  const [currentUser, previewPathway, allSections] = await Promise.all([
+    // Pathway from the DB (session may be stale if the admin just
+    // changed it, and pathway drives what units render).
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: { pathway: true, selfPaced: true },
+    }),
+    // Admin preview: render as a student on the previewed pathway. The
+    // layout has already verified role + cookie; for students this is null.
+    session.user.role === "ADMIN"
+      ? getPreviewPathway()
+      : Promise.resolve<Pathway | null>(null),
+    prisma.section.findMany({
+      orderBy: { order: "asc" },
+      include: {
+        progress: {
+          where: { userId },
+        },
+        parts: {
+          select: {
+            id: true,
+            type: true,
+            quiz: {
+              select: {
+                attempts: {
+                  where: { userId, passed: true },
+                  select: { id: true },
+                  take: 1,
+                },
+              },
+            },
+            submissions: {
+              where: { userId },
+              select: { id: true },
+              take: 1,
+            },
+            // An EMBED part counts as done once the student has any attempt
+            // that isn't an explicit fail — i.e. passed=true, or passed=null
+            // for unscored "completed" reports.
+            embedAttempts: {
+              where: {
+                userId,
+                OR: [{ passed: true }, { passed: null }],
+              },
+              select: { id: true },
+              take: 1,
+            },
+          },
+        },
+      },
+    }),
+  ]);
   const isPreview = previewPathway !== null;
   const pathway: Pathway | null = isPreview
     ? previewPathway
@@ -28,46 +75,6 @@ export default async function DashboardPage() {
   // Self-paced students ignore unlock dates (prerequisite chain still
   // applies). Preview always shows the normal, dated student experience.
   const selfPaced = !isPreview && (currentUser?.selfPaced ?? false);
-
-  const allSections = await prisma.section.findMany({
-    orderBy: { order: "asc" },
-    include: {
-      progress: {
-        where: { userId: session.user.id },
-      },
-      parts: {
-        select: {
-          id: true,
-          type: true,
-          quiz: {
-            select: {
-              attempts: {
-                where: { userId: session.user.id, passed: true },
-                select: { id: true },
-                take: 1,
-              },
-            },
-          },
-          submissions: {
-            where: { userId: session.user.id },
-            select: { id: true },
-            take: 1,
-          },
-          // An EMBED part counts as done once the student has any attempt
-          // that isn't an explicit fail — i.e. passed=true, or passed=null
-          // for unscored "completed" reports.
-          embedAttempts: {
-            where: {
-              userId: session.user.id,
-              OR: [{ passed: true }, { passed: null }],
-            },
-            select: { id: true },
-            take: 1,
-          },
-        },
-      },
-    },
-  });
 
   // Filter to only sections visible to this student's pathway. Per
   // the PDF, hidden units never appear at all — they're not shown as
