@@ -98,8 +98,10 @@ export default async function HomePage() {
           → FAQs → Express interest → Final CTA */}
       <BrandMoment />
       <CoursePillars content={coursePillars} imageUrls={data.imageUrls} />
-      <StoryBlock content={TEACH_THE_ROOM_CONTENT} imageSide="right" tone="background" />
+      {/* Route options sit directly under "Why different" (Kelly, Sept 2026),
+          with Teach the Room after them. */}
       <RouteTeaser content={ROUTE_TEASER_CONTENT} />
+      <StoryBlock content={TEACH_THE_ROOM_CONTENT} imageSide="right" tone="surface" />
       <CurriculumGrid content={CURRICULUM_CONTENT} />
       <FourWeekends content={weekends} />
       <StoryBlock content={OPEN_STUDIO_CONTENT} imageSide="left" tone="surface" />
@@ -897,7 +899,7 @@ function StoryBlock({
 
 function RouteTeaser({ content }: { content: RouteTeaserContent }) {
   return (
-    <section className="py-20 md:py-28 bg-brand-surface">
+    <section className="py-20 md:py-28 bg-background">
       <div className="max-w-6xl mx-auto px-5 md:px-6">
         <SectionHeader eyebrow={content.eyebrow} title={content.title} />
         <div className="mt-12 grid md:grid-cols-3 gap-6">
