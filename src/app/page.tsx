@@ -68,7 +68,8 @@ export default async function HomePage() {
   const timeline = data.sections.timeline.content as TimelineContent;
   const whyBalance = data.sections["why-balance"].content as WhyBalanceContent;
   const faqs = data.sections.faqs.content as FaqsContent;
-  const finalCta = data.sections["final-cta"].content as FinalCtaContent;
+  // final-cta section no longer rendered (Kelly, Sept 2026) — its heading
+  // now sits on the Express Interest form instead.
   const footer = data.sections.footer.content as FooterContent;
   const heroImageUrl = data.imageUrls.get("hero-bg") ?? "/images/interior-1.jpg";
 
@@ -131,7 +132,6 @@ export default async function HomePage() {
       <Timeline content={timeline} />
       <Faqs content={faqs} />
       <ApplicationSection />
-      <FinalCta content={finalCta} imageUrls={data.imageUrls} />
       <Footer content={footer} />
     </div>
   );
@@ -704,7 +704,7 @@ function ApplicationSection() {
       <div className="max-w-3xl mx-auto px-5 md:px-6">
         <SectionHeader
           eyebrow="Express interest"
-          title="Thinking about training with us? Tell us a little about yourself and we'll be in touch."
+          title="Ready to take the next step?"
         />
         <div className="mt-12 bg-white rounded-2xl border border-brand-border p-7 md:p-10">
           <ApplicationForm />
@@ -714,6 +714,10 @@ function ApplicationSection() {
   );
 }
 
+// ------------------------------------------------------------------
+// FinalCta — NOT rendered since Sept 2026 (Kelly removed the closing
+// band; the Express Interest form carries "Ready to take the next
+// step?" instead). Kept so it can be restored from admin content.
 // ------------------------------------------------------------------
 function FinalCta({
   content,
