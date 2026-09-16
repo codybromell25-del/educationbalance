@@ -33,6 +33,8 @@ export type HeroContent = {
 export type CoursePillarsContent = {
   eyebrow: string;
   headlineLines: string[]; // [line1, line2 (italic)]
+  // Optional body copy rendered between the headline and the pillars.
+  intro?: string;
   pillars: Array<{
     slotKey: string;
     title: string;
@@ -207,7 +209,7 @@ export const SINGLE_TEMPLATE = [{ id: "default", label: "Default" }] as const;
 // ----- Defaults -----
 
 export const HERO_DEFAULT_CONTENT: HeroContent = {
-  tagline: "IICT APPROVED · 230 HOURS",
+  tagline: "IICT APPROVED TRAINING",
   headlineLines: [
     "Trained",
     "to teach.",
@@ -215,61 +217,35 @@ export const HERO_DEFAULT_CONTENT: HeroContent = {
     "practise.",
   ],
   description:
-    "Seventy two hours in person, twenty eight online, fifty hours of self practice, sixty hours of supervised teaching and twenty hours of structured observation, supported by senior balance instructors throughout. Grounded in biomechanics, rooted in classic Pilates principles with a contemporary, modern element, so graduates leave with an IICT approved qualification, ready to apply for insurance and teach.",
-  ctaPrimaryLabel: "Sign Up Now",
+    "Turn your interest in Pilates into the confidence to teach it. Choose from Mat, Reformer or Comprehensive Mat + Reformer training, with practical learning, experienced educators and real teaching experience built in.",
+  ctaPrimaryLabel: "Book your space",
   ctaSecondaryLabel: "Express interest",
   cohortDates: "Cohort 2 · Starts February 2027",
 };
 
 export const COURSE_PILLARS_DEFAULT_CONTENT: CoursePillarsContent = {
-  eyebrow: "Why this course",
+  eyebrow: "Why balance Education is different",
   headlineLines: [
-    "Most Pilates courses teach you exercises.",
-    "This one teaches you how to teach.",
+    "We are not trying to modernise Pilates.",
+    "We are modernising how it is taught.",
   ],
+  intro:
+    "Pilates teacher training has moved on. Strong technique, classical principles and anatomy still matter. We have kept all of that, then built on it with current biomechanics, group teaching skills, people skills, practical teaching experience and the professional knowledge instructors need now.\n\nIt is not a lighter version of traditional Pilates education. It is a more complete one.",
   pillars: [
     {
       slotKey: "pillar-1",
-      title: "An IICT approved qualification, not a weekend course",
-      desc: "Choose Mat, Reformer, or Comprehensive. Each pathway is IICT approved, meeting the standard required to apply for insurance and teach professionally.",
-      paragraphs: [
-        "The balance teacher training course respects the changes taking place in the industry and makes room for modern thinking and updated ideas, while staying firmly rooted in the classical foundations of Pilates. You will leave understanding Pilates, the body, why the industry has changed, and how to manage that change as a confident, capable instructor.",
-        "Pilates is more than repertoire. It is an understanding and respect for how the body responds, and why. From there, we build toward becoming a competent and capable instructor. Understanding and instructing are two different skill sets, and this course teaches both.",
-      ],
+      title: "Strong foundations",
+      desc: "Pilates principles, repertoire, anatomy and biomechanics.",
     },
     {
       slotKey: "pillar-2",
-      title: "Science based.",
-      desc: "Every exercise is taught alongside the anatomy behind it: the muscles, the joints, the pattern of movement. You will learn to read a body in real time and adapt exercises accordingly.",
-      paragraphs: [
-        "With so many trends in Pilates, balance Education is focused on physiology and science, giving you a foundation of understanding that cannot be disputed. The Pilates world is an exciting and wonderful industry to be part of, and we will support you in becoming a valuable part of it, helping you support clients safely and effectively. Becoming part of this community brings real satisfaction, and balance Education is proud to educate and support you on that journey.",
-      ],
+      title: "Real teaching skills",
+      desc: "Cueing, programming, class management, people skills and mixed-level teaching.",
     },
     {
       slotKey: "pillar-3",
-      title: "Course Details",
-      desc: "",
-      breakdown: [
-        {
-          label: "Comprehensive",
-          detail:
-            "4 in-studio weekends, online learning, and 3 open studio days for reformer self practice, supervised by balance instructors.",
-        },
-        {
-          label: "Mat",
-          detail:
-            "2 in-studio weekends, 19 hours of online learning, self practice, and structured observation.",
-        },
-        {
-          label: "Reformer",
-          detail:
-            "2 in-studio weekends, 3 open studio days, and 30 hours of online learning, plus self practice and structured observation. Prerequisite: a valid Mat qualification.",
-        },
-      ],
-      paragraphs: [
-        "Your training doesn't end when the course does. balance is here to support your career on an ongoing basis, in whatever way we can.",
-        "Our aim is to produce competent and confident instructors who respect and understand Pilates in all its forms.",
-      ],
+      title: "Practical experience",
+      desc: "Teach the Room and dedicated Reformer Open Studio days.",
     },
   ],
 };
@@ -288,27 +264,28 @@ export const WHO_FOR_DEFAULT_CONTENT: WhoForContent = {
 };
 
 export const WHAT_YOU_LEARN_DEFAULT_CONTENT: WhatYouLearnContent = {
-  eyebrow: "What you'll learn",
-  title: "By the time you finish, you'll be able to —",
+  eyebrow: "Outcomes",
+  title: "By the time you finish, you'll be ready to teach.",
   bullets: [
-    "Graduate with an IICT approved qualification, recognised for insurance in over thirty countries",
-    "Run a sustainable teaching practice that suits your life",
-    "Cue clients with clarity, calm and confidence",
-    "Read a body across the room and adapt the session in real time",
-    "Build safe, progressive class plans for mixed-ability rooms",
-    "Use the reformer with intention — not just the workout, the why",
-    "Modify for pregnancy, injury and special populations",
+    "Teach Mat and/or Reformer confidently and safely",
+    "Plan and deliver structured, progressive group classes",
+    "Cue clearly and manage a mixed-level room",
+    "Understand the anatomy and biomechanics behind what you teach",
+    "Adapt exercises using appropriate progressions and regressions",
+    "Communicate confidently and build rapport with different clients",
+    "Understand the practical side of becoming an instructor, from choosing where to work to insurance and getting paid",
+    "Be ready to take the next step into the industry",
   ],
 };
 
 export const WEEKENDS_DEFAULT_CONTENT: WeekendsContent = {
-  eyebrow: "The four weekends",
-  title: "A clear path through the course",
+  eyebrow: "How the training works",
+  title: "Four in-studio weekends",
   weekends: [
     {
       n: 1,
-      title: "Foundations & functional anatomy",
-      body: "The starting point for everything that follows. You will learn the Pilates method and its core principles, then build the functional anatomy that sits behind every cue you give, so you understand not just what to teach but why it works.",
+      title: "Mat Foundations",
+      body: "Principles, repertoire, anatomy, biomechanics and first teaching practice.",
       bullets: [
         "The history and philosophy of the Pilates method",
         "The core principles: breath, centering, control, precision, concentration and flow",
@@ -318,8 +295,8 @@ export const WEEKENDS_DEFAULT_CONTENT: WeekendsContent = {
     },
     {
       n: 2,
-      title: "Mat & Assessment preparation",
-      body: "The balance approach to mat teaching, from your first cue to a full class. You will work through the mat repertoire in detail and learn how to structure, sequence and adapt a class for real clients, while preparing for your mat assessment.",
+      title: "Mat Progressions & Teaching Craft",
+      body: "Advanced repertoire, cueing, class structure, people skills and Teach the Room.",
       bullets: [
         "The full mat exercise library, with technique and teaching points",
         "Class structure, sequencing and flow",
@@ -331,7 +308,7 @@ export const WEEKENDS_DEFAULT_CONTENT: WeekendsContent = {
     {
       n: 3,
       title: "Reformer Foundations",
-      body: "Everything you need to teach reformer with confidence and safety. You will get comfortable with the machine itself, learn the foundational repertoire, and start programming beginner classes for real clients.",
+      body: "Equipment, repertoire, applied anatomy, layering, class planning and teaching points.",
       bullets: [
         "Reformer setup, springs, resistance and safety",
         "The foundational reformer exercise library",
@@ -341,8 +318,8 @@ export const WEEKENDS_DEFAULT_CONTENT: WeekendsContent = {
     },
     {
       n: 4,
-      title: "Advanced reformer, S&C & professional practice",
-      body: "The final weekend brings it all together. You will expand into advanced repertoire and strength and conditioning, learn to teach special populations and inclusive classes, and cover the professional side of working as an instructor, before your practical assessment and sign off.",
+      title: "Strength, Complex Clients & Next Steps",
+      body: "Advanced Reformer, strength, people skills, Teach the Room and preparing to work as an instructor.",
       bullets: [
         "Advanced reformer repertoire",
         "Strength and conditioning principles within Pilates",
@@ -403,7 +380,7 @@ export const TUTORS_DEFAULT_CONTENT: TutorsContent = {
 
 export const GALLERY_DEFAULT_CONTENT: GalleryContent = {
   intro:
-    "A working studio — not a hotel function room. You learn on the equipment you'll teach on.",
+    "A working studio, not a hotel function room. You'll learn in the environment you're preparing to work in, using the same equipment and studio set-up our instructors and clients use every week.",
   address: "Bray, Co Wicklow, A98 T276",
   slotKeys: [
     "gallery-1",
@@ -417,35 +394,35 @@ export const GALLERY_DEFAULT_CONTENT: GalleryContent = {
 };
 
 export const WHAT_YOU_GET_DEFAULT_CONTENT: WhatYouGetContent = {
-  eyebrow: "What you get",
-  title: "Everything in one package",
+  eyebrow: "Learning experience",
+  title: "Learning continues beyond the studio",
   items: [
     {
       icon: "",
-      title: "Two printed booklets",
-      body: "Anatomy & teaching manuals — yours to keep, scribble on, and refer back to for years.",
-    },
-    {
-      icon: "",
-      title: "Full LMS access",
-      body: "Every weekend's content online: videos, written guides, downloadable workbooks, MCQ exams and your hour-log tracker.",
+      title: "LMS access",
+      body: "Every unit online, in order: videos, written guides, downloadable workbooks and quizzes, available throughout the course and after.",
     },
     {
       icon: "",
       title: "Exercise video library",
-      body: "Filmed in the balance studio — every mat and reformer exercise with cueing, common faults and modifications.",
+      body: "Filmed in the balance studio — every Mat and Reformer exercise with cueing, common faults and modifications.",
     },
     {
       icon: "",
-      title: "In house studios days",
-      body: "As well as the 4 in-studio weekends, you'll have 3 drop-in days in our studio to use the reformer as you wish. These are supervised and designed to give you hands-on practice as part of your reformer training.",
+      title: "Printed course materials",
+      body: "Anatomy and teaching manuals — yours to keep, write on, and refer back to for years.",
+    },
+    {
+      icon: "",
+      title: "Open Studio practice",
+      body: "Three supervised Reformer Open Studio days alongside the teaching weekends, with your own Reformer and support on hand.",
     },
   ],
 };
 
 export const PATHWAYS_DEFAULT_CONTENT: PathwaysContent = {
   eyebrow: "FEBRUARY 2027 COHORT",
-  title: "Choose your certification & payment plan",
+  title: "Choose your route",
   description:
     "Pay in full and save, or spread the cost with a €500 deposit. Only 12 places per cohort — this is a launch price offer!",
   footnote:
@@ -514,16 +491,15 @@ export const TIMELINE_DEFAULT_CONTENT: TimelineContent = {
 };
 
 export const WHY_BALANCE_DEFAULT_CONTENT: WhyBalanceContent = {
-  eyebrow: "Why balance",
-  title: "Built on real studio experience",
+  eyebrow: "Real studio experience",
+  title: "Built from real studio experience",
   paragraphs: [
-    "You're learning at a working studio with thousands of clients across Kildare and Wicklow, taught by people who run classes every week. This certification is designed to create great instructors, not just qualified ones. Learn how to understand the body, connect with people, and teach with confidence.",
-    "Every section of the course has been shaped by what actually works on the studio floor, not just textbooks.",
+    "balance runs six working studios and a team of experienced instructors. The course has been shaped by what we see every day: what new instructors need to know, where they struggle and what helps them become confident, capable teachers.",
   ],
   stats: [
     { value: "6", label: "Studios" },
-    { value: "1000+", label: "Clients trained" },
-    { value: "8+", label: "Years experience" },
+    { value: "35+", label: "Instructors" },
+    { value: "10+", label: "Years experience" },
   ],
 };
 
@@ -532,8 +508,32 @@ export const FAQS_DEFAULT_CONTENT: FaqsContent = {
   title: "The questions everyone asks",
   items: [
     {
+      q: "Which training route is right for me?",
+      a: "Mat is the starting point if you're new to teaching. Reformer is for instructors who already hold a recognised Mat qualification. Comprehensive Mat + Reformer covers both across all four weekends. If you're not sure, express interest and we'll help you decide.",
+    },
+    {
+      q: "Do I need a Mat qualification before taking Reformer?",
+      a: "Yes. The Reformer route requires a recognised Mat qualification. If you don't have one yet, the Comprehensive Mat + Reformer route covers both.",
+    },
+    {
+      q: "How much study and practice is required between training weekends?",
+      a: "Alongside the in-studio weekends there is online learning through the LMS and regular self-practice, plus Teach the Room sessions and, for Reformer students, three supervised Open Studio days. [Kelly to confirm the expected weekly hours.]",
+    },
+    {
+      q: "What happens if I miss an in-studio weekend?",
+      a: "Attendance is non-negotiable. Each weekend builds on the last and we don't run catch-up sessions, so please check the dates against your diary before you book and plan time off early.",
+    },
+    {
+      q: "What happens after I qualify?",
+      a: "You'll be able to apply for instructor insurance and start teaching. The final weekend covers the practical side of becoming an instructor: choosing where to work, insurance, and getting paid.",
+    },
+    {
+      q: "Can I apply to teach at balance after qualifying?",
+      a: "[Draft — Kelly to confirm.] Graduates are welcome to apply for instructor roles across our studios when positions are open.",
+    },
+    {
       q: "Do I need experience?",
-      a: "You don't need any teaching experience, but you do need a regular Pilates practice. Pathway C (reformer only) requires an existing mat qualification.",
+      a: "You don't need any teaching experience, but you do need a regular Pilates practice. The Reformer route requires a recognised Mat qualification.",
     },
     {
       q: "What insurance can I get when I finish?",
@@ -555,11 +555,11 @@ export const FAQS_DEFAULT_CONTENT: FaqsContent = {
 };
 
 export const FINAL_CTA_DEFAULT_CONTENT: FinalCtaContent = {
-  title: "Your Pilates career starts here",
+  title: "Ready to take the next step?",
   description:
-    "Join the next cohort of balance-trained instructors. Expert guidance, structured learning, real results.",
-  primaryLabel: "Book your space now",
-  secondaryLabel: "Apply for a pathway",
+    "Choose your course or express interest and we'll help you decide which training route suits you.",
+  primaryLabel: "Book your space",
+  secondaryLabel: "Express interest",
   bookingLine:
     "Would you like to speak to us about this course before you book? Email us to arrange a phone call at education@balancestudios.ie.",
 };
@@ -569,6 +569,92 @@ export const FOOTER_DEFAULT_CONTENT: FooterContent = {
   contactEmail: "hello@balancestudios.ie",
   instagramUrl: "https://www.instagram.com/balancereformer/?hl=en",
   studioUrl: "https://balancestudios.ie",
+};
+
+// ---------------------------------------------------------------------------
+// Sections added by the September 2026 brief. Rendered from these constants
+// (no admin editor yet, by request) — edit the copy here.
+// ---------------------------------------------------------------------------
+
+export type StoryBlockContent = {
+  eyebrow: string;
+  title: string;
+  paragraphs: string[];
+  image: string; // /public path
+  imageAlt: string;
+};
+
+export const TEACH_THE_ROOM_CONTENT: StoryBlockContent = {
+  eyebrow: "Teach the Room",
+  title: "Learn to teach a room before you have to teach one for real.",
+  paragraphs: [
+    "Most teacher training gives you plenty of time practising exercises and working in pairs. That matters, but teaching a full group is a different skill.",
+    "Throughout the course, our Teach the Room sessions give students repeated opportunities to stand up and teach their fellow students as a class, in a safe and supportive environment.",
+    "It is where you develop your voice, timing, observation, cueing, confidence and the ability to manage different people at once.",
+    "By the time assessment arrives, standing in front of a room won't be a first.",
+  ],
+  image: "/images/instructor-helping.jpg",
+  imageAlt: "A balance educator coaching a student teaching a class",
+};
+
+export const OPEN_STUDIO_CONTENT: StoryBlockContent = {
+  eyebrow: "Reformer Open Studio",
+  title: "Dedicated Reformer practice time",
+  paragraphs: [
+    "Reformer students attend three compulsory supervised Open Studio days in addition to the teaching weekends.",
+    "Each student has their own Reformer and can use the time to practise exactly what they need, with support available throughout.",
+  ],
+  image: "/images/reformer-stretch.jpg",
+  imageAlt: "Students practising on Reformers in the balance studio",
+};
+
+export type RouteTeaserContent = {
+  eyebrow: string;
+  title: string;
+  routes: Array<{ title: string; body: string; note?: string }>;
+  ctaLabel: string;
+  ctaHref: string;
+};
+
+export const ROUTE_TEASER_CONTENT: RouteTeaserContent = {
+  eyebrow: "Training routes",
+  title: "Choose your training route",
+  routes: [
+    {
+      title: "Mat",
+      body: "Two in-studio training weekends, supported by online learning, Teach the Room sessions and practical assessment.",
+    },
+    {
+      title: "Reformer",
+      body: "Two in-studio training weekends, online learning, Teach the Room sessions, three compulsory supervised Reformer Open Studio days and practical assessment.",
+      note: "Recognised Mat qualification required.",
+    },
+    {
+      title: "Comprehensive Mat + Reformer",
+      body: "All four in-studio training weekends, full online learning, Teach the Room sessions, three compulsory Reformer Open Studio days and assessment.",
+    },
+  ],
+  ctaLabel: "See pricing and dates",
+  ctaHref: "#pathways",
+};
+
+export type CurriculumContent = {
+  eyebrow: string;
+  title: string;
+  blocks: Array<{ title: string; body: string }>;
+};
+
+export const CURRICULUM_CONTENT: CurriculumContent = {
+  eyebrow: "What students learn",
+  title: "Everything you need to become an instructor",
+  blocks: [
+    { title: "Pilates repertoire", body: "Mat and Reformer exercises, technique and teaching points." },
+    { title: "Anatomy & biomechanics", body: "How the body moves, and the why behind every cue." },
+    { title: "Group class teaching", body: "Structure, programming and managing a mixed-level room." },
+    { title: "Cueing & communication", body: "Clear, confident cueing that lands with every client." },
+    { title: "People skills", body: "Reading a room, building rapport and adapting in the moment." },
+    { title: "Professional practice", body: "Where to work, insurance, getting paid and next steps." },
+  ],
 };
 
 // Default templates

@@ -1,25 +1,28 @@
-import Image from "next/image";
 import type { TutorsContent } from "@/lib/landing/config";
 
 /**
- * "Meet the instructors" — course director featured on top, a row of
- * smaller circular avatars for the rest. Matches the sage-pill /
- * italic-serif look from the Riverflow Soft Studio reference.
+ * "Meet the instructors" — text-only, per Kelly's mockup (Sept 2026):
  *
- * Tutors with no uploaded photo render as a diagonal-striped placeholder
- * so unfilled slots read clearly as "joining soon" rather than blank.
+ *   THE TEAM (pill)
+ *   Meet the instructors.
+ *   Kelly O'Neill
+ *   COURSE DIRECTOR · BALANCE STUDIOS FOUNDER
+ *   ───────
+ *   3 × 2 grid of the other educators — italic serif name, tracked
+ *   uppercase role — no photos, so the team reads as a team rather
+ *   than a photo of the director plus a list.
+ *
+ * `imageUrls` is still accepted (the page passes it to every tutors
+ * template) but deliberately unused here.
  */
 export default function TutorsFeaturedPlusRow({
   content,
-  imageUrls,
 }: {
   content: TutorsContent;
-  imageUrls: Map<string, string>;
+  imageUrls?: Map<string, string>;
 }) {
   const [featured, ...rest] = content.tutors;
   if (!featured) return null;
-
-  const featuredImg = imageUrls.get(featured.slotKey);
 
   return (
     <section
@@ -30,36 +33,42 @@ export default function TutorsFeaturedPlusRow({
         <span className="inline-block px-4 py-1 rounded-full bg-brand-sage/10 text-brand-sage text-xs tracking-[0.3em] uppercase mb-6">
           The team
         </span>
-        <h2 className="font-heading italic text-4xl md:text-5xl text-brand-primary mb-14 md:mb-16 leading-tight">
+        <h2 className="font-heading italic text-4xl md:text-5xl text-brand-primary mb-4 leading-tight">
           Meet the instructors.
         </h2>
+        <p className="text-lg md:text-xl text-brand-primary mb-3">
+          Learn from educators who actually teach.
+        </p>
+        <p className="text-brand-muted max-w-2xl mx-auto mb-14 md:mb-16 leading-relaxed">
+          Our education team works with clients and classes in real studio
+          environments, bringing current teaching experience directly into the
+          course.
+        </p>
 
-        {/* Featured — Kelly O'Neill on top over everyone else */}
-        <div className="flex flex-col items-center mb-14 md:mb-16">
-          <Avatar src={featuredImg} label={featured.name} large />
-          <p className="mt-6 text-2xl md:text-3xl font-heading italic text-brand-primary">
+        {/* Featured — course director, name + role only */}
+        <div className="flex flex-col items-center">
+          <h3 className="text-3xl md:text-4xl font-heading italic text-brand-primary leading-tight">
             {featured.name}
-          </p>
+          </h3>
           {featured.role && (
-            <p className="mt-2 text-sm text-brand-muted max-w-md">
+            <p className="mt-3 text-xs md:text-sm tracking-[0.3em] uppercase text-brand-muted max-w-xl">
               {featured.role}
             </p>
           )}
         </div>
 
-        {/* Row of the other instructors — name + title only, no photos */}
+        <div className="mx-auto my-12 md:my-14 h-px w-56 bg-brand-border" aria-hidden />
+
+        {/* The rest — even 3-up grid, no photos */}
         {rest.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-x-10 gap-y-8 md:gap-x-14">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-10 md:gap-y-14 max-w-4xl mx-auto">
             {rest.map((t) => (
-              <div
-                key={t.name}
-                className="flex flex-col items-center min-w-[140px]"
-              >
-                <p className="text-xl md:text-2xl font-heading italic text-brand-primary leading-tight">
+              <div key={t.name} className="flex flex-col items-center">
+                <h3 className="text-xl md:text-2xl font-heading italic text-brand-primary leading-tight">
                   {t.name}
-                </p>
+                </h3>
                 {t.role && (
-                  <p className="mt-1 text-xs tracking-[0.15em] uppercase text-brand-muted">
+                  <p className="mt-2 text-[11px] md:text-xs tracking-[0.25em] uppercase text-brand-muted leading-relaxed max-w-[12rem]">
                     {t.role}
                   </p>
                 )}
@@ -69,49 +78,5 @@ export default function TutorsFeaturedPlusRow({
         )}
       </div>
     </section>
-  );
-}
-
-function Avatar({
-  src,
-  label,
-  large = false,
-}: {
-  src: string | undefined;
-  label: string;
-  large?: boolean;
-}) {
-  const dims = large
-    ? "w-52 h-52 md:w-64 md:h-64"
-    : "w-32 h-32 md:w-40 md:h-40";
-
-  if (src) {
-    return (
-      <div
-        className={`relative rounded-full overflow-hidden bg-brand-surface ${dims}`}
-      >
-        <Image
-          src={src}
-          alt={label}
-          fill
-          className="object-cover"
-          sizes={large ? "256px" : "160px"}
-        />
-      </div>
-    );
-  }
-
-  return (
-    <div
-      className={`relative rounded-full flex items-center justify-center overflow-hidden ${dims}`}
-      style={{
-        background:
-          "repeating-linear-gradient(45deg, var(--brand-surface) 0 10px, var(--brand-surface-hover) 10px 20px)",
-      }}
-    >
-      <span className="text-[10px] tracking-[0.25em] uppercase text-brand-muted bg-white/75 px-2.5 py-1 rounded">
-        instructor
-      </span>
-    </div>
   );
 }

@@ -17,8 +17,9 @@ import HeroSplitScreen from "@/components/landing/templates/HeroSplitScreen";
 import TutorsSideBySide from "@/components/landing/templates/TutorsSideBySide";
 import TutorsAlternatingRows from "@/components/landing/templates/TutorsAlternatingRows";
 import TutorsFeaturedPlusRow from "@/components/landing/templates/TutorsFeaturedPlusRow";
-import GalleryMosaic from "@/components/landing/templates/GalleryMosaic";
-import GalleryEqualGrid from "@/components/landing/templates/GalleryEqualGrid";
+// Gallery photo templates (GalleryMosaic / GalleryEqualGrid) intentionally
+// not rendered: studio photos removed from "Where you will learn" per Kelly
+// (Sept 2026). The section is now the text-only WhereYouLearn block below.
 import PathwaysCards from "@/components/landing/templates/PathwaysCards";
 import HoldingDepositBanner from "@/components/landing/HoldingDepositBanner";
 import PathwaysComparisonTable from "@/components/landing/templates/PathwaysComparisonTable";
@@ -37,6 +38,15 @@ import type {
   FaqsContent,
   FinalCtaContent,
   FooterContent,
+  StoryBlockContent,
+  RouteTeaserContent,
+  CurriculumContent,
+} from "@/lib/landing/config";
+import {
+  TEACH_THE_ROOM_CONTENT,
+  OPEN_STUDIO_CONTENT,
+  ROUTE_TEASER_CONTENT,
+  CURRICULUM_CONTENT,
 } from "@/lib/landing/config";
 
 export const metadata: Metadata = {
@@ -58,7 +68,8 @@ export default async function HomePage() {
   const timeline = data.sections.timeline.content as TimelineContent;
   const whyBalance = data.sections["why-balance"].content as WhyBalanceContent;
   const faqs = data.sections.faqs.content as FaqsContent;
-  const finalCta = data.sections["final-cta"].content as FinalCtaContent;
+  // final-cta section no longer rendered (Kelly, Sept 2026) — its heading
+  // now sits on the Express Interest form instead.
   const footer = data.sections.footer.content as FooterContent;
   const heroImageUrl = data.imageUrls.get("hero-bg") ?? "/images/interior-1.jpg";
 
@@ -80,10 +91,26 @@ export default async function HomePage() {
         </section>
       )}
 
+      {/* Page order per the September 2026 brief:
+          Hero → Why different → Teach the Room → Choose your route →
+          What students learn → How the training works → Reformer Open
+          Studio → Learning experience & LMS → Where you will learn →
+          Real studio experience → Educators → Outcomes → Pricing & dates
+          → FAQs → Express interest → Final CTA */}
       <BrandMoment />
       <CoursePillars content={coursePillars} imageUrls={data.imageUrls} />
-      <WhatYouLearn content={whatLearn} />
+      {/* Route options sit directly under "Why different" (Kelly, Sept 2026),
+          with Teach the Room after them. */}
+      <RouteTeaser content={ROUTE_TEASER_CONTENT} />
+      <StoryBlock content={TEACH_THE_ROOM_CONTENT} imageSide="right" tone="surface" />
+      <CurriculumGrid content={CURRICULUM_CONTENT} />
       <FourWeekends content={weekends} />
+      <StoryBlock content={OPEN_STUDIO_CONTENT} imageSide="left" tone="surface" />
+      <WhatYouGet content={whatGet} />
+
+      <WhereYouLearn content={gallery} />
+
+      <WhyBalance content={whyBalance} imageUrls={data.imageUrls} />
 
       {data.sections.tutors.template === "alternating-rows" ? (
         <TutorsAlternatingRows content={tutors} imageUrls={data.imageUrls} />
@@ -94,14 +121,7 @@ export default async function HomePage() {
       )}
 
       <ImageBreak imageUrls={data.imageUrls} />
-
-      {data.sections.gallery.template === "equal-grid" ? (
-        <GalleryEqualGrid content={gallery} imageUrls={data.imageUrls} />
-      ) : (
-        <GalleryMosaic content={gallery} imageUrls={data.imageUrls} />
-      )}
-
-      <WhatYouGet content={whatGet} />
+      <WhatYouLearn content={whatLearn} />
 
       {data.sections.pathways.template === "comparison-table" ? (
         <PathwaysComparisonTable content={pathways} />
@@ -110,10 +130,8 @@ export default async function HomePage() {
       )}
 
       <Timeline content={timeline} />
-      <WhyBalance content={whyBalance} imageUrls={data.imageUrls} />
       <Faqs content={faqs} />
       <ApplicationSection />
-      <FinalCta content={finalCta} imageUrls={data.imageUrls} />
       <Footer content={footer} />
     </div>
   );
@@ -229,6 +247,11 @@ function CoursePillars({
             )}
           </div>
         )}
+        {content.intro && (
+          <p className="max-w-3xl mx-auto text-center text-brand-muted leading-relaxed md:text-lg whitespace-pre-line -mt-6 md:-mt-10 mb-14 md:mb-20">
+            {content.intro}
+          </p>
+        )}
         <div className="grid md:grid-cols-3 gap-8">
           {content.pillars.map((p, i) => (
             <div key={i} className="group">
@@ -307,28 +330,54 @@ function WhatYouLearn({ content }: { content: WhatYouLearnContent }) {
 
 // ------------------------------------------------------------------
 function FourWeekends({ content }: { content: WeekendsContent }) {
+  const hasSyllabus = content.weekends.some(
+    (w) => w.bullets && w.bullets.length > 0,
+  );
   return (
     <section id="curriculum" className="py-20 md:py-28 bg-background">
       <div className="max-w-6xl mx-auto px-5 md:px-6">
         <SectionHeader eyebrow={content.eyebrow} title={content.title} />
-        <div className="grid md:grid-cols-2 gap-6 mt-12">
+
+        {/* Short cards only — one line each, per the brief. */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-12">
           {content.weekends.map((w) => (
             <div
               key={w.n}
-              className="rounded-2xl border border-brand-border bg-white p-7"
+              className="rounded-2xl border border-brand-border bg-white p-6"
             >
               <p className="text-xs tracking-[0.3em] uppercase text-brand-sage mb-3">
                 Weekend {w.n}
               </p>
-              <h3 className="text-xl font-medium text-brand-primary mb-3">{w.title}</h3>
-              <p className="text-sm text-brand-primary/80 leading-relaxed">{w.body}</p>
-              {w.bullets && w.bullets.length > 0 && (
-                <>
-                  <p className="mt-5 text-xs tracking-[0.2em] uppercase text-brand-muted">
-                    What you&apos;ll cover
+              <h3 className="text-lg font-medium text-brand-primary mb-2 leading-snug">
+                {w.title}
+              </h3>
+              <p className="text-sm text-brand-muted leading-relaxed">{w.body}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* The detailed syllabus lives behind ONE button under the cards,
+            so the main page stays short. */}
+        {hasSyllabus && (
+          <details className="group mt-10">
+            <summary className="cursor-pointer list-none mx-auto w-fit flex items-center gap-3 px-7 py-3 rounded-full border border-brand-primary text-brand-primary text-sm tracking-wider uppercase hover:bg-brand-primary hover:text-white transition-colors">
+              <span className="group-open:hidden">View full course structure</span>
+              <span className="hidden group-open:inline">Hide full course structure</span>
+              <span className="transition-transform group-open:rotate-45" aria-hidden>
+                +
+              </span>
+            </summary>
+            <div className="mt-8 grid md:grid-cols-2 gap-6">
+              {content.weekends.map((w) => (
+                <div
+                  key={w.n}
+                  className="rounded-2xl border border-brand-border bg-white p-7"
+                >
+                  <p className="text-xs tracking-[0.3em] uppercase text-brand-sage mb-3">
+                    Weekend {w.n} · {w.title}
                   </p>
-                  <ul className="mt-3 space-y-2">
-                    {w.bullets.map((b, bi) => (
+                  <ul className="space-y-2">
+                    {(w.bullets ?? []).map((b, bi) => (
                       <li
                         key={bi}
                         className="flex items-start gap-2 text-sm text-brand-primary/85 leading-relaxed"
@@ -338,11 +387,11 @@ function FourWeekends({ content }: { content: WeekendsContent }) {
                       </li>
                     ))}
                   </ul>
-                </>
-              )}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </details>
+        )}
       </div>
     </section>
   );
@@ -655,7 +704,7 @@ function ApplicationSection() {
       <div className="max-w-3xl mx-auto px-5 md:px-6">
         <SectionHeader
           eyebrow="Express interest"
-          title="A short form. We'll get back to you within a week."
+          title="Ready to take the next step?"
         />
         <div className="mt-12 bg-white rounded-2xl border border-brand-border p-7 md:p-10">
           <ApplicationForm />
@@ -665,6 +714,10 @@ function ApplicationSection() {
   );
 }
 
+// ------------------------------------------------------------------
+// FinalCta — NOT rendered since Sept 2026 (Kelly removed the closing
+// band; the Express Interest form carries "Ready to take the next
+// step?" instead). Kept so it can be restored from admin content.
 // ------------------------------------------------------------------
 function FinalCta({
   content,
@@ -794,6 +847,141 @@ function Footer({ content }: { content: FooterContent }) {
         </p>
       </div>
     </footer>
+  );
+}
+
+// ------------------------------------------------------------------
+// Sections from the September 2026 brief. Rendered from constants in
+// config.ts (no admin editor yet, by request).
+// ------------------------------------------------------------------
+function StoryBlock({
+  content,
+  imageSide = "right",
+  tone = "surface",
+}: {
+  content: StoryBlockContent;
+  imageSide?: "left" | "right";
+  tone?: "surface" | "background";
+}) {
+  return (
+    <section
+      className={`py-20 md:py-28 ${tone === "surface" ? "bg-brand-surface" : "bg-background"}`}
+    >
+      <div className="max-w-6xl mx-auto px-5 md:px-6">
+        <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+          <div className={imageSide === "left" ? "md:order-1" : "md:order-2"}>
+            <div className="relative h-[320px] md:h-[460px] rounded-2xl overflow-hidden">
+              <Image
+                src={content.image}
+                alt={content.imageAlt}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
+              />
+            </div>
+          </div>
+          <div className={imageSide === "left" ? "md:order-2" : "md:order-1"}>
+            <p className="text-xs tracking-[0.3em] uppercase text-brand-sage mb-4">
+              {content.eyebrow}
+            </p>
+            <h2 className="text-3xl md:text-4xl font-light text-brand-primary leading-tight mb-6">
+              {content.title}
+            </h2>
+            <div className="space-y-4">
+              {content.paragraphs.map((p, i) => (
+                <p key={i} className="text-brand-muted leading-relaxed">
+                  {p}
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function RouteTeaser({ content }: { content: RouteTeaserContent }) {
+  return (
+    <section className="py-20 md:py-28 bg-background">
+      <div className="max-w-6xl mx-auto px-5 md:px-6">
+        <SectionHeader eyebrow={content.eyebrow} title={content.title} />
+        <div className="mt-12 grid md:grid-cols-3 gap-6">
+          {content.routes.map((r) => (
+            <div
+              key={r.title}
+              className="rounded-2xl border border-brand-border bg-white p-7 flex flex-col"
+            >
+              <h3 className="text-2xl font-light text-brand-primary mb-3">{r.title}</h3>
+              <p className="text-brand-muted leading-relaxed flex-1">{r.body}</p>
+              {r.note && (
+                <p className="mt-5 self-start px-3 py-1 rounded-full bg-brand-accent/15 text-brand-accent-dark text-xs tracking-wide">
+                  {r.note}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="mt-10 text-center">
+          <a
+            href={content.ctaHref}
+            className="inline-block px-8 py-3 bg-brand-primary text-white text-sm tracking-wider uppercase rounded-full hover:bg-brand-primary/90 transition-colors"
+          >
+            {content.ctaLabel}
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CurriculumGrid({ content }: { content: CurriculumContent }) {
+  return (
+    <section className="py-20 md:py-28 bg-background">
+      <div className="max-w-6xl mx-auto px-5 md:px-6">
+        <SectionHeader eyebrow={content.eyebrow} title={content.title} />
+        <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {content.blocks.map((b) => (
+            <div
+              key={b.title}
+              className="rounded-2xl border border-brand-border bg-white p-6"
+            >
+              <h3 className="text-lg font-medium text-brand-primary mb-2">{b.title}</h3>
+              <p className="text-sm text-brand-muted leading-relaxed">{b.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ------------------------------------------------------------------
+// "Where you will learn" — text only (heading, one-line copy, studio
+// address). The photo grid was removed per Kelly, Sept 2026; the gallery
+// templates and their image slots remain in the codebase if it's ever
+// wanted back.
+// ------------------------------------------------------------------
+function WhereYouLearn({ content }: { content: GalleryContent }) {
+  return (
+    <section className="py-16 md:py-24 px-5 md:px-8">
+      <div className="max-w-6xl mx-auto text-center">
+        <p className="text-xs tracking-[0.3em] uppercase text-brand-sage mb-4">
+          The studio
+        </p>
+        <h2 className="text-3xl md:text-4xl font-light text-brand-primary leading-tight">
+          Where you will learn
+        </h2>
+        <p className="text-brand-primary/70 max-w-2xl mx-auto mt-4">
+          {content.intro}
+        </p>
+        {content.address && (
+          <p className="mt-3 text-xs tracking-[0.2em] uppercase text-brand-muted">
+            {content.address}
+          </p>
+        )}
+      </div>
+    </section>
   );
 }
 

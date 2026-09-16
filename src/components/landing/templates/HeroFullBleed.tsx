@@ -22,7 +22,7 @@ export default function HeroFullBleed({
         <div className="absolute inset-0 bg-black/45" />
       </div>
       <div className="relative z-10 max-w-5xl mx-auto px-5 md:px-8 text-white py-20 text-center">
-        <p className="text-brand-sage-light text-xs sm:text-sm tracking-[0.35em] uppercase mb-6">
+        <p className="inline-block px-4 py-1.5 rounded-full border border-white/40 bg-white/10 backdrop-blur-sm text-white text-xs sm:text-sm tracking-[0.3em] uppercase font-semibold mb-6">
           {content.tagline}
         </p>
         <h1 className="text-4xl sm:text-5xl md:text-7xl font-light leading-[1.05] tracking-tight mb-8">
