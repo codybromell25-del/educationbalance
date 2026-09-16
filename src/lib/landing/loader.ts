@@ -49,24 +49,10 @@ export type LandingData = {
 };
 
 export async function loadLandingData(): Promise<LandingData> {
-  // TEMPORARY — landing-brief-preview branch only.
-  // On Vercel *preview* deployments, render the brief's copy from the
-  // config defaults instead of the live database rows, so the redesigned
-  // page can be reviewed without touching what the public sees. The
-  // database isn't queried at all in that mode, so the preview can't
-  // fail on missing env vars. Removed on merge, when the approved copy
-  // is written into the database.
-  const useDefaults = process.env.VERCEL_ENV === "preview";
-
-  const [sectionRows, assetRows]: [
-    Awaited<ReturnType<typeof prisma.landingSection.findMany>>,
-    Awaited<ReturnType<typeof prisma.landingAsset.findMany>>,
-  ] = useDefaults
-    ? [[], []]
-    : await Promise.all([
-        prisma.landingSection.findMany(),
-        prisma.landingAsset.findMany(),
-      ]);
+  const [sectionRows, assetRows] = await Promise.all([
+    prisma.landingSection.findMany(),
+    prisma.landingAsset.findMany(),
+  ]);
 
   const sectionsByKey = new Map(sectionRows.map((s) => [s.section, s]));
 
