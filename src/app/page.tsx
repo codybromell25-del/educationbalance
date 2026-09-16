@@ -17,8 +17,9 @@ import HeroSplitScreen from "@/components/landing/templates/HeroSplitScreen";
 import TutorsSideBySide from "@/components/landing/templates/TutorsSideBySide";
 import TutorsAlternatingRows from "@/components/landing/templates/TutorsAlternatingRows";
 import TutorsFeaturedPlusRow from "@/components/landing/templates/TutorsFeaturedPlusRow";
-import GalleryMosaic from "@/components/landing/templates/GalleryMosaic";
-import GalleryEqualGrid from "@/components/landing/templates/GalleryEqualGrid";
+// Gallery photo templates (GalleryMosaic / GalleryEqualGrid) intentionally
+// not rendered: studio photos removed from "Where you will learn" per Kelly
+// (Sept 2026). The section is now the text-only WhereYouLearn block below.
 import PathwaysCards from "@/components/landing/templates/PathwaysCards";
 import HoldingDepositBanner from "@/components/landing/HoldingDepositBanner";
 import PathwaysComparisonTable from "@/components/landing/templates/PathwaysComparisonTable";
@@ -104,11 +105,7 @@ export default async function HomePage() {
       <StoryBlock content={OPEN_STUDIO_CONTENT} imageSide="left" tone="surface" />
       <WhatYouGet content={whatGet} />
 
-      {data.sections.gallery.template === "equal-grid" ? (
-        <GalleryEqualGrid content={gallery} imageUrls={data.imageUrls} />
-      ) : (
-        <GalleryMosaic content={gallery} imageUrls={data.imageUrls} />
-      )}
+      <WhereYouLearn content={gallery} />
 
       <WhyBalance content={whyBalance} imageUrls={data.imageUrls} />
 
@@ -948,6 +945,35 @@ function CurriculumGrid({ content }: { content: CurriculumContent }) {
             </div>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+// ------------------------------------------------------------------
+// "Where you will learn" — text only (heading, one-line copy, studio
+// address). The photo grid was removed per Kelly, Sept 2026; the gallery
+// templates and their image slots remain in the codebase if it's ever
+// wanted back.
+// ------------------------------------------------------------------
+function WhereYouLearn({ content }: { content: GalleryContent }) {
+  return (
+    <section className="py-16 md:py-24 px-5 md:px-8">
+      <div className="max-w-6xl mx-auto text-center">
+        <p className="text-xs tracking-[0.3em] uppercase text-brand-sage mb-4">
+          The studio
+        </p>
+        <h2 className="text-3xl md:text-4xl font-light text-brand-primary leading-tight">
+          Where you will learn
+        </h2>
+        <p className="text-brand-primary/70 max-w-2xl mx-auto mt-4">
+          {content.intro}
+        </p>
+        {content.address && (
+          <p className="mt-3 text-xs tracking-[0.2em] uppercase text-brand-muted">
+            {content.address}
+          </p>
+        )}
       </div>
     </section>
   );
