@@ -424,9 +424,9 @@ export const PATHWAYS_DEFAULT_CONTENT: PathwaysContent = {
   eyebrow: "FEBRUARY 2027 COHORT",
   title: "Choose your route",
   description:
-    "Pay in full and save, or spread the cost with a €500 deposit. Only 12 places per cohort — this is a launch price offer!",
+    "Pay in full and save, or spread the cost with a €500 deposit. Only 14 places per cohort — this is a launch price offer!",
   footnote:
-    "A €500 deposit secures your place, with the remaining balance due across the instalment dates listed on each card. The pay-in-full saving applies to single payments only. Deposits are limited to 12 places per cohort.",
+    "A €500 deposit secures your place, with the remaining balance due across the instalment dates listed on each card. The pay-in-full saving applies to single payments only. Deposits are limited to 14 places per cohort.",
   pathways: [
     {
       code: "MAT",

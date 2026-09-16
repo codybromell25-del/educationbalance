@@ -63,7 +63,14 @@ const PLANS: Plan[] = [
     section: "pathways",
     mode: "merge",
     defaultTemplate: PATHWAYS_DEFAULT_TEMPLATE,
-    next: (cur) => ({ ...(cur ?? asObj(PATHWAYS_DEFAULT_CONTENT)), title: PATHWAYS_DEFAULT_CONTENT.title }),
+    // Marketing copy only — prices, Stripe URLs, deposit banner and
+    // sold-out flags on the row are admin-owned and never touched here.
+    next: (cur) => ({
+      ...(cur ?? asObj(PATHWAYS_DEFAULT_CONTENT)),
+      title: PATHWAYS_DEFAULT_CONTENT.title,
+      description: PATHWAYS_DEFAULT_CONTENT.description,
+      footnote: PATHWAYS_DEFAULT_CONTENT.footnote,
+    }),
   },
   {
     section: "gallery",
