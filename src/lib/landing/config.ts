@@ -499,7 +499,7 @@ export const WHY_BALANCE_DEFAULT_CONTENT: WhyBalanceContent = {
   stats: [
     { value: "6", label: "Studios" },
     { value: "35+", label: "Instructors" },
-    { value: "8+", label: "Years experience" },
+    { value: "10+", label: "Years experience" },
   ],
 };
 
