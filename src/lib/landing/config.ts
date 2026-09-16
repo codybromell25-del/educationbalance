@@ -516,10 +516,6 @@ export const FAQS_DEFAULT_CONTENT: FaqsContent = {
       a: "Yes. The Reformer route requires a recognised Mat qualification. If you don't have one yet, the Comprehensive Mat + Reformer route covers both.",
     },
     {
-      q: "How much study and practice is required between training weekends?",
-      a: "Alongside the in-studio weekends there is online learning through the LMS and regular self-practice, plus Teach the Room sessions and, for Reformer students, three supervised Open Studio days. [Kelly to confirm the expected weekly hours.]",
-    },
-    {
       q: "What happens if I miss an in-studio weekend?",
       a: "Attendance is non-negotiable. Each weekend builds on the last and we don't run catch-up sessions, so please check the dates against your diary before you book and plan time off early.",
     },
