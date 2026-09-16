@@ -529,7 +529,7 @@ export const FAQS_DEFAULT_CONTENT: FaqsContent = {
     },
     {
       q: "Can I apply to teach at balance after qualifying?",
-      a: "[Draft — Kelly to confirm.] Graduates are welcome to apply for instructor roles across our studios when positions are open.",
+      a: "Absolutely. Graduates are welcome to apply for instructor roles across our balance studios when positions become available. We love creating opportunities for strong graduates who are a good fit for our teaching style and studio standards.",
     },
     {
       q: "Do I need experience?",
@@ -537,7 +537,7 @@ export const FAQS_DEFAULT_CONTENT: FaqsContent = {
     },
     {
       q: "What insurance can I get when I finish?",
-      a: "On successful completion you can apply for instructor insurance with the usual UK / Ireland providers. CONFIRM list of accredited insurers we recommend.",
+      a: "On successful completion of your training, you can apply for professional instructor insurance with recognised providers in Ireland and the UK. We can also point you towards suitable insurance providers once you qualify.",
     },
     {
       q: "Can I pay in instalments?",
