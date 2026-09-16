@@ -211,9 +211,6 @@ function BrandMoment() {
             aria-label="balance studios logo"
           />
         </div>
-        <p className="mt-8 text-xs tracking-[0.4em] uppercase text-brand-sage">
-          balance studios
-        </p>
       </div>
     </section>
   );
