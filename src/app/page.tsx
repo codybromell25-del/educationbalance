@@ -331,33 +331,54 @@ function WhatYouLearn({ content }: { content: WhatYouLearnContent }) {
 
 // ------------------------------------------------------------------
 function FourWeekends({ content }: { content: WeekendsContent }) {
+  const hasSyllabus = content.weekends.some(
+    (w) => w.bullets && w.bullets.length > 0,
+  );
   return (
     <section id="curriculum" className="py-20 md:py-28 bg-background">
       <div className="max-w-6xl mx-auto px-5 md:px-6">
         <SectionHeader eyebrow={content.eyebrow} title={content.title} />
-        <div className="grid md:grid-cols-2 gap-6 mt-12">
+
+        {/* Short cards only — one line each, per the brief. */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-12">
           {content.weekends.map((w) => (
             <div
               key={w.n}
-              className="rounded-2xl border border-brand-border bg-white p-7"
+              className="rounded-2xl border border-brand-border bg-white p-6"
             >
               <p className="text-xs tracking-[0.3em] uppercase text-brand-sage mb-3">
                 Weekend {w.n}
               </p>
-              <h3 className="text-xl font-medium text-brand-primary mb-3">{w.title}</h3>
-              <p className="text-sm text-brand-primary/80 leading-relaxed">{w.body}</p>
-              {/* Brief: keep the weekend short on the page; the detailed
-                  syllabus sits behind a "view full course structure" toggle. */}
-              {w.bullets && w.bullets.length > 0 && (
-                <details className="group mt-5">
-                  <summary className="cursor-pointer list-none inline-flex items-center gap-2 text-xs tracking-[0.2em] uppercase text-brand-sage hover:text-brand-sage-dark">
-                    <span>View full course structure</span>
-                    <span className="transition-transform group-open:rotate-45" aria-hidden>
-                      +
-                    </span>
-                  </summary>
-                  <ul className="mt-3 space-y-2">
-                    {w.bullets.map((b, bi) => (
+              <h3 className="text-lg font-medium text-brand-primary mb-2 leading-snug">
+                {w.title}
+              </h3>
+              <p className="text-sm text-brand-muted leading-relaxed">{w.body}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* The detailed syllabus lives behind ONE button under the cards,
+            so the main page stays short. */}
+        {hasSyllabus && (
+          <details className="group mt-10">
+            <summary className="cursor-pointer list-none mx-auto w-fit flex items-center gap-3 px-7 py-3 rounded-full border border-brand-primary text-brand-primary text-sm tracking-wider uppercase hover:bg-brand-primary hover:text-white transition-colors">
+              <span className="group-open:hidden">View full course structure</span>
+              <span className="hidden group-open:inline">Hide full course structure</span>
+              <span className="transition-transform group-open:rotate-45" aria-hidden>
+                +
+              </span>
+            </summary>
+            <div className="mt-8 grid md:grid-cols-2 gap-6">
+              {content.weekends.map((w) => (
+                <div
+                  key={w.n}
+                  className="rounded-2xl border border-brand-border bg-white p-7"
+                >
+                  <p className="text-xs tracking-[0.3em] uppercase text-brand-sage mb-3">
+                    Weekend {w.n} · {w.title}
+                  </p>
+                  <ul className="space-y-2">
+                    {(w.bullets ?? []).map((b, bi) => (
                       <li
                         key={bi}
                         className="flex items-start gap-2 text-sm text-brand-primary/85 leading-relaxed"
@@ -367,11 +388,11 @@ function FourWeekends({ content }: { content: WeekendsContent }) {
                       </li>
                     ))}
                   </ul>
-                </details>
-              )}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </details>
+        )}
       </div>
     </section>
   );

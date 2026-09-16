@@ -422,7 +422,7 @@ export const WHAT_YOU_GET_DEFAULT_CONTENT: WhatYouGetContent = {
 
 export const PATHWAYS_DEFAULT_CONTENT: PathwaysContent = {
   eyebrow: "FEBRUARY 2027 COHORT",
-  title: "Choose your training route",
+  title: "Course fees & dates",
   description:
     "Pay in full and save, or spread the cost with a €500 deposit. Only 12 places per cohort — this is a launch price offer!",
   footnote:
@@ -496,10 +496,9 @@ export const WHY_BALANCE_DEFAULT_CONTENT: WhyBalanceContent = {
   paragraphs: [
     "balance runs six working studios and a team of experienced instructors. The course has been shaped by what we see every day: what new instructors need to know, where they struggle and what helps them become confident, capable teachers.",
   ],
-  // Brief: replace "1000+ clients trained" with another studio statistic —
-  // none supplied yet, so two stats until Kelly provides the third.
   stats: [
-    { value: "6", label: "Working studios" },
+    { value: "6", label: "Studios" },
+    { value: "35+", label: "Instructors" },
     { value: "8+", label: "Years experience" },
   ],
 };
