@@ -422,7 +422,7 @@ export const WHAT_YOU_GET_DEFAULT_CONTENT: WhatYouGetContent = {
 
 export const PATHWAYS_DEFAULT_CONTENT: PathwaysContent = {
   eyebrow: "FEBRUARY 2027 COHORT",
-  title: "Course fees & dates",
+  title: "Choose your route",
   description:
     "Pay in full and save, or spread the cost with a €500 deposit. Only 12 places per cohort — this is a launch price offer!",
   footnote:
